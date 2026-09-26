@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mask Master</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="mask-master">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🎭 Mask Master</h1>
+      <p>Một <b>mask</b> là byte dùng để chỉ ra những bit cần tác động. Kết hợp với phép logic, ta có ba "phép thuật":</p>
+      <ul class="spells">
+        <li><b>OR</b> với 1 để <b>bật</b> (set) bit</li>
+        <li><b>AND</b> với 0 để <b>tắt</b> (clear) bit</li>
+        <li><b>XOR</b> với 1 để <b>đảo</b> (toggle) bit</li>
+      </ul>
+      <p class="muted">Bit nào mask không động tới thì giữ nguyên: OR 0, AND 1, XOR 0.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat" id="hud-moves-wrap">Lượt<b id="hud-moves">0/1</b></span>
+      </div>
+
+      <div class="card">
+        <div class="mission" id="mission"></div>
+
+        <div class="ops" id="ops"></div>
+
+        <div class="board" id="board"></div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost sm" id="btn-reset">↺ Làm lại vòng</button>
+          <span class="spacer"></span>
+          <button class="btn" id="btn-apply">⚡ Áp dụng</button>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Chọn phép toán (AND / OR / XOR), bấm các bit của <b>Mask</b>, xem dòng <b>Kết quả</b>, rồi bấm <b>⚡ Áp dụng</b> (<kbd>Enter</kbd>).</li>
+      <li>Mỗi lần áp dụng tốn một lượt. Hãy biến byte <b>Hiện tại</b> thành <b>Mục tiêu</b> trong số lượt tối thiểu.</li>
+      <li>Level cuối: mask phải đúng với <b>mọi</b> byte đầu vào, không chỉ vài ví dụ trên màn hình.</li>
+      <li>Đúng số lượt tối thiểu +15. Mỗi lượt thừa −4. Hết lượt thì game hiện lời giải.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -39,7 +39,7 @@
       <div class="bits">01001001 01010100</div>
       <h1 id="course">Nhập môn Công nghệ thông tin</h1>
       <p id="audience">Mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
-      <label class="row muted" style="font-size:.9rem"><input type="checkbox" id="show-planned"> Hiện cả các game sắp ra mắt</label>
+      <label class="row muted" style="font-size:.9rem" id="planned-toggle"><input type="checkbox" id="show-planned"> Hiện cả các game sắp ra mắt</label>
     </section>
     <div id="topics"></div>
   </main>
@@ -107,7 +107,9 @@
         }
       }
 
-      toggle.checked = G.store.get("itgames:showPlanned", false);
+      const hasPlanned = cat.topics.some((t) => t.sections.some((s) => s.games.some((g) => g.status !== "ready")));
+      document.getElementById("planned-toggle").hidden = !hasPlanned;
+      toggle.checked = hasPlanned && G.store.get("itgames:showPlanned", false);
       toggle.addEventListener("change", render);
       render();
     })();

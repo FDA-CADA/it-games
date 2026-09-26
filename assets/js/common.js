@@ -61,6 +61,20 @@
     return `${i === 0 ? v : Number(v.toPrecision(digits))} ${units[i]}`;
   };
   /** 1105920000 -> "1 105 920 000" (khoảng trắng hàng nghìn, tránh nhầm với dấu chấm thập phân). */
+  /**
+   * Hàng bit dùng chung: G.bitRow(v, 8, { onToggle(i), mark: [i…], bad: [i…], cls: "sm" }).
+   * i = 0 là bit trái nhất (MSB). Có onToggle thì mỗi bit là một nút bấm.
+   */
+  G.bitRow = (v, n = 8, opts = {}) => {
+    const row = G.el("div", { class: "bitrow" + (opts.cls ? " " + opts.cls : "") });
+    [...G.bits(v, n)].forEach((b, i) => {
+      const cls = "bit" + (b === "1" ? " one" : "") + ((opts.mark || []).includes(i) ? " mark" : "") + ((opts.bad || []).includes(i) ? " bad" : "");
+      row.append(opts.onToggle
+        ? G.el("button", { type: "button", class: cls, text: b, "aria-label": `Bit ${n - 1 - i}`, onclick: () => opts.onToggle(i) })
+        : G.el("span", { class: cls, text: b }));
+    });
+    return row;
+  };
   G.fmtInt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
 
   /* ---------- DOM ---------- */

@@ -22,17 +22,23 @@ Tuần 2 bám theo slide _Data, Information, and Their Representation_, gồm 3 
 |  | 🔊 Sample the Wave | ✅ | [README](data-storage/sample-the-wave/README.md) |
 |  | 🔎 Zoom War | ✅ | [README](data-storage/zoom-war/README.md) |
 |  | 💾 Storage Budget | ✅ | [README](data-storage/storage-budget/README.md) |
-| 3. Operations on Data | Mask Master, XOR Secret Messenger, Find the Flipped Bit, Bit Conveyor, Overflow Detective | 💡 Ý tưởng | xem bên dưới |
+| 3. Operations on Data | 🎭 Mask Master | ✅ | [README](operations/mask-master/README.md) |
+|  | ✉️ XOR Secret Messenger | ✅ | [README](operations/xor-messenger/README.md) |
+|  | 📡 Find the Flipped Bit | ✅ | [README](operations/find-flipped-bit/README.md) |
+|  | 🏭 Bit Conveyor | ✅ | [README](operations/bit-conveyor/README.md) |
+|  | 🚨 Overflow Detective | ✅ | [README](operations/overflow-detective/README.md) |
 
 **Thứ tự chơi gợi ý cho phần 1:** Bit Flip → Hex Color Mixer → Remainder Tower → Bit Fishing → Bit Tetris → Máy tính có lưu chính xác không?
 
 **Thứ tự chơi gợi ý cho phần 2:** One Byte, Many Meanings → Odometer Overflow → Number Wheel → Negate Machine → Float Builder → Exponent Zones → ASCII Spy → Sample the Wave → Zoom War → Storage Budget
 
-Khi bắt tay làm một game trong danh sách ý tưởng, tạo thư mục `<phần>/<game-id>/` từ [templates/game](../../templates/game/), chuyển mô tả bên dưới sang README riêng của game, rồi đổi `status` trong [catalog.js](../../assets/js/catalog.js) thành `"ready"`.
+**Thứ tự chơi gợi ý cho phần 3:** Mask Master → XOR Secret Messenger → Find the Flipped Bit → Bit Conveyor → Overflow Detective
+
+Toàn bộ 21 ý tưởng bên dưới đã được làm thành game. Phần ý tưởng được giữ lại làm tài liệu thiết kế gốc. Chi tiết của bản đã làm (level, cách tính điểm, ghi chú kỹ thuật) nằm trong README riêng của từng game.
 
 ---
 
-# Ý tưởng game
+# Ý tưởng game (thiết kế gốc)
 
 ## 1. Number Systems
 

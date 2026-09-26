@@ -96,6 +96,7 @@ Game ở dạng ý tưởng dùng `status: "planned"` (không cần `path`). Ch�
 | `G.gcd`, `G.parseFraction`, `G.isPowerOfTwo` | Phân số |
 | `G.bits(v, n)`, `G.signed(bits)` | Số → chuỗi n bit (số âm theo bù 2), chuỗi bit → số có dấu |
 | `G.formatBytes(bytes)`, `G.fmtInt(n)` | "1.03 GB" (1 KB = 1024 B), "1 105 920 000" |
+| `G.bitRow(v, n, { onToggle, mark, bad, cls })` | Vẽ một hàng n bit (bấm được nếu có `onToggle(i)`), dùng class `.bitrow` trong base.css |
 | `G.mountNextLink(container)` | Nút "Game tiếp theo" |
 
 CSS dùng chung (`assets/css/base.css`): `.card`, `.btn` (`.ghost`, `.good`, `.bad`, `.lg`, `.sm`), `.hud .stat`, `.timer-bar`, `.feedback` (`.good`, `.bad`, `.warn`), `.badge`, `.row`, `.muted`, `.mono`. Màu dùng token `var(--accent)`, `var(--good)`, … để tự hỗ trợ chế độ tối.

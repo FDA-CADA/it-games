@@ -1,0 +1,29 @@
+.spells { padding-left: 1.2em; }
+.mission { font-weight: 700; margin-bottom: 12px; }
+
+.ops { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
+.op { min-width: 84px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-family: var(--mono); font-weight: 800; font-size: 1.1rem; cursor: pointer; }
+.op:hover { border-color: var(--accent); }
+.op.sel { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.op:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.board { display: grid; grid-template-columns: auto auto auto; gap: 8px 12px; justify-content: center; align-items: center; }
+.board .lbl { font-weight: 700; font-size: 0.9rem; text-align: right; color: var(--muted); }
+.board .lbl.op-lbl { color: var(--accent); font-family: var(--mono); font-size: 1rem; }
+.board .num { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); min-width: 5.5em; }
+.board .sep { grid-column: 1 / -1; height: 2px; background: var(--border); margin: 2px 0; }
+.board .target .bit { border-style: dashed; }
+.board .match .bit { border-color: var(--good); }
+
+.samples { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.samples th { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-align: center; padding: 4px; }
+.samples td { padding: 4px; text-align: center; }
+.samples td.ok { color: var(--good); font-weight: 700; }
+.samples td.no { color: var(--bad); font-weight: 700; }
+.mask-row { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+
+@media (max-width: 480px) {
+  .board { grid-template-columns: auto auto; }
+  .board .num { grid-column: 2; margin-top: -6px; }
+  .samples .bitrow .bit { width: 18px; height: 24px; font-size: 0.8rem; }
+}

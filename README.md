@@ -24,8 +24,13 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 | |  | [🔊 Sample the Wave](topics/data-representation/data-storage/sample-the-wave/README.md) | Sampling rate, bit depth, Nyquist |
 | |  | [🔎 Zoom War](topics/data-representation/data-storage/zoom-war/README.md) | Raster vs vector |
 | |  | [💾 Storage Budget](topics/data-representation/data-storage/storage-budget/README.md) | Dung lượng ảnh, âm thanh, video |
+| | Operations on Data | [🎭 Mask Master](topics/data-representation/operations/mask-master/README.md) | Set/clear/toggle bằng AND, OR, XOR |
+| |  | [✉️ XOR Secret Messenger](topics/data-representation/operations/xor-messenger/README.md) | Mã hóa XOR, phá khóa, chơi theo cặp |
+| |  | [📡 Find the Flipped Bit](topics/data-representation/operations/find-flipped-bit/README.md) | Parity, phát hiện và sửa lỗi |
+| |  | [🏭 Bit Conveyor](topics/data-representation/operations/bit-conveyor/README.md) | Logical, circular, arithmetic shift |
+| |  | [🚨 Overflow Detective](topics/data-representation/operations/overflow-detective/README.md) | Cộng/trừ bù 2 và cờ overflow |
 
-Các game đang ở dạng ý tưởng được liệt kê trong README của từng chủ đề và trong [`assets/js/catalog.js`](assets/js/catalog.js) (`status: "planned"`).
+Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Khi thêm chủ đề mới, game ở dạng ý tưởng được khai báo trong [`assets/js/catalog.js`](assets/js/catalog.js) với `status: "planned"` và hiện là "Sắp có" trên trang chủ.
 
 ## Cấu trúc thư mục
 

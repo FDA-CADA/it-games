@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bit Conveyor</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="bit-conveyor">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🏭 Bit Conveyor</h1>
+      <p>Băng chuyền dịch các bit sang trái hoặc phải. Có ba kiểu dịch:</p>
+      <ul class="legend-list">
+        <li><b>Logical</b>: bit rơi ra ngoài thì mất, chỗ trống được điền <b>0</b>. Dịch trái 1 = ×2, dịch phải 1 = ÷2 (số không dấu).</li>
+        <li><b>Circular</b> (rotate): bit rơi ra ở đầu này thì <b>quay lại</b> ở đầu kia. Không mất bit nào.</li>
+        <li><b>Arithmetic</b> dịch phải: chỗ trống được điền bằng <b>bit dấu</b>, nên số âm vẫn âm. Đây là ÷2 cho số two's complement.</li>
+      </ul>
+      <p class="muted">Nhiệm vụ: đưa pattern về đúng đích với <b>ít bước nhất</b>.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat">Bước<b id="hud-moves">0</b></span>
+      </div>
+      <div class="card">
+        <div class="mission" id="mission"></div>
+        <div class="belt" id="belt"></div>
+        <div class="ops" id="ops"></div>
+        <div class="history" id="history"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost sm" id="btn-undo">↶ Hoàn tác</button>
+          <button class="btn ghost sm" id="btn-reset">↺ Làm lại</button>
+          <span class="spacer"></span>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Bấm một nút dịch là áp dụng ngay lên byte <b>Hiện tại</b>. Dùng ↶ để hoàn tác (vẫn tính bước), ↺ để làm lại từ đầu.</li>
+      <li>Khớp <b>Đích</b> với đúng số bước tối thiểu được +15, mỗi bước thừa −3.</li>
+      <li>Bước tối thiểu được máy tính trước bằng cách thử mọi cách kết hợp (BFS).</li>
+      <li>Phím tắt: <kbd>1</kbd>–<kbd>5</kbd> theo thứ tự các nút, <kbd>Z</kbd> để hoàn tác.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
