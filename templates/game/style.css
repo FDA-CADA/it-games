@@ -1,0 +1,3 @@
+/* Style riêng của game. Dùng token màu trong base.css (var(--accent), var(--good), …)
+   để game tự hỗ trợ chế độ sáng/tối. */
+#stage { min-height: 200px; display: grid; place-items: center; }

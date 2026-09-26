@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bit Flip</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="bit-flip">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <!-- Màn hình bắt đầu -->
+    <section data-screen="start" class="card">
+      <h1>💡 Bit Flip</h1>
+      <p>Mỗi bóng đèn (hay bánh xe) có một <b>trọng số</b> bằng lũy thừa của cơ số. Bật đúng các bóng để tổng bằng số thập phân mục tiêu trước khi hết giờ.</p>
+      <p class="muted">Mẹo: luôn xét bóng có trọng số lớn nhất trước. Nếu nó không vượt quá phần còn thiếu thì bật nó lên.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <!-- Màn hình chơi -->
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/6</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat">⏱<b id="hud-time">30</b></span>
+      </div>
+      <div class="timer-bar" id="timer-bar"><span></span></div>
+
+      <div class="card">
+        <div class="target">
+          <span class="muted">Mục tiêu (hệ 10)</span>
+          <div class="target-num mono" id="target">0</div>
+        </div>
+        <div class="cells" id="cells"></div>
+        <div class="readout">
+          <div id="repr" class="repr"></div>
+          <div id="sum" class="sum"></div>
+        </div>
+        <div class="feedback" id="feedback">Bấm vào bóng đèn để bật/tắt. Phím số <kbd>1</kbd>…<kbd>8</kbd> cũng được.</div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost sm" id="btn-clear">Tắt hết</button>
+          <span class="spacer"></span>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Màn hình kết thúc -->
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Mỗi ô có trọng số <b>cơ số<sup>vị trí</sup></b>: hệ 2 là 128, 64, …, 1; hệ 8 là 64, 8, 1; hệ 16 là 256, 16, 1.</li>
+      <li><b>Hệ 2:</b> bấm bóng đèn để bật (1) hoặc tắt (0).</li>
+      <li><b>Hệ 8/16:</b> bấm ▲/▼ hoặc cuộn chuột trên bánh xe để đổi chữ số.</li>
+      <li>Khi tổng đúng bằng mục tiêu, vòng chơi tự kết thúc. Điểm = 10 + số giây còn lại.</li>
+      <li>Level "Không nhìn tổng" ẩn tổng hiện tại. Bạn phải tự cộng nhẩm.</li>
+    </ul>
+    <p class="muted">Giá trị = Σ (chữ số × cơ số<sup>vị trí</sup>). Đây là công thức positional notation trên slide.</p>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bit Fishing</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="bit-fishing">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🎣 Bit Fishing</h1>
+      <p>Đổi <b>phần thập phân</b> sang hệ 2: nhân phần thập phân với 2, <b>phần nguyên</b> (0 hoặc 1) là bit câu được, phần thập phân còn lại thả xuống câu tiếp. Các bit xếp từ trái sang phải ngay sau dấu chấm.</p>
+      <p class="muted">Có con cá câu vài lần là hết. Có con câu mãi không hết. Khi đó bạn phải quyết định dừng ở đâu.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat">Lưới<b id="hud-net">0/24</b></span>
+      </div>
+
+      <div class="card">
+        <div class="task" id="task"></div>
+        <div class="bucket" aria-label="Kết quả nhị phân">
+          <span class="lbl">Giỏ cá</span>
+          <div class="bits mono" id="bits"><span class="lead">0.</span></div>
+        </div>
+
+        <div class="sea" id="sea">
+          <div class="boat" aria-hidden="true">🚣</div>
+          <div class="line" aria-hidden="true"></div>
+          <div class="bubble mono" id="bubble">0.625</div>
+          <div class="fish mono" id="fish" hidden>1</div>
+          <div class="waves" aria-hidden="true"></div>
+        </div>
+
+        <div class="ask" id="ask">
+          <div class="q mono" id="question">0.625 × 2 = ?</div>
+          <p class="muted" style="margin:4px 0 10px">Phần nguyên của kết quả là bit mấy?</p>
+          <div class="row" style="justify-content:center">
+            <button class="btn lg bitbtn" data-bit="0">Câu được <b class="mono">0</b></button>
+            <button class="btn lg bitbtn" data-bit="1">Câu được <b class="mono">1</b></button>
+          </div>
+          <div class="row" style="justify-content:center;margin-top:12px">
+            <button class="btn ghost sm" id="btn-stop" disabled>✋ Dừng câu tại đây</button>
+          </div>
+        </div>
+
+        <div class="status" id="status"></div>
+        <div class="feedback" id="feedback">Phím tắt: <kbd>0</kbd> / <kbd>1</kbd> để câu, <kbd>S</kbd> để dừng.</div>
+
+        <div class="summary" id="summary" hidden></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end">
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+
+        <details class="log-wrap">
+          <summary>Nhật ký câu cá</summary>
+          <table class="log mono"><thead><tr><th>#</th><th>Phép nhân</th><th>Bit</th><th>Còn lại</th></tr></thead><tbody id="log"></tbody></table>
+        </details>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Nhẩm <i>x</i> × 2. Nếu kết quả ≥ 1 thì bit là <b>1</b> và bỏ phần nguyên đi, ngược lại bit là <b>0</b>.</li>
+      <li>Mỗi bit đúng ngay lần đầu được +2 điểm.</li>
+      <li>Phần còn lại bằng 0: hết cá, biểu diễn <b>chính xác</b>, được +10.</li>
+      <li>Không bao giờ về 0? Bấm <b>Dừng câu</b> khi sai số đã nhỏ hơn ngưỡng của level, hoặc khi thấy một giá trị <b>lặp lại</b> (chu kỳ), để được +10.</li>
+      <li>Dừng sớm khi vẫn còn cá: không có thưởng.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

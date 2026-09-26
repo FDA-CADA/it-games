@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exact or Approximate</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="exact-or-approx">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🎯 Máy tính có lưu chính xác không?</h1>
+      <p>Máy tính lưu số thực bằng hệ 2 với số bit hữu hạn. Có số được lưu <b>chính xác (Exact)</b>, có số chỉ lưu được <b>gần đúng (Approximate)</b>. Trả lời thật nhanh, rồi thử tự tìm ra quy luật.</p>
+      <p class="muted">Gợi ý: nhớ lại game Bit Fishing. Con cá nào câu hết được?</p>
+      <div class="level-list" id="levels"></div>
+      <p style="margin-top:16px"><button class="btn ghost sm" id="btn-lab">Vào thẳng phòng thí nghiệm 0.1 + 0.2 →</button></p>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Câu<b id="hud-q">1/12</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat">Chuỗi đúng<b id="hud-streak">0</b></span>
+      </div>
+      <div class="timer-bar" id="timer-bar"><span></span></div>
+      <div class="card center">
+        <p class="muted" style="margin:0">Máy tính lưu số này…</p>
+        <div class="number mono" id="number">0.1</div>
+        <div class="answers">
+          <button class="btn lg good ans" data-a="exact">✓ Chính xác <kbd>←</kbd></button>
+          <button class="btn lg ans approx" data-a="approx">≈ Gần đúng <kbd>→</kbd></button>
+        </div>
+        <div class="feedback" id="feedback" style="text-align:left">Chọn thật nhanh. Mỗi câu có vài giây.</div>
+        <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-next" hidden>Tiếp →</button></div>
+      </div>
+    </section>
+
+    <section data-screen="pattern" class="card" hidden>
+      <h2>🔎 Bạn đã thấy quy luật chưa?</h2>
+      <p>Số thập phân như thế nào thì máy tính lưu <b>chính xác</b> được?</p>
+      <div class="choices" id="pattern-choices"></div>
+      <div class="feedback" id="pattern-feedback">Chọn một đáp án.</div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-reveal" hidden>Xem màn reveal →</button></div>
+    </section>
+
+    <section data-screen="reveal" hidden>
+      <div class="card center" id="score-card">
+        <div class="muted">Điểm của bạn</div>
+        <div class="end-score" id="end-score">0</div>
+        <p class="muted" id="end-detail"></p>
+      </div>
+
+      <div class="card lab">
+        <h2>🧪 Hậu quả: 0.1 + 0.2 = ?</h2>
+        <p>0.1 và 0.2 đều là loại <b>gần đúng</b>. Cộng hai số đã bị làm tròn thì kết quả ra sao? Bấm để máy tính của bạn tự tính thật (JavaScript dùng số thực 64-bit IEEE 754, giống Python).</p>
+        <div class="console mono">
+          <div><span class="prompt">&gt;</span> 0.1 + 0.2</div>
+          <div class="out" id="out-sum">…</div>
+          <div><span class="prompt">&gt;</span> 0.1 + 0.2 == 0.3</div>
+          <div class="out" id="out-eq">…</div>
+        </div>
+        <button class="btn" id="btn-run">▶ Chạy</button>
+        <div id="lab-explain" hidden>
+          <p style="margin-top:16px">Vì thật ra máy tính <b>không</b> lưu 0.1. Nó lưu số nhị phân gần nhất:</p>
+          <div class="stored mono" id="stored-01"></div>
+          <p>Hai sai số nhỏ cộng dồn lại, nên kết quả lệch khỏi số gần 0.3 nhất mà máy biểu diễn được.</p>
+          <div class="tip">
+            <b>Dành cho dân Data/AI:</b> đừng so sánh số thực bằng <code>==</code>. Hãy dùng <code>math.isclose(a, b)</code> hoặc <code>np.isclose(a, b)</code>. Tính tiền thì dùng <code>decimal.Decimal</code> hoặc lưu theo đơn vị nhỏ nhất (đồng, cent) bằng số nguyên.
+          </div>
+        </div>
+      </div>
+
+      <div class="card lab">
+        <h2>🔬 Thử số của bạn</h2>
+        <p class="muted">Gõ một số thập phân để xem máy tính thực sự lưu giá trị gì.</p>
+        <div class="row">
+          <input id="probe" class="mono probe" value="0.375" spellcheck="false" autocomplete="off" aria-label="Số cần thử">
+          <button class="btn" id="btn-probe">Xem</button>
+        </div>
+        <div id="probe-out" class="probe-out"></div>
+      </div>
+
+      <div class="row" style="justify-content:center;margin-top:16px">
+        <button class="btn" id="btn-again">Chơi lại</button>
+        <button class="btn ghost" id="btn-menu">Về màn hình đầu</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Mỗi câu hiện một số thập phân. Chọn <b>Chính xác</b> (<kbd>←</kbd> hoặc <kbd>E</kbd>) hay <b>Gần đúng</b> (<kbd>→</kbd> hoặc <kbd>A</kbd>).</li>
+      <li>Đúng được 10 điểm + số giây còn lại. Hết giờ tính là sai.</li>
+      <li>Sau mỗi câu có giải thích: đổi số ra phân số tối giản rồi nhìn vào mẫu số.</li>
+      <li>Cuối game: đoán quy luật (+20 nếu đúng ngay), rồi vào phòng thí nghiệm 0.1 + 0.2.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

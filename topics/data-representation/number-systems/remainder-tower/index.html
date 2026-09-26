@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Remainder Tower</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="remainder-tower">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🧱 Remainder Tower</h1>
+      <p>Đổi số thập phân sang hệ <i>r</i> bằng cách <b>chia liên tiếp cho r</b>. Mỗi lần chia, số dư rơi xuống thành một khối của tháp. Khi thương bằng 0, bạn phải chọn <b>hướng đọc</b> các khối để ra kết quả.</p>
+      <p class="muted">Đây là chỗ nhiều bạn sai nhất. Hãy nghĩ xem số dư <i>đầu tiên</i> là chữ số ở hàng nào.</p>
+      <label class="row" style="font-size:.95rem"><input type="checkbox" id="opt-auto"> Tự tính thương giúp tôi (chỉ nhập số dư)</label>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+      </div>
+
+      <div class="card">
+        <div class="task" id="task"></div>
+        <div class="ladder-wrap">
+          <div class="ladder" id="ladder">
+            <div class="ladder-head"><span>Phép chia</span><span>Số dư</span></div>
+          </div>
+        </div>
+
+        <div class="read-phase" id="read-phase" hidden>
+          <p><b>Thương đã bằng 0.</b> Đọc các khối số dư theo hướng nào để ra kết quả?</p>
+          <div class="row" style="justify-content:center">
+            <button class="btn lg ghost dir" data-dir="up">⬆ Đọc từ dưới lên</button>
+            <button class="btn lg ghost dir" data-dir="down">⬇ Đọc từ trên xuống</button>
+          </div>
+        </div>
+
+        <div class="result" id="result" hidden></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end">
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Ở mỗi dòng, nhập <b>thương</b> (phần nguyên của phép chia) và <b>số dư</b>, rồi nhấn <kbd>Enter</kbd>.</li>
+      <li>Với hệ 16, số dư từ 10 đến 15 viết là A–F. Bạn có thể gõ <code>11</code> hoặc <code>B</code>.</li>
+      <li>Thương của dòng này là số bị chia của dòng sau. Dừng khi thương bằng 0.</li>
+      <li>Cuối cùng, chọn hướng đọc các khối số dư. Chọn sai, game sẽ cho bạn thấy con số đọc ra khác số ban đầu ra sao.</li>
+      <li>Điểm: +5 mỗi dòng đúng ngay lần đầu, +15 nếu chọn đúng hướng đọc ngay lần đầu.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

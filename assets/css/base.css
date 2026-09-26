@@ -1,0 +1,244 @@
+/* ==========================================================================
+   base.css — giao diện dùng chung cho trang chủ và mọi game.
+   Màu sắc khai báo bằng token trên :root, tự đổi theo chế độ sáng/tối.
+   ========================================================================== */
+
+:root {
+  --bg: #f5f6fb;
+  --surface: #ffffff;
+  --surface-2: #eef0f7;
+  --text: #1b1f2e;
+  --muted: #5b6278;
+  --border: #dce0eb;
+  --accent: #4f46e5;
+  --accent-strong: #4338ca;
+  --accent-soft: #e5e7ff;
+  --on-accent: #ffffff;
+  --good: #15803d;
+  --good-soft: #dcfce7;
+  --bad: #c02626;
+  --bad-soft: #fee2e2;
+  --warn: #b45309;
+  --warn-soft: #fef3c7;
+  --bit-on: #f59e0b;
+  --bit-on-glow: rgb(245 158 11 / 0.45);
+  --bit-off: #cfd5e3;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 2px rgb(15 20 40 / 0.05), 0 6px 20px rgb(15 20 40 / 0.06);
+  --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1120;
+    --surface: #161a2c;
+    --surface-2: #1f253b;
+    --text: #e7eaf4;
+    --muted: #9aa2bc;
+    --border: #2b3250;
+    --accent: #8b93ff;
+    --accent-strong: #a5abff;
+    --accent-soft: #262b55;
+    --on-accent: #0e1120;
+    --good: #4ade80;
+    --good-soft: #13351f;
+    --bad: #f87171;
+    --bad-soft: #421a1a;
+    --warn: #fbbf24;
+    --warn-soft: #3d2f0e;
+    --bit-on: #fbbf24;
+    --bit-on-glow: rgb(251 191 36 / 0.4);
+    --bit-off: #384060;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 20px rgb(0 0 0 / 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1120;
+  --surface: #161a2c;
+  --surface-2: #1f253b;
+  --text: #e7eaf4;
+  --muted: #9aa2bc;
+  --border: #2b3250;
+  --accent: #8b93ff;
+  --accent-strong: #a5abff;
+  --accent-soft: #262b55;
+  --on-accent: #0e1120;
+  --good: #4ade80;
+  --good-soft: #13351f;
+  --bad: #f87171;
+  --bad-soft: #421a1a;
+  --warn: #fbbf24;
+  --warn-soft: #3d2f0e;
+  --bit-on: #fbbf24;
+  --bit-on-glow: rgb(251 191 36 / 0.4);
+  --bit-off: #384060;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 20px rgb(0 0 0 / 0.25);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0 0 0.5em; }
+h1 { font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0 0 0.8em; }
+a { color: var(--accent); }
+code, .mono, kbd { font-family: var(--mono); font-variant-ligatures: none; }
+code { background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 5px; font-size: 0.92em; }
+sub { font-size: 0.7em; }
+[hidden] { display: none !important; }
+
+.container { width: 100%; max-width: 980px; margin: 0 auto; padding: 0 16px; }
+.muted { color: var(--muted); }
+.center { text-align: center; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.stack > * + * { margin-top: 12px; }
+.spacer { flex: 1; }
+
+/* ---------- Header chung (do common.js chèn vào) ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.site-header .container { display: flex; align-items: center; gap: 12px; min-height: 56px; }
+.site-header .back { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 0.92rem; white-space: nowrap; }
+.site-header .back:hover { color: var(--accent); }
+.site-header .title { font-weight: 800; font-size: 1.05rem; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site-header .title small { font-weight: 500; color: var(--muted); margin-left: 6px; font-size: 0.82rem; }
+
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 700; cursor: pointer; display: grid; place-items: center;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Card, nút, badge ---------- */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px; border-radius: 999px; border: 1px solid transparent;
+  background: var(--accent); color: var(--on-accent);
+  font: inherit; font-weight: 700; cursor: pointer; text-decoration: none;
+  transition: transform 0.08s, background 0.15s;
+  min-height: 42px;
+}
+.btn:hover { background: var(--accent-strong); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn.good { background: var(--good); color: var(--on-accent); }
+.btn.bad { background: var(--bad); color: var(--on-accent); }
+.btn.lg { padding: 14px 26px; font-size: 1.05rem; }
+.btn.sm { padding: 6px 12px; min-height: 34px; font-size: 0.9rem; }
+
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); font-size: 0.78rem; font-weight: 700;
+}
+.badge.good { background: var(--good-soft); color: var(--good); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+
+kbd {
+  font-family: var(--mono); font-size: 0.8em; padding: 1px 6px; border-radius: 5px;
+  border: 1px solid var(--border); border-bottom-width: 2px; background: var(--surface);
+}
+
+/* ---------- Bố cục trang game ---------- */
+.game-main { padding-top: 20px; padding-bottom: 48px; }
+
+.hud { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.hud .stat {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+  padding: 5px 14px; font-size: 0.9rem; font-weight: 600;
+}
+.hud .stat b { font-family: var(--mono); color: var(--accent); margin-left: 4px; }
+
+.timer-bar { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+.timer-bar > span { display: block; height: 100%; background: var(--accent); width: 100%; transition: width 0.25s linear, background 0.3s; }
+.timer-bar.low > span { background: var(--bad); }
+
+.feedback {
+  border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 14px;
+  background: var(--surface-2); min-height: 44px;
+}
+.feedback.good { background: var(--good-soft); color: var(--good); }
+.feedback.bad { background: var(--bad-soft); color: var(--bad); }
+.feedback.warn { background: var(--warn-soft); color: var(--warn); }
+.feedback .detail { color: var(--text); font-weight: 400; display: block; margin-top: 4px; }
+
+/* Màn hình bắt đầu: danh sách level */
+.level-list { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); margin-top: 16px; }
+.level-btn {
+  text-align: left; padding: 14px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 2px;
+}
+.level-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.level-btn .lv { font-size: 0.78rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+.level-btn .nm { font-weight: 700; }
+.level-btn .ds { font-size: 0.85rem; color: var(--muted); }
+.level-btn .best { font-size: 0.8rem; color: var(--good); font-weight: 600; }
+
+.end-score { font-size: 3rem; font-weight: 800; color: var(--accent); font-family: var(--mono); line-height: 1.1; }
+
+/* ---------- Dialog hướng dẫn ---------- */
+dialog.help {
+  max-width: 560px; width: calc(100% - 32px); border: 1px solid var(--border);
+  border-radius: var(--radius); background: var(--surface); color: var(--text);
+  padding: 22px 24px; box-shadow: var(--shadow);
+}
+dialog.help::backdrop { background: rgb(10 12 25 / 0.5); }
+dialog.help ul { padding-left: 1.2em; }
+dialog.help li { margin-bottom: 4px; }
+
+/* ---------- Toast & confetti ---------- */
+.toast-wrap { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; display: grid; gap: 8px; pointer-events: none; width: max-content; max-width: calc(100% - 32px); }
+.toast {
+  background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 999px;
+  font-weight: 700; box-shadow: var(--shadow); animation: toast-in 0.2s ease-out; text-align: center;
+}
+.toast.good { background: var(--good); color: var(--on-accent); }
+.toast.bad { background: var(--bad); color: var(--on-accent); }
+@keyframes toast-in { from { transform: translateY(10px); opacity: 0; } }
+
+.confetti { position: fixed; top: -12px; width: 9px; height: 14px; z-index: 60; pointer-events: none; border-radius: 2px; animation: confetti-fall linear forwards; }
+@keyframes confetti-fall { to { transform: translate(var(--dx), 105vh) rotate(var(--rot)); } }
+
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.shake { animation: shake 0.35s; }
+@keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.pop { animation: pop 0.3s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media (max-width: 560px) {
+  .card { padding: 16px; }
+  .site-header .title small { display: none; }
+}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IT Games</title>
+  <meta name="description" content="Web game tương tác cho học phần Nhập môn Công nghệ thông tin.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <style>
+    .hero { padding: 40px 0 12px; }
+    .hero p { color: var(--muted); max-width: 640px; }
+    .hero .bits { font-family: var(--mono); color: var(--accent); font-weight: 700; letter-spacing: 0.15em; font-size: 0.85rem; margin-bottom: 8px; }
+    .topic { margin: 28px 0 40px; }
+    .topic-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 8px; }
+    .topic-head h2 { margin: 0; }
+    .topic-head p { margin: 0; color: var(--muted); width: 100%; }
+    .section-title { margin: 22px 0 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; display: flex; gap: 8px; align-items: center; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .game-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; transition: transform 0.12s, border-color 0.12s; }
+    a.game-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .game-card .top { display: flex; align-items: center; gap: 10px; }
+    .game-card .ic { font-size: 1.6rem; width: 44px; height: 44px; display: grid; place-items: center; background: var(--surface-2); border-radius: 12px; flex: none; }
+    .game-card h3 { margin: 0; }
+    .game-card .skill { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+    .game-card p { font-size: 0.92rem; color: var(--muted); margin: 0; flex: 1; }
+    .game-card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; }
+    .game-card.planned { opacity: 0.6; box-shadow: none; border-style: dashed; }
+    .planned-toggle { margin-top: 12px; }
+    footer { border-top: 1px solid var(--border); padding: 20px 0 40px; color: var(--muted); font-size: 0.88rem; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div class="bits">01001001 01010100</div>
+      <h1 id="course">Nhập môn Công nghệ thông tin</h1>
+      <p id="audience">Mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
+      <label class="row muted" style="font-size:.9rem"><input type="checkbox" id="show-planned"> Hiện cả các game sắp ra mắt</label>
+    </section>
+    <div id="topics"></div>
+  </main>
+  <footer>
+    <div class="container">Tiến độ và kỷ lục được lưu ngay trên trình duyệt của bạn, không gửi đi đâu cả.</div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script>
+    (function () {
+      const cat = window.CATALOG;
+      const root = document.getElementById("topics");
+      const toggle = document.getElementById("show-planned");
+      document.getElementById("course").textContent = cat.course;
+
+      function progressText(game) {
+        const p = G.progress.get(game.id);
+        const done = Object.keys(p.levels).length;
+        if (!done) return "";
+        return p.total ? `✓ ${done}/${p.total} level` : "✓ Đã chơi";
+      }
+
+      function card(game) {
+        const ready = game.status === "ready";
+        const inner = [
+          G.el("div", { class: "top" }, [
+            G.el("div", { class: "ic", text: game.icon || "🎮" }),
+            G.el("div", {}, [G.el("h3", { text: game.title }), G.el("div", { class: "skill", text: game.skill || "" })]),
+          ]),
+          G.el("p", { text: game.desc || "" }),
+          G.el("div", { class: "foot" }, [
+            ready ? G.el("span", { class: "badge good", text: progressText(game) || "Chơi ngay" })
+                  : G.el("span", { class: "badge warn", text: "Sắp có" }),
+          ]),
+        ];
+        return ready
+          ? G.el("a", { class: "card game-card", href: game.path }, inner)
+          : G.el("div", { class: "card game-card planned" }, inner);
+      }
+
+      function render() {
+        const showPlanned = toggle.checked;
+        G.store.set("itgames:showPlanned", showPlanned);
+        root.innerHTML = "";
+        for (const topic of cat.topics) {
+          const t = G.el("section", { class: "topic" }, [
+            G.el("div", { class: "topic-head" }, [
+              topic.label ? G.el("span", { class: "badge", text: topic.label }) : null,
+              G.el("h2", { text: topic.title }),
+              G.el("p", { text: topic.summary || "" }),
+            ]),
+          ]);
+          for (const sec of topic.sections) {
+            const games = sec.games.filter((g) => showPlanned || g.status === "ready");
+            const readyCount = sec.games.filter((g) => g.status === "ready").length;
+            if (!games.length) continue;
+            t.append(G.el("div", { class: "section-title" }, [
+              document.createTextNode(sec.title),
+              G.el("span", { class: "badge", text: `${readyCount}/${sec.games.length}` }),
+            ]));
+            t.append(G.el("div", { class: "grid" }, games.map(card)));
+          }
+          root.append(t);
+        }
+      }
+
+      toggle.checked = G.store.get("itgames:showPlanned", false);
+      toggle.addEventListener("change", render);
+      render();
+    })();
+  </script>
+</body>
+</html>
