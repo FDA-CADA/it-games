@@ -1,19 +1,19 @@
 /* Negate Machine — đổi dấu trong two's complement: Invert rồi +1. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const OPS = {
-    inv: { name: "Invert", sub: "đảo mọi bit", f: (u) => u ^ 0xff },
-    inc: { name: "+1", sub: "cộng 1", f: (u) => (u + 1) & 0xff },
-    dec: { name: "−1", sub: "trừ 1", f: (u) => (u + 255) & 0xff },
-    sgn: { name: "Lật bit dấu", sub: "chỉ đảo bit đầu", f: (u) => u ^ 0x80 },
+    inv: { name: "Invert", sub: L("đảo mọi bit", "flip every bit"), f: (u) => u ^ 0xff },
+    inc: { name: "+1", sub: L("cộng 1", "add 1"), f: (u) => (u + 1) & 0xff },
+    dec: { name: "−1", sub: L("trừ 1", "subtract 1"), f: (u) => (u + 255) & 0xff },
+    sgn: { name: L("Lật bit dấu", "Flip sign bit"), sub: L("chỉ đảo bit đầu", "flip the first bit only"), f: (u) => u ^ 0x80 },
   };
   const LEVELS = [
-    { name: "Lắp máy", desc: "Chọn đúng trạm, đúng thứ tự", kind: "build", rounds: 5 },
-    { name: "Tự vận hành", desc: "Tự bấm từng bit, 30 giây/vòng", kind: "manual", rounds: 5, time: 30 },
-    { name: "Giải mã ngược", desc: "11110110 là số mấy? 20 giây/câu", kind: "decode", rounds: 6, time: 20 },
-    { name: "Tổng lực 90 giây", desc: "Giải mã và mã hóa, càng nhiều càng tốt", kind: "blitz", time: 90 },
+    { name: L("Lắp máy", "Build it"), desc: L("Chọn đúng trạm, đúng thứ tự", "Right stations, right order"), kind: "build", rounds: 5 },
+    { name: L("Tự vận hành", "Run by hand"), desc: L("Tự bấm từng bit, 30 giây/vòng", "Click every bit yourself, 30 s/round"), kind: "manual", rounds: 5, time: 30 },
+    { name: L("Giải mã ngược", "Decode"), desc: L("11110110 là số mấy? 20 giây/câu", "What is 11110110? 20 s/question"), kind: "decode", rounds: 6, time: 20 },
+    { name: L("Tổng lực 90 giây", "90-second all-out"), desc: L("Giải mã và mã hóa, càng nhiều càng tốt", "Decode and encode as many as you can"), kind: "blitz", time: 90 },
   ];
 
   const S = { lv: 0, level: null, round: 0, score: 0, correct: 0, streak: 0, done: false, timer: null,
@@ -66,9 +66,9 @@
     else if (S.round === 5) x = 0;                        // trường hợp đặc biệt
     else x = G.randInt(3, 100);
     S.inU = u8(x); S.target = u8(-x); S.pipe = [];
-    $("#task").innerHTML = `Biến <span class="num">${fmt(x)}</span> thành <span class="num">${fmt(-x)}</span>`
-      + (S.round === 4 ? `<div class="muted" style="font-weight:500;font-size:.9rem">Đầu vào là số âm. Máy cũ còn dùng được không?</div>` : "")
-      + (S.round === 5 ? `<div class="muted" style="font-weight:500;font-size:.9rem">−0 = 0. Máy có giữ đúng như vậy không?</div>` : "");
+    $("#task").innerHTML = L(`Biến <span class="num">${fmt(x)}</span> thành <span class="num">${fmt(-x)}</span>`, `Turn <span class="num">${fmt(x)}</span> into <span class="num">${fmt(-x)}</span>`)
+      + (S.round === 4 ? `<div class="muted" style="font-weight:500;font-size:.9rem">${L("Đầu vào là số âm. Máy cũ còn dùng được không?", "The input is negative. Does the same machine still work?")}</div>` : "")
+      + (S.round === 5 ? `<div class="muted" style="font-weight:500;font-size:.9rem">${L("−0 = 0. Máy có giữ đúng như vậy không?", "−0 = 0. Does the machine keep it that way?")}</div>` : "");
     $("#trace").innerHTML = "";
     const st = $("#stations");
     st.innerHTML = "";
@@ -76,20 +76,20 @@
       type: "button", class: "station", html: `${OPS[k].name}<small>${OPS[k].sub}</small>`,
       onclick: () => { if (S.running || S.done || S.pipe.length >= 3) return; S.pipe.push(k); G.sound.play("tick"); renderBelt(); },
     })));
-    $("#btn-action").textContent = "▶ Chạy";
-    setFeedback("Lắp các trạm lên băng chuyền rồi bấm <b>▶ Chạy</b>.");
+    $("#btn-action").textContent = L("▶ Chạy", "▶ Run");
+    setFeedback(L("Lắp các trạm lên băng chuyền rồi bấm <b>▶ Chạy</b>.", "Put stations on the belt, then press <b>▶ Run</b>."));
     renderBelt();
   }
 
   function renderBelt(outU = null) {
     const belt = $("#belt");
     belt.innerHTML = "";
-    belt.append(el("div", { class: "io", html: `${G.bits(S.inU)}<small>vào: ${fmt(sval(S.inU))}</small>` }));
+    belt.append(el("div", { class: "io", html: `${G.bits(S.inU)}<small>${L("vào", "in")}: ${fmt(sval(S.inU))}</small>` }));
     belt.append(el("span", { class: "arrow", text: "→" }));
-    if (!S.pipe.length) belt.append(el("span", { class: "empty", text: "(chưa có trạm)" }));
+    if (!S.pipe.length) belt.append(el("span", { class: "empty", text: L("(chưa có trạm)", "(no stations yet)") }));
     S.pipe.forEach((k, i) => {
       belt.append(el("button", {
-        type: "button", class: "station", "data-i": i, html: `${OPS[k].name}<small>bấm để gỡ</small>`,
+        type: "button", class: "station", "data-i": i, html: `${OPS[k].name}<small>${L("bấm để gỡ", "tap to remove")}</small>`,
         onclick: () => { if (S.running || S.done) return; S.pipe.splice(i, 1); renderBelt(); },
       }));
       belt.append(el("span", { class: "arrow", text: "→" }));
@@ -99,7 +99,7 @@
 
   async function runBuild() {
     if (S.running || S.done) return;
-    if (!S.pipe.length) { setFeedback("Băng chuyền đang trống!", "warn"); return; }
+    if (!S.pipe.length) { setFeedback(L("Băng chuyền đang trống!", "The belt is empty!"), "warn"); return; }
     S.running = true;
     let u = S.inU;
     const parts = [G.bits(u)];
@@ -123,22 +123,22 @@
       S.score += gained; if (!S.tried) S.correct++;
       $("#hud-score").textContent = S.score;
       G.sound.play("good");
-      const alt = S.pipe.join() === "dec,inv" ? " Cách khác cũng đúng: trừ 1 rồi mới đảo bit!" : "";
+      const alt = S.pipe.join() === "dec,inv" ? L(" Cách khác cũng đúng: trừ 1 rồi mới đảo bit!", " Another valid way: subtract 1, then flip the bits!") : "";
       let extra = "";
-      if (S.round === 4) extra = " Cùng một máy vừa đổi dương thành âm, vừa đổi âm thành dương: đổi dấu hai lần là về chỗ cũ.";
-      if (S.round === 5) extra = " 11111111 + 1 = <s>1</s>00000000: bit nhớ rơi mất, nên −0 vẫn là 0. Two's complement chỉ có một số 0.";
-      setFeedback(`✓ Máy chạy đúng! +${gained}.${alt}${extra}`, "good");
+      if (S.round === 4) extra = L(" Cùng một máy vừa đổi dương thành âm, vừa đổi âm thành dương: đổi dấu hai lần là về chỗ cũ.", " The same machine turns positives into negatives and negatives into positives: negating twice brings you back.");
+      if (S.round === 5) extra = L(" 11111111 + 1 = <s>1</s>00000000: bit nhớ rơi mất, nên −0 vẫn là 0. Two's complement chỉ có một số 0.", " 11111111 + 1 = <s>1</s>00000000: the carry falls off, so −0 is still 0. Two's complement has only one zero.");
+      setFeedback(`✓ ${L("Máy chạy đúng!", "The machine works!")} +${gained}.${alt}${extra}`, "good");
       $("#btn-action").hidden = true;
       $("#btn-next").hidden = false;
       $("#btn-next").focus();
     } else {
       S.tried = true;
       G.sound.play("bad");
-      let why = `Máy ra ${fmt(sval(u))}, nhưng cần ${fmt(sval(S.target))}.`;
-      if (u === (S.inU ^ 0x80)) why += " Chỉ lật bit dấu là cách của <b>sign-and-magnitude</b>, không dùng được với two's complement.";
-      else if (u === (S.inU ^ 0xff)) why += " Chỉ đảo bit mới ra <b>one's complement</b> (luôn thiếu 1 so với đáp án).";
-      else if (S.pipe.join() === "inc,inv") why += " Thứ tự sai: phải đảo bit <b>trước</b>, cộng 1 <b>sau</b>.";
-      setFeedback(`✗ ${why} Sửa băng chuyền rồi chạy lại.`, "bad");
+      let why = L(`Máy ra ${fmt(sval(u))}, nhưng cần ${fmt(sval(S.target))}.`, `The machine produced ${fmt(sval(u))}, but ${fmt(sval(S.target))} is needed.`);
+      if (u === (S.inU ^ 0x80)) why += L(" Chỉ lật bit dấu là cách của <b>sign-and-magnitude</b>, không dùng được với two's complement.", " Flipping only the sign bit is the <b>sign-and-magnitude</b> way, and it does not work in two's complement.");
+      else if (u === (S.inU ^ 0xff)) why += L(" Chỉ đảo bit mới ra <b>one's complement</b> (luôn thiếu 1 so với đáp án).", " Flipping the bits alone gives <b>one's complement</b> (always 1 short of the answer).");
+      else if (S.pipe.join() === "inc,inv") why += L(" Thứ tự sai: phải đảo bit <b>trước</b>, cộng 1 <b>sau</b>.", " Wrong order: flip the bits <b>first</b>, add 1 <b>after</b>.");
+      setFeedback(`✗ ${why} ${L("Sửa băng chuyền rồi chạy lại.", "Fix the belt and run again.")}`, "bad");
     }
   }
 
@@ -146,22 +146,22 @@
   function roundManual() {
     const x = G.randInt(1, 127);
     S.inU = x; S.target = u8(-x); S.stage = 1; S.cur = x;
-    $("#task").innerHTML = `Tự tay biến <span class="num">${x}</span> thành <span class="num">−${x}</span>`;
-    $("#manual-trace").innerHTML = `Vào: ${G.bits(x)} = ${x}`;
+    $("#task").innerHTML = L(`Tự tay biến <span class="num">${x}</span> thành <span class="num">−${x}</span>`, `By hand, turn <span class="num">${x}</span> into <span class="num">−${x}</span>`);
+    $("#manual-trace").innerHTML = `${L("Vào", "In")}: ${G.bits(x)} = ${x}`;
     renderManual();
   }
 
   function renderManual(errs = []) {
     $("#stage-label").innerHTML = S.stage === 1
-      ? `<span class="pill">Trạm 1: Invert</span> bấm để đảo <b>từng</b> bit`
-      : `<span class="pill done">✓ Invert</span><span class="pill">Trạm 2: +1</span> bấm các bit để ra kết quả cộng 1`;
+      ? L(`<span class="pill">Trạm 1: Invert</span> bấm để đảo <b>từng</b> bit`, `<span class="pill">Station 1: Invert</span> click to flip <b>each</b> bit`)
+      : L(`<span class="pill done">✓ Invert</span><span class="pill">Trạm 2: +1</span> bấm các bit để ra kết quả cộng 1`, `<span class="pill done">✓ Invert</span><span class="pill">Station 2: +1</span> click bits to make the result of adding 1`);
     const box = $("#manual-byte");
     box.innerHTML = "";
     [...G.bits(S.cur)].forEach((b, i) => box.append(el("button", {
       type: "button", class: "b" + (b === "1" ? " one" : "") + (errs.includes(i) ? " err" : ""), text: b, "aria-label": `Bit ${7 - i}`,
       onclick: () => { if (S.done) return; S.cur ^= 1 << (7 - i); G.sound.play("tick"); renderManual(); },
     })));
-    $("#btn-action").textContent = S.stage === 1 ? "Xong trạm Invert →" : "Xong trạm +1 ✓";
+    $("#btn-action").textContent = S.stage === 1 ? L("Xong trạm Invert →", "Invert done →") : L("Xong trạm +1 ✓", "+1 done ✓");
   }
 
   function checkManual() {
@@ -172,7 +172,7 @@
       if (S.stage === 1) {
         S.stage = 2;
         $("#manual-trace").innerHTML += ` <span class="muted">→Invert→</span> ${G.bits(want)}`;
-        setFeedback("✓ Đảo bit xong. Giờ cộng 1: bắt đầu từ bit phải nhất, gặp 1 thì thành 0 và nhớ sang trái, gặp 0 thì thành 1 và dừng.", "good");
+        setFeedback(L("✓ Đảo bit xong. Giờ cộng 1: bắt đầu từ bit phải nhất, gặp 1 thì thành 0 và nhớ sang trái, gặp 0 thì thành 1 và dừng.", "✓ Bits flipped. Now add 1: start at the rightmost bit; a 1 becomes 0 and carries left, a 0 becomes 1 and you stop."), "good");
         renderManual();
         return;
       }
@@ -182,7 +182,7 @@
       S.score += gained; S.correct++;
       $("#hud-score").textContent = S.score;
       $("#manual-trace").innerHTML += ` <span class="muted">→+1→</span> ${G.bits(want)} = <span class="ok">−${S.inU}</span>`;
-      setFeedback(`✓ Máy chạy chuẩn! +${gained}`, "good");
+      setFeedback(`✓ ${L("Máy chạy chuẩn!", "Perfect run!")} +${gained}`, "good");
       $("#btn-action").hidden = true;
       $("#btn-next").hidden = false;
       $("#btn-next").focus();
@@ -191,8 +191,8 @@
       const errs = [...got].map((b, i) => (b !== w[i] ? i : -1)).filter((i) => i >= 0);
       G.sound.play("bad");
       renderManual(errs);
-      setFeedback(S.stage === 1 ? `✗ Còn ${errs.length} bit chưa đảo đúng (tô đỏ). Invert là đảo <b>tất cả</b> 8 bit.`
-        : `✗ Kết quả cộng 1 chưa đúng ở ${errs.length} bit (tô đỏ). Nhớ xử lý phần nhớ từ phải sang trái.`, "bad");
+      setFeedback(S.stage === 1 ? L(`✗ Còn ${errs.length} bit chưa đảo đúng (tô đỏ). Invert là đảo <b>tất cả</b> 8 bit.`, `✗ ${errs.length} bits are not flipped correctly (in red). Invert flips <b>all</b> 8 bits.`)
+        : L(`✗ Kết quả cộng 1 chưa đúng ở ${errs.length} bit (tô đỏ). Nhớ xử lý phần nhớ từ phải sang trái.`, `✗ The +1 result is wrong in ${errs.length} bits (in red). Handle the carries from right to left.`), "bad");
     }
   }
 
@@ -209,18 +209,18 @@
     if (encode) {
       const x = -G.randInt(1, 128);
       S.task = { type: "enc", x, want: G.bits(x) };
-      $("#task").innerHTML = `Viết <span class="num">${fmt(x)}</span> dạng two's complement 8 bit`;
+      $("#task").innerHTML = L(`Viết <span class="num">${fmt(x)}</span> dạng two's complement 8 bit`, `Write <span class="num">${fmt(x)}</span> in 8-bit two's complement`);
       $("#type-byte").innerHTML = "";
-      inp.placeholder = "8 bit, vd 11110110"; inp.maxLength = 8; inp.inputMode = "numeric";
+      inp.placeholder = L("8 bit, vd 11110110", "8 bits, e.g. 11110110"); inp.maxLength = 8; inp.inputMode = "numeric";
     } else {
       S.task = { type: "dec", u, want: sval(u) };
-      $("#task").innerHTML = `Pattern two's complement này là số thập phân nào?`;
+      $("#task").innerHTML = L("Pattern two's complement này là số thập phân nào?", "Which decimal number is this two's complement pattern?");
       $("#type-byte").innerHTML = "";
       [...G.bits(u)].forEach((b) => $("#type-byte").append(el("span", { class: "b" + (b === "1" ? " one" : ""), text: b })));
-      inp.placeholder = "vd −10"; inp.maxLength = 5; inp.inputMode = "text";
+      inp.placeholder = L("vd −10", "e.g. −10"); inp.maxLength = 5; inp.inputMode = "text";
     }
-    $("#btn-action").textContent = "Kiểm tra";
-    setFeedback(S.task.type === "dec" ? "Bit đầu là 1 thì số âm: chạy qua máy (Invert, +1) để tìm độ lớn." : "Viết +x dạng nhị phân, rồi Invert và +1.");
+    $("#btn-action").textContent = L("Kiểm tra", "Check");
+    setFeedback(S.task.type === "dec" ? L("Bit đầu là 1 thì số âm: chạy qua máy (Invert, +1) để tìm độ lớn.", "A leading 1 means negative: run it through the machine (Invert, +1) to find the magnitude.") : L("Viết +x dạng nhị phân, rồi Invert và +1.", "Write +x in binary, then Invert and +1."));
     inp.focus();
   }
 
@@ -230,21 +230,21 @@
     const t = S.task;
     let ok, why;
     if (t.type === "dec") {
-      if (!/^-?\d+$/.test(raw)) { setFeedback("Hãy gõ một số nguyên, ví dụ −10.", "warn"); return; }
+      if (!/^-?\d+$/.test(raw)) { setFeedback(L("Hãy gõ một số nguyên, ví dụ −10.", "Type an integer, e.g. −10."), "warn"); return; }
       const v = parseInt(raw, 10);
       ok = v === t.want;
       const b = G.bits(t.u);
-      if (b[0] === "0") why = `Bit đầu là 0 nên là số dương: ${b} = ${t.want}.`;
+      if (b[0] === "0") why = L(`Bit đầu là 0 nên là số dương: ${b} = ${t.want}.`, `The first bit is 0, so it is positive: ${b} = ${t.want}.`);
       else {
         const inv = t.u ^ 0xff, mag = (inv + 1) & 0xff;
-        why = `Bit đầu 1 → số âm. Invert: ${G.bits(inv)}, +1: ${G.bits(mag)} = ${mag} → <b>${fmt(t.want)}</b>.`
-          + (v === t.u ? " (Bạn đã đọc như số unsigned.)" : v === -(t.u & 0x7f) ? " (Bạn đã đọc theo sign-and-magnitude.)" : "");
+        why = L(`Bit đầu 1 → số âm. Invert: ${G.bits(inv)}, +1: ${G.bits(mag)} = ${mag} → <b>${fmt(t.want)}</b>.`, `First bit 1 → negative. Invert: ${G.bits(inv)}, +1: ${G.bits(mag)} = ${mag} → <b>${fmt(t.want)}</b>.`)
+          + (v === t.u ? L(" (Bạn đã đọc như số unsigned.)", " (You read it as unsigned.)") : v === -(t.u & 0x7f) ? L(" (Bạn đã đọc theo sign-and-magnitude.)", " (You read it as sign-and-magnitude.)") : "");
       }
     } else {
-      if (!/^[01]{8}$/.test(raw)) { setFeedback("Hãy gõ đúng 8 bit 0/1.", "warn"); return; }
+      if (!/^[01]{8}$/.test(raw)) { setFeedback(L("Hãy gõ đúng 8 bit 0/1.", "Type exactly 8 bits of 0/1."), "warn"); return; }
       ok = raw === t.want;
       const pos = G.bits(-t.x), inv = G.bits(-t.x ^ 0xff);
-      why = t.x === -128 ? "−128 = 10000000 (đặc biệt: +128 không có trong 8 bit, nhưng −128 thì có)."
+      why = t.x === -128 ? L("−128 = 10000000 (đặc biệt: +128 không có trong 8 bit, nhưng −128 thì có).", "−128 = 10000000 (special: +128 does not fit in 8 bits, but −128 does).")
         : `+${-t.x} = ${pos}, Invert: ${inv}, +1: <b>${t.want}</b>.`;
     }
     S.done = true;
@@ -254,11 +254,11 @@
       const gained = S.level.kind === "blitz" ? 10 + 2 * (S.streak - 1) : 10 + Math.ceil(S.timer.left);
       S.score += gained; S.correct++;
       G.sound.play("good");
-      setFeedback(`✓ Đúng! +${gained} <span class="detail">${why}</span>`, "good");
+      setFeedback(`✓ ${L("Đúng!", "Correct!")} +${gained} <span class="detail">${why}</span>`, "good");
     } else {
       S.streak = 0;
       G.sound.play("bad");
-      setFeedback(`✗ Chưa đúng. <span class="detail">${why}</span>`, "bad");
+      setFeedback(`✗ ${L("Chưa đúng.", "Not quite.")} <span class="detail">${why}</span>`, "bad");
     }
     $("#hud-score").textContent = S.score;
     $("#btn-action").hidden = true;
@@ -270,8 +270,8 @@
     if (S.done) return;
     S.done = true;
     G.sound.play("bad");
-    if (S.level.kind === "manual") setFeedback(`⏰ Hết giờ! Đáp án: ${G.bits(S.inU)} → Invert → ${G.bits(S.inU ^ 0xff)} → +1 → <b>${G.bits(S.target)}</b>`, "bad");
-    else setFeedback(`⏰ Hết giờ! ${G.bits(S.task.u)} = <b>${fmt(S.task.want)}</b>`, "bad");
+    if (S.level.kind === "manual") setFeedback(`⏰ ${L("Hết giờ! Đáp án:", "Time's up! Answer:")} ${G.bits(S.inU)} → Invert → ${G.bits(S.inU ^ 0xff)} → +1 → <b>${G.bits(S.target)}</b>`, "bad");
+    else setFeedback(`⏰ ${L("Hết giờ!", "Time's up!")} ${G.bits(S.task.u)} = <b>${fmt(S.task.want)}</b>`, "bad");
     $("#btn-action").hidden = true;
     $("#btn-next").hidden = false;
     $("#btn-next").focus();
@@ -292,8 +292,8 @@
     $("#end-score").textContent = S.score;
     const blitz = S.level.kind === "blitz";
     const all = !blitz && S.correct === S.level.rounds;
-    $("#end-title").textContent = blitz ? "Hết 90 giây!" : all ? "Kỹ sư băng chuyền! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = (blitz ? `Làm đúng ${S.correct} câu.` : `Đúng ngay lần đầu ${S.correct}/${S.level.rounds} vòng.`) + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = blitz ? L("Hết 90 giây!", "90 seconds up!") : all ? L("Kỹ sư băng chuyền! 🎉", "Conveyor engineer! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = (blitz ? L(`Làm đúng ${S.correct} câu.`, `${S.correct} correct answers.`) : L(`Đúng ngay lần đầu ${S.correct}/${S.level.rounds} vòng.`, `${S.correct}/${S.level.rounds} rounds right on the first try.`)) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all || (blitz && S.correct >= 10)) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

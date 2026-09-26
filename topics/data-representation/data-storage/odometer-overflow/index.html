@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,66 +18,75 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🚗 Odometer Overflow</h1>
-      <p>Đồng hồ công-tơ-mét của chiếc xe này chỉ có <b>4 chữ số nhị phân</b>, nên đếm được từ 0000 đến 1111 (0 đến 15). Chạy quá 15 km thì chuyện gì xảy ra?</p>
-      <p class="muted">Máy tính cũng vậy: số nguyên không dấu <i>n</i> bit chỉ chứa được 0 … 2<sup>n</sup> − 1. Hãy <b>đặt cược</b> kết quả trước khi cho xe chạy.</p>
+      <p data-lang="vi">Đồng hồ công-tơ-mét của chiếc xe này chỉ có <b>4 chữ số nhị phân</b>, nên đếm được từ 0000 đến 1111 (0 đến 15). Chạy quá 15 km thì chuyện gì xảy ra?</p>
+      <p data-lang="en">This car's odometer has only <b>4 binary digits</b>, so it counts from 0000 to 1111 (0 to 15). What happens after 15 km?</p>
+      <p class="muted" data-lang="vi">Máy tính cũng vậy: số nguyên không dấu <i>n</i> bit chỉ chứa được 0 … 2<sup>n</sup> − 1. Hãy <b>đặt cược</b> kết quả trước khi cho xe chạy.</p>
+      <p class="muted" data-lang="en">Computers work the same way: an <i>n</i>-bit unsigned integer only holds 0 … 2<sup>n</sup> − 1. <b>Place your bet</b> on the result before the car drives.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Chuyến<b id="hud-round">1/6</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat">Chuỗi thắng<b id="hud-streak">0</b></span>
+        <span class="stat"><span data-en="Trip">Chuyến</span><b id="hud-round">1/6</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Win streak">Chuỗi thắng</span><b id="hud-streak">0</b></span>
       </div>
 
       <div class="card">
         <div class="task" id="task"></div>
 
         <div class="dash">
-          <div class="carry" id="carry" title="Bit nhớ tràn ra ngoài"><span class="lamp"></span><small>carry</small></div>
+          <div class="carry" id="carry" title="Bit nhớ tràn ra ngoài" data-en-title="Carry bit falling off the end"><span class="lamp"></span><small>carry</small></div>
           <div class="odo mono" id="odo"></div>
           <div class="odo-dec mono">= <b id="odo-dec">0</b></div>
         </div>
         <div class="road" aria-hidden="true"><span class="car" id="car">🚗</span></div>
 
         <div class="bet" id="bet">
-          <p class="muted" style="margin:0 0 8px">Đặt cược: đồng hồ sẽ hiện số (thập phân) nào?</p>
+          <p class="muted" style="margin:0 0 8px" data-en="Your bet: which (decimal) number will the odometer show?">Đặt cược: đồng hồ sẽ hiện số (thập phân) nào?</p>
           <div class="opts" id="opts"></div>
           <div class="row typed" id="typed">
-            <input id="guess" class="mono guess" inputmode="numeric" autocomplete="off" placeholder="số thập phân" aria-label="Dự đoán">
-            <button class="btn ghost sm" id="btn-error" type="button">Máy báo lỗi</button>
+            <input id="guess" class="mono guess" inputmode="numeric" autocomplete="off" placeholder="số thập phân" aria-label="Dự đoán" data-en-placeholder="decimal number" data-en-aria="Prediction">
+            <button class="btn ghost sm" id="btn-error" type="button" data-en="Machine raises an error">Máy báo lỗi</button>
           </div>
-          <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-go">🏁 Cho xe chạy</button></div>
+          <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-go" data-en="🏁 Drive">🏁 Cho xe chạy</button></div>
         </div>
 
         <div class="feedback" id="feedback"></div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden>Chuyến tiếp →</button></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden data-en="Next trip →">Chuyến tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Đồng hồ bắt đầu ở số thứ nhất. Xe chạy thêm (hoặc lùi lại) số km bằng số thứ hai.</li>
       <li>Trước khi xe chạy, hãy dự đoán số đồng hồ sẽ hiện, rồi bấm <b>🏁 Cho xe chạy</b> (<kbd>Enter</kbd>).</li>
       <li>Đúng được 10 điểm, cộng thêm 2 điểm cho mỗi lần đúng liên tiếp.</li>
       <li>Đèn <b>carry</b> sáng khi có bit nhớ "rơi" ra khỏi đồng hồ.</li>
     </ul>
-    <p class="muted">Quy tắc: kết quả = (a ± b) mod 2<sup>n</sup>. Máy không báo lỗi, nó chỉ quay vòng.</p>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>The odometer starts at the first number. The car drives forward (or backward) by the second number of km.</li>
+      <li>Before the car moves, predict what the odometer will show, then press <b>🏁 Drive</b> (<kbd>Enter</kbd>).</li>
+      <li>A correct bet earns 10 points, plus 2 for every consecutive win.</li>
+      <li>The <b>carry</b> lamp lights up when a carry bit "falls off" the odometer.</li>
+    </ul>
+    <p class="muted" data-lang="vi">Quy tắc: kết quả = (a ± b) mod 2<sup>n</sup>. Máy không báo lỗi, nó chỉ quay vòng.</p>
+    <p class="muted" data-lang="en">Rule: result = (a ± b) mod 2<sup>n</sup>. The machine raises no error, it just wraps around.</p>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,70 +18,78 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🎨 Hex Color Mixer</h1>
-      <p>Mỗi màu trên web là 3 byte <b>R</b>, <b>G</b>, <b>B</b>, mỗi byte viết bằng 2 chữ số hex (00 → FF, tức 0 → 255). Ví dụ <code>#FF5733</code> trên slide: R = FF = 255, G = 57 = 87, B = 33 = 51.</p>
-      <p class="muted">Chữ số hex bên trái nặng gấp 16 lần chữ số bên phải. Muốn đổi màu nhiều thì chỉnh chữ số bên trái trước.</p>
+      <p data-lang="vi">Mỗi màu trên web là 3 byte <b>R</b>, <b>G</b>, <b>B</b>, mỗi byte viết bằng 2 chữ số hex (00 → FF, tức 0 → 255). Ví dụ <code>#FF5733</code> trên slide: R = FF = 255, G = 57 = 87, B = 33 = 51.</p>
+      <p data-lang="en">Every web colour is 3 bytes <b>R</b>, <b>G</b>, <b>B</b>, each written as 2 hex digits (00 → FF, i.e. 0 → 255). For example <code>#FF5733</code> from the slides: R = FF = 255, G = 57 = 87, B = 33 = 51.</p>
+      <p class="muted" data-lang="vi">Chữ số hex bên trái nặng gấp 16 lần chữ số bên phải. Muốn đổi màu nhiều thì chỉnh chữ số bên trái trước.</p>
+      <p class="muted" data-lang="en">The left hex digit weighs 16 times more than the right one. For big colour changes, adjust the left digit first.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Vòng<b id="hud-round">1/5</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat" id="hud-tries-wrap">Lần kiểm tra<b id="hud-tries">0</b></span>
+        <span class="stat"><span data-en="Round">Vòng</span><b id="hud-round">1/5</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat" id="hud-tries-wrap"><span data-en="Checks">Lần kiểm tra</span><b id="hud-tries">0</b></span>
       </div>
 
       <!-- Chế độ pha màu -->
       <div class="card" id="mix-panel">
         <div class="swatches">
-          <figure><div class="swatch" id="sw-target"></div><figcaption>Màu mẫu</figcaption></figure>
-          <figure><div class="swatch" id="sw-mine"></div><figcaption>Màu của bạn: <span class="mono" id="mine-code">#000000</span></figcaption></figure>
+          <figure><div class="swatch" id="sw-target"></div><figcaption data-en="Target colour">Màu mẫu</figcaption></figure>
+          <figure><div class="swatch" id="sw-mine"></div><figcaption><span data-en="Your colour:">Màu của bạn:</span> <span class="mono" id="mine-code">#000000</span></figcaption></figure>
         </div>
         <div class="meter-wrap">
           <div class="meter"><span id="meter-fill"></span></div>
-          <div class="meter-label">Độ gần: <b id="meter-val">?</b></div>
+          <div class="meter-label"><span data-en="Closeness:">Độ gần:</span> <b id="meter-val">?</b></div>
         </div>
         <div class="channels" id="channels"></div>
         <div class="row" style="margin-top:14px">
-          <label class="hex-input">Gõ trực tiếp <input id="hex-text" class="mono" maxlength="7" spellcheck="false" autocomplete="off" value="#000000"></label>
+          <label class="hex-input"><span data-en="Type directly">Gõ trực tiếp</span> <input id="hex-text" class="mono" maxlength="7" spellcheck="false" autocomplete="off" value="#000000"></label>
           <span class="spacer"></span>
-          <button class="btn" id="btn-check">Kiểm tra</button>
-          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+          <button class="btn" id="btn-check" data-en="Check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden data-en="Next round →">Vòng tiếp →</button>
         </div>
-        <div class="feedback" id="mix-feedback">Chỉnh từng chữ số hex rồi bấm <b>Kiểm tra</b>.</div>
+        <div class="feedback" id="mix-feedback"></div>
       </div>
 
       <!-- Chế độ đọc mã -->
       <div class="card" id="read-panel" hidden>
-        <p class="muted center" style="margin:0">Màu nào có mã này?</p>
+        <p class="muted center" style="margin:0" data-en="Which colour has this code?">Màu nào có mã này?</p>
         <div class="read-code mono" id="read-code">#000000</div>
         <div class="choices" id="choices"></div>
-        <div class="feedback" id="read-feedback">Đọc từng cặp chữ số: RR, GG, BB.</div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-read-next" hidden>Vòng tiếp →</button></div>
+        <div class="feedback" id="read-feedback"></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-read-next" hidden data-en="Next round →">Vòng tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li><b>Pha màu:</b> chỉnh 6 chữ số hex (▲/▼, cuộn chuột, hoặc gõ vào ô) để màu của bạn khớp màu mẫu. Bấm <b>Kiểm tra</b> để xem độ gần và gợi ý tăng/giảm cho từng kênh.</li>
       <li>Càng ít lần kiểm tra, điểm càng cao (tối đa 50 điểm/vòng).</li>
       <li><b>Đọc mã:</b> cho một mã hex, chọn đúng màu trong 4 ô.</li>
       <li>Nhớ: <code>00</code> là tắt hẳn, <code>FF</code> là sáng nhất. <code>#FFFFFF</code> là trắng, <code>#000000</code> là đen.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li><b>Mix:</b> adjust the 6 hex digits (▲/▼, scroll, or type in the box) until your colour matches the sample. Press <b>Check</b> to see how close you are and an up/down hint for each channel.</li>
+      <li>The fewer checks you use, the higher the score (up to 50 points per round).</li>
+      <li><b>Read:</b> given a hex code, pick the matching colour out of 4.</li>
+      <li>Remember: <code>00</code> is fully off, <code>FF</code> is brightest. <code>#FFFFFF</code> is white, <code>#000000</code> is black.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

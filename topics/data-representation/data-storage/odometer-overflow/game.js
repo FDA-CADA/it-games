@@ -1,14 +1,14 @@
 /* Odometer Overflow — số nguyên không dấu n bit quay vòng mod 2^n. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Đặt cược 4-bit", desc: "Chọn 1 trong 4 dự đoán", ns: [4], ops: ["+"], mode: "mc", rounds: 6, first: [11, 9] },
-    { name: "Tự gõ 4-bit", desc: "Gõ số đồng hồ sẽ hiện", ns: [4], ops: ["+"], mode: "type", rounds: 6 },
-    { name: "Một byte", desc: "Đồng hồ 8-bit (0–255)", ns: [8], ops: ["+"], mode: "type", rounds: 6 },
-    { name: "Chạy lùi", desc: "Phép trừ: 3 − 5 ra bao nhiêu?", ns: [4, 8], ops: ["-"], mode: "type", rounds: 6, first: [3, 5] },
-    { name: "Hỗn hợp", desc: "Cộng, trừ, 4 và 8 bit", ns: [4, 8], ops: ["+", "-"], mode: "type", rounds: 8 },
+    { name: L("Đặt cược 4-bit", "4-bit bet"), desc: L("Chọn 1 trong 4 dự đoán", "Pick 1 of 4 predictions"), ns: [4], ops: ["+"], mode: "mc", rounds: 6, first: [11, 9] },
+    { name: L("Tự gõ 4-bit", "4-bit, typed"), desc: L("Gõ số đồng hồ sẽ hiện", "Type what the odometer will show"), ns: [4], ops: ["+"], mode: "type", rounds: 6 },
+    { name: L("Một byte", "One byte"), desc: L("Đồng hồ 8-bit (0–255)", "8-bit odometer (0–255)"), ns: [8], ops: ["+"], mode: "type", rounds: 6 },
+    { name: L("Chạy lùi", "Reverse"), desc: L("Phép trừ: 3 − 5 ra bao nhiêu?", "Subtraction: what is 3 − 5?"), ns: [4, 8], ops: ["-"], mode: "type", rounds: 6, first: [3, 5] },
+    { name: L("Hỗn hợp", "Mixed"), desc: L("Cộng, trừ, 4 và 8 bit", "Add and subtract, 4 and 8 bits"), ns: [4, 8], ops: ["+", "-"], mode: "type", rounds: 8 },
   ];
   const ERR = "err";
 
@@ -48,9 +48,10 @@
     $("#hud-round").textContent = `${S.round}/${S.level.rounds}`;
     $("#hud-score").textContent = S.score;
     $("#hud-streak").textContent = S.streak;
-    const verb = S.op === "+" ? "chạy thêm" : "lùi lại";
-    $("#task").innerHTML = `Đồng hồ <b>${S.n}-bit</b> đang ở <span class="num">${S.a}</span>, xe ${verb} <span class="num">${S.b}</span> km`
-      + `<div class="muted" style="font-size:.95rem;font-weight:500">${S.a} ${S.op === "+" ? "+" : "−"} ${S.b} = ? (đồng hồ chỉ đếm được 0 … ${M() - 1})</div>`;
+    const verb = S.op === "+" ? L("chạy thêm", "drives forward") : L("lùi lại", "reverses");
+    $("#task").innerHTML = L(`Đồng hồ <b>${S.n}-bit</b> đang ở <span class="num">${S.a}</span>, xe ${verb} <span class="num">${S.b}</span> km`,
+      `The <b>${S.n}-bit</b> odometer shows <span class="num">${S.a}</span>, the car ${verb} <span class="num">${S.b}</span> km`)
+      + `<div class="muted" style="font-size:.95rem;font-weight:500">${S.a} ${S.op === "+" ? "+" : "−"} ${S.b} = ? ${L(`(đồng hồ chỉ đếm được 0 … ${M() - 1})`, `(the odometer only counts 0 … ${M() - 1})`)}</div>`;
     buildOdo();
     setOdo(S.a, false);
     $("#carry").classList.remove("on");
@@ -65,7 +66,7 @@
     $("#typed").hidden = mc;
     if (mc) buildOpts();
     else { $("#guess").value = ""; $("#btn-error").classList.remove("sel"); $("#guess").focus(); }
-    setFeedback("Đặt cược xong thì bấm <b>🏁 Cho xe chạy</b>.");
+    setFeedback(L("Đặt cược xong thì bấm <b>🏁 Cho xe chạy</b>.", "Place your bet, then press <b>🏁 Drive</b>."));
   }
 
   function buildOdo() {
@@ -89,8 +90,8 @@
   function buildOpts() {
     const r = result(), t = trueVal(), max = M() - 1;
     const cands = [
-      { v: r }, { v: t, note: "toán học" },
-      S.op === "+" ? { v: max, note: "kẹt ở max" } : { v: 0, note: "kẹt ở 0" },
+      { v: r }, { v: t, note: L("toán học", "maths") },
+      S.op === "+" ? { v: max, note: L("kẹt ở max", "stuck at max") } : { v: 0, note: L("kẹt ở 0", "stuck at 0") },
       { v: ERR }, { v: (r + 1) % M() }, { v: Math.abs(t) % M() },
     ];
     const seen = new Set(), opts = [];
@@ -99,7 +100,7 @@
     box.innerHTML = "";
     G.shuffle(opts).forEach((o) => box.append(el("button", {
       type: "button", class: "opt", "data-v": o.v,
-      html: o.v === ERR ? `<span>⚠️</span><small>Máy báo lỗi</small>` : `<span class="mono">${o.v}</span>`,
+      html: o.v === ERR ? `<span>⚠️</span><small>${L("Máy báo lỗi", "Machine raises an error")}</small>` : `<span class="mono">${o.v}</span>`,
       onclick: (e) => { if (S.running || S.done) return; G.$$(".opt").forEach((b) => b.classList.remove("sel")); e.currentTarget.classList.add("sel"); S.bet = o.v; G.sound.play("tick"); },
     })));
   }
@@ -112,10 +113,10 @@
       else if (/^-?\d+$/.test(raw)) S.bet = parseInt(raw, 10);
       else S.bet = null;
     }
-    if (S.bet == null) { setFeedback("Bạn chưa đặt cược!", "warn"); G.shake($("#bet")); return; }
+    if (S.bet == null) { setFeedback(L("Bạn chưa đặt cược!", "You have not placed a bet!"), "warn"); G.shake($("#bet")); return; }
     S.running = true;
     $("#btn-go").disabled = true;
-    setFeedback(`Xe đang chạy… 🚗💨`);
+    setFeedback(L("Xe đang chạy… 🚗💨", "Driving… 🚗💨"));
     const dir = S.op === "+" ? 1 : -1;
     const delay = Math.max(20, Math.min(220, 2600 / S.b));
     const car = $("#car");
@@ -125,7 +126,7 @@
       const nv = (v + dir + M()) % M();
       if ((dir > 0 && nv === 0) || (dir < 0 && v === 0)) {
         $("#carry").classList.add("on");
-        G.toast(dir > 0 ? `🔄 ${"1".repeat(S.n)} → ${"0".repeat(S.n)}: bit nhớ rơi mất!` : `🔄 ${"0".repeat(S.n)} → ${"1".repeat(S.n)}: phải "mượn" từ hư không!`, "bad", 1800);
+        G.toast(dir > 0 ? `🔄 ${"1".repeat(S.n)} → ${"0".repeat(S.n)}: ${L("bit nhớ rơi mất!", "the carry bit is lost!")}` : `🔄 ${"0".repeat(S.n)} → ${"1".repeat(S.n)}: ${L('phải "mượn" từ hư không!', 'borrowed from nowhere!')}`, "bad", 1800);
         G.sound.play("bad");
       } else if (S.b <= 30) G.sound.play("tick");
       v = nv;
@@ -149,14 +150,14 @@
 
     const sign = S.op === "+" ? "+" : "−";
     let why;
-    if (!wrapped) why = `${S.a} ${sign} ${S.b} = ${t} vẫn nằm trong 0 … ${M() - 1}, không tràn.`;
-    else if (S.op === "+") why = `${S.a} + ${S.b} = ${t} > ${M() - 1}. Cần bit thứ ${S.n + 1} (giá trị ${M()}) nhưng đồng hồ chỉ có ${S.n} bit, nên bit đó rơi mất: ${t} − ${M()} = <b>${r}</b>.`
+    if (!wrapped) why = L(`${S.a} ${sign} ${S.b} = ${t} vẫn nằm trong 0 … ${M() - 1}, không tràn.`, `${S.a} ${sign} ${S.b} = ${t} is still within 0 … ${M() - 1}, no overflow.`);
+    else if (S.op === "+") why = L(`${S.a} + ${S.b} = ${t} > ${M() - 1}. Cần bit thứ ${S.n + 1} (giá trị ${M()}) nhưng đồng hồ chỉ có ${S.n} bit, nên bit đó rơi mất: ${t} − ${M()} = <b>${r}</b>.`, `${S.a} + ${S.b} = ${t} > ${M() - 1}. It needs bit #${S.n + 1} (worth ${M()}) but the odometer has only ${S.n} bits, so that bit is lost: ${t} − ${M()} = <b>${r}</b>.`)
       + `<br><span class="mono">&nbsp;&nbsp;${G.bits(S.a, S.n)}<br>+ ${G.bits(S.b, S.n)}<br>= <s>1</s>${G.bits(r, S.n)}</span>`;
-    else why = `${S.a} − ${S.b} = ${t} < 0. Đồng hồ không có số âm nên lùi qua 0 thì quay về ${M() - 1}: ${t} + ${M()} = <b>${r}</b>.`;
+    else why = L(`${S.a} − ${S.b} = ${t} < 0. Đồng hồ không có số âm nên lùi qua 0 thì quay về ${M() - 1}: ${t} + ${M()} = <b>${r}</b>.`, `${S.a} − ${S.b} = ${t} < 0. The odometer has no negatives, so going below 0 wraps to ${M() - 1}: ${t} + ${M()} = <b>${r}</b>.`);
     let extra = "";
-    if (S.bet === ERR) extra = "<br>Máy tính <b>không báo lỗi</b> khi phép cộng số không dấu bị tràn. Nó lặng lẽ quay vòng, nên bug tràn số rất khó phát hiện.";
-    else if (!right && S.bet === t) extra = "<br>Đó là đáp án của toán học, nhưng đồng hồ không có chỗ chứa nó.";
-    setFeedback(`${right ? "✓ Thắng cược!" : "✗ Thua cược."} Đồng hồ hiện <b>${r}</b>.<span class="detail">${why}${extra}</span>`, right ? "good" : "bad");
+    if (S.bet === ERR) extra = L("<br>Máy tính <b>không báo lỗi</b> khi phép cộng số không dấu bị tràn. Nó lặng lẽ quay vòng, nên bug tràn số rất khó phát hiện.", "<br>The computer <b>raises no error</b> when unsigned addition overflows. It silently wraps around, which is why overflow bugs are so hard to spot.");
+    else if (!right && S.bet === t) extra = L("<br>Đó là đáp án của toán học, nhưng đồng hồ không có chỗ chứa nó.", "<br>That is the mathematical answer, but the odometer has no room for it.");
+    setFeedback(`${right ? L("✓ Thắng cược!", "✓ You won the bet!") : L("✗ Thua cược.", "✗ You lost the bet.")} ${L("Đồng hồ hiện", "The odometer shows")} <b>${r}</b>.<span class="detail">${why}${extra}</span>`, right ? "good" : "bad");
     $("#bet").hidden = true;
     $("#btn-next").hidden = false;
     $("#btn-next").focus();
@@ -167,8 +168,8 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = S.wins === S.level.rounds;
-    $("#end-title").textContent = all ? "Thần cược overflow! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = `Thắng ${S.wins}/${S.level.rounds} lần cược.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = all ? L("Thần cược overflow! 🎉", "Overflow oracle! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = L(`Thắng ${S.wins}/${S.level.rounds} lần cược.`, `Won ${S.wins}/${S.level.rounds} bets.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

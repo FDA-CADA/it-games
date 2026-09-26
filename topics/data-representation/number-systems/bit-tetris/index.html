@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,17 +18,19 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🧩 Bit Tetris</h1>
-      <p>Vì 8 = 2³ và 16 = 2⁴, mỗi chữ số bát phân ứng với đúng <b>3 bit</b>, mỗi chữ số hex ứng với đúng <b>4 bit</b>. Cắt dãy bit đang rơi thành từng nhóm rồi đổi mỗi nhóm thành một chữ số trước khi nó chạm đáy.</p>
-      <p class="muted"><b>Quy tắc vàng:</b> luôn nhóm <b>tính từ dấu chấm</b>. Phần nguyên nhóm từ phải sang trái, phần thập phân nhóm từ trái sang phải, thiếu bit thì thêm số 0 ở phía ngoài cùng.</p>
+      <p data-lang="vi">Vì 8 = 2³ và 16 = 2⁴, mỗi chữ số bát phân ứng với đúng <b>3 bit</b>, mỗi chữ số hex ứng với đúng <b>4 bit</b>. Cắt dãy bit đang rơi thành từng nhóm rồi đổi mỗi nhóm thành một chữ số trước khi nó chạm đáy.</p>
+      <p data-lang="en">Since 8 = 2³ and 16 = 2⁴, every octal digit is exactly <b>3 bits</b> and every hex digit is exactly <b>4 bits</b>. Cut the falling bit string into groups and turn each group into a digit before it hits the bottom.</p>
+      <p class="muted" data-lang="vi"><b>Quy tắc vàng:</b> luôn nhóm <b>tính từ dấu chấm</b>. Phần nguyên nhóm từ phải sang trái, phần thập phân nhóm từ trái sang phải, thiếu bit thì thêm số 0 ở phía ngoài cùng.</p>
+      <p class="muted" data-lang="en"><b>Golden rule:</b> always group <b>starting from the point</b>. The integer part groups right to left, the fraction part groups left to right, and missing bits are padded with 0s on the outside.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Khối<b id="hud-round">1/6</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat">Mạng<b id="hud-lives">❤❤❤</b></span>
+        <span class="stat"><span data-en="Block">Khối</span><b id="hud-round">1/6</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Lives">Mạng</span><b id="hud-lives">❤❤❤</b></span>
       </div>
 
       <div class="card">
@@ -37,37 +40,43 @@
           <div class="pile" id="pile"></div>
         </div>
         <div class="row controls">
-          <button class="btn ghost sm" id="btn-reset">Xóa vết cắt</button>
+          <button class="btn ghost sm" id="btn-reset" data-en="Clear cuts">Xóa vết cắt</button>
           <span class="spacer"></span>
-          <button class="btn" id="btn-action">✂ Cắt</button>
-          <button class="btn" id="btn-next" hidden>Khối tiếp →</button>
+          <button class="btn" id="btn-action" data-en="✂ Cut">✂ Cắt</button>
+          <button class="btn" id="btn-next" hidden data-en="Next block →">Khối tiếp →</button>
         </div>
         <div class="feedback" id="feedback"></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li><b>Bin → Oct/Hex:</b> bấm vào khe giữa hai bit để đặt vết cắt <b>|</b>. Bấm <b>✂ Cắt</b> (<kbd>Enter</kbd>) để kiểm tra. Cắt đúng thì gõ chữ số cho từng nhóm rồi bấm <b>💥 Nổ</b>.</li>
       <li><b>Oct/Hex → Bin:</b> gõ 3 hoặc 4 bit cho từng chữ số rồi bấm <b>💥 Nổ</b>.</li>
       <li>Làm sai thì khối rơi nhanh thêm một đoạn. Khối chạm đáy sẽ bị chất đống và bạn mất một mạng.</li>
       <li>Điểm = 10 + 2 × số nhóm + thưởng thời gian.</li>
     </ul>
-    <p class="muted">Ví dụ: <code>1101011.1</code> → <code>001 101 011 . 100</code> → <code>153.4</code><sub>8</sub></p>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li><b>Bin → Oct/Hex:</b> click the gap between two bits to place a cut <b>|</b>. Press <b>✂ Cut</b> (<kbd>Enter</kbd>) to check. If the cuts are right, type a digit for each group and press <b>💥 Blast</b>.</li>
+      <li><b>Oct/Hex → Bin:</b> type 3 or 4 bits for each digit, then press <b>💥 Blast</b>.</li>
+      <li>Every mistake pushes the block further down. A block that hits the bottom piles up and costs you a life.</li>
+      <li>Score = 10 + 2 × number of groups + time bonus.</li>
+    </ul>
+    <p class="muted"><span data-en="Example:">Ví dụ:</span> <code>1101011.1</code> → <code>001 101 011 . 100</code> → <code>153.4</code><sub>8</sub></p>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

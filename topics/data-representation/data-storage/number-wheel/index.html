@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,17 +18,19 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🎡 Number Wheel</h1>
-      <p>4 bit tạo ra đúng <b>16 pattern</b>, xếp thành một vòng tròn từ <code>0000</code> đến <code>1111</code>. Nhiệm vụ của bạn: gắn đúng giá trị cho từng pattern theo từng cách biểu diễn số nguyên.</p>
-      <p class="muted">Chơi lần lượt các level rồi so sánh hai chế độ ở level cuối: vì sao sign-and-magnitude có "−0", còn two's complement lại lệch về phía âm (−8 … +7)?</p>
+      <p data-lang="vi">4 bit tạo ra đúng <b>16 pattern</b>, xếp thành một vòng tròn từ <code>0000</code> đến <code>1111</code>. Nhiệm vụ của bạn: gắn đúng giá trị cho từng pattern theo từng cách biểu diễn số nguyên.</p>
+      <p data-lang="en">4 bits give exactly <b>16 patterns</b>, arranged on a wheel from <code>0000</code> to <code>1111</code>. Your job: label each pattern with its value under each integer representation.</p>
+      <p class="muted" data-lang="vi">Chơi lần lượt các level rồi so sánh hai chế độ ở level cuối: vì sao sign-and-magnitude có "−0", còn two's complement lại lệch về phía âm (−8 … +7)?</p>
+      <p class="muted" data-lang="en">Play the levels in order, then compare the two schemes in the last level: why does sign-and-magnitude have a "−0", while two's complement leans towards the negatives (−8 … +7)?</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Đã xếp<b id="hud-placed">0/16</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat">Lỗi<b id="hud-miss">0</b></span>
+        <span class="stat"><span data-en="Placed">Đã xếp</span><b id="hud-placed">0/16</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Misses">Lỗi</span><b id="hud-miss">0</b></span>
       </div>
 
       <div class="card" id="build-panel">
@@ -37,10 +40,10 @@
             <div class="hub" id="hub"></div>
           </div>
         </div>
-        <p class="muted center tray-hint">Kéo nhãn vào ô, hoặc chạm nhãn rồi chạm ô.</p>
+        <p class="muted center tray-hint" data-en="Drag a label onto a slot, or tap a label and then a slot.">Kéo nhãn vào ô, hoặc chạm nhãn rồi chạm ô.</p>
         <div class="tray" id="tray"></div>
         <div class="feedback" id="feedback"></div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-finish" hidden>Xem kết quả →</button></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-finish" hidden data-en="See results →">Xem kết quả →</button></div>
       </div>
 
       <div class="card" id="compare-panel" hidden>
@@ -53,32 +56,39 @@
           <div class="q-opts" id="q-opts"></div>
         </div>
         <div class="feedback" id="q-feedback"></div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-q-next" hidden>Câu tiếp →</button></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-q-next" hidden data-en="Next question →">Câu tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li><b>Unsigned:</b> 4 bit là giá trị 0 … 15.</li>
       <li><b>Sign-and-magnitude:</b> bit đầu là dấu (0 = +, 1 = −), 3 bit sau là độ lớn.</li>
       <li><b>Two's complement:</b> bit đầu có trọng số <b>−8</b> thay vì +8. Ví dụ <code>1101</code> = −8 + 4 + 1 = −3.</li>
       <li>Xếp đúng ngay lần đầu +6 điểm, xếp đúng sau khi đã sai +2 điểm.</li>
       <li>Level cuối: hai vòng đặt cạnh nhau, trả lời 6 câu hỏi so sánh (+10 mỗi câu đúng ngay lần đầu).</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li><b>Unsigned:</b> 4 bits hold the values 0 … 15.</li>
+      <li><b>Sign-and-magnitude:</b> the first bit is the sign (0 = +, 1 = −), the other 3 bits are the magnitude.</li>
+      <li><b>Two's complement:</b> the first bit weighs <b>−8</b> instead of +8. For example <code>1101</code> = −8 + 4 + 1 = −3.</li>
+      <li>+6 for a label placed right the first time, +2 if it took more tries.</li>
+      <li>Last level: the two wheels side by side and 6 comparison questions (+10 each when right first time).</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

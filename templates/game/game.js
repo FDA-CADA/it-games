@@ -1,12 +1,12 @@
 /* <Tên game> — <kỹ năng luyện tập>. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G; // L("tiếng Việt", "English") chọn chuỗi theo ngôn ngữ hiện tại
   const GAME_ID = "game-id"; // trùng data-game và catalog.js
 
   const LEVELS = [
-    { name: "Level dễ", desc: "Mô tả ngắn", rounds: 5 },
-    { name: "Level khó", desc: "Mô tả ngắn", rounds: 5 },
+    { name: L("Level dễ", "Easy level"), desc: L("Mô tả ngắn", "Short description"), rounds: 5 },
+    { name: L("Level khó", "Hard level"), desc: L("Mô tả ngắn", "Short description"), rounds: 5 },
   ];
 
   // Toàn bộ trạng thái nằm trong một object để dễ debug
@@ -25,7 +25,7 @@
     $("#hud-round").textContent = `${S.round}/${S.level.rounds}`;
     $("#hud-score").textContent = S.score;
     $("#btn-next").hidden = true;
-    setFeedback("Hướng dẫn cho vòng này…");
+    setFeedback(L("Hướng dẫn cho vòng này…", "Instructions for this round…"));
     // TODO: sinh đề, vẽ khu vực chơi vào #stage
   }
 
@@ -35,10 +35,10 @@
     if (isRight) {
       S.score += 10; S.correct++;
       G.sound.play("good");
-      setFeedback("✓ Đúng! <span class='detail'>Giải thích vì sao đúng.</span>", "good");
+      setFeedback(L("✓ Đúng! <span class='detail'>Giải thích vì sao đúng.</span>", "✓ Correct! <span class='detail'>Explain why it is right.</span>"), "good");
     } else {
       G.sound.play("bad");
-      setFeedback("✗ Chưa đúng. <span class='detail'>Giải thích lỗi sai cụ thể.</span>", "bad");
+      setFeedback(L("✗ Chưa đúng. <span class='detail'>Giải thích lỗi sai cụ thể.</span>", "✗ Not quite. <span class='detail'>Explain the specific mistake.</span>"), "bad");
     }
     $("#hud-score").textContent = S.score;
     $("#btn-next").hidden = false;
@@ -49,7 +49,7 @@
     const { isNew } = G.progress.record(GAME_ID, S.lv, S.score, LEVELS.length);
     G.showScreen("end");
     $("#end-score").textContent = S.score;
-    $("#end-detail").textContent = `Đúng ${S.correct}/${S.level.rounds}.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-detail").textContent = L(`Đúng ${S.correct}/${S.level.rounds}.`, `${S.correct}/${S.level.rounds} correct.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (S.correct === S.level.rounds) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

@@ -1,15 +1,15 @@
 /* One Byte, Many Meanings — cùng bit pattern, khác cách diễn giải. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Byte dương", desc: "0–127: bit dấu = 0", gen: "pos", rounds: 5 },
-    { name: "Bit dấu bật", desc: "128–255: hai kính số bắt đầu khác nhau", gen: "neg", rounds: 5 },
-    { name: "Hỗn hợp", desc: "Có cả ký tự điều khiển", gen: "mix", rounds: 6 },
-    { name: "Không tra bảng", desc: "Ẩn bảng tra nhanh", gen: "mix", rounds: 6, noCheat: true },
+    { name: L("Byte dương", "Positive bytes"), desc: L("0–127: bit dấu = 0", "0–127: sign bit = 0"), gen: "pos", rounds: 5 },
+    { name: L("Bit dấu bật", "Sign bit on"), desc: L("128–255: hai kính số bắt đầu khác nhau", "128–255: the two number lenses disagree"), gen: "neg", rounds: 5 },
+    { name: L("Hỗn hợp", "Mixed"), desc: L("Có cả ký tự điều khiển", "Includes control characters"), gen: "mix", rounds: 6 },
+    { name: L("Không tra bảng", "No cheat sheet"), desc: L("Ẩn bảng tra nhanh", "The cheat sheet is hidden"), gen: "mix", rounds: 6, noCheat: true },
   ];
-  const CONTROL = { 0: "NUL", 7: "BEL", 8: "BS", 9: "TAB", 10: "LF (xuống dòng)", 13: "CR", 27: "ESC", 127: "DEL" };
+  const CONTROL = { 0: "NUL", 7: "BEL", 8: "BS", 9: "TAB", 10: L("LF (xuống dòng)", "LF (line feed)"), 13: "CR", 27: "ESC", 127: "DEL" };
   const NONE = "none";
 
   const S = { lv: 0, level: null, round: 0, score: 0, perfect: 0, v: 0, pickA: null, pickG: null, done: false, used: new Set() };
@@ -53,7 +53,7 @@
     buildGrayOpts();
     $("#btn-check").hidden = false;
     $("#btn-next").hidden = true;
-    setFeedback("Điền cả 4 kính rồi bấm <b>Kiểm tra</b> (<kbd>Enter</kbd>).");
+    setFeedback(L("Điền cả 4 kính rồi bấm <b>Kiểm tra</b> (<kbd>Enter</kbd>).", "Fill in all 4 lenses, then press <b>Check</b> (<kbd>Enter</kbd>)."));
     $("#in-u").focus();
   }
 
@@ -72,7 +72,7 @@
     box.innerHTML = "";
     G.shuffle(opts).forEach((o) => box.append(el("button", {
       type: "button", class: "opt" + (o === NONE ? " small" : ""), "data-v": o,
-      text: o === NONE ? "Không có ký tự in được" : charLabel(o),
+      text: o === NONE ? L("Không có ký tự in được", "No printable character") : charLabel(o),
       onclick: (e) => select("#opts-a", e.currentTarget, "pickA"),
     })));
   }
@@ -87,7 +87,7 @@
     const box = $("#opts-g");
     box.innerHTML = "";
     G.shuffle(opts).forEach((o) => box.append(el("button", {
-      type: "button", class: "opt", "data-v": o, "aria-label": "Ô xám", style: `background: rgb(${o},${o},${o})`,
+      type: "button", class: "opt", "data-v": o, "aria-label": L("Ô xám", "Gray swatch"), style: `background: rgb(${o},${o},${o})`,
       onclick: (e) => select("#opts-g", e.currentTarget, "pickG"),
     })));
   }
@@ -106,7 +106,7 @@
     if (S.done) return;
     const u = parseNum($("#in-u").value), s = parseNum($("#in-s").value);
     if (isNaN(u) || isNaN(s) || S.pickA == null || S.pickG == null) {
-      setFeedback("Bạn cần điền đủ cả 4 kính trước khi kiểm tra.", "warn");
+      setFeedback(L("Bạn cần điền đủ cả 4 kính trước khi kiểm tra.", "Fill in all 4 lenses before checking."), "warn");
       return;
     }
     S.done = true;
@@ -116,10 +116,10 @@
 
     const res = {
       u: [u === v, `${terms.join(" + ") || "0"} = <b>${v}</b>`],
-      s: [s === sv, bits[0] === "0" ? `Bit dấu = 0 nên giống unsigned: <b>${sv}</b>`
-        : `Bit dấu = 1 nên ${v} − 256 = <b>${sv}</b>` + (s === v - 128 ? ". (Không phải bỏ bit dấu rồi thêm dấu trừ, đó là sign-magnitude.)" : "")],
+      s: [s === sv, bits[0] === "0" ? L(`Bit dấu = 0 nên giống unsigned: <b>${sv}</b>`, `Sign bit = 0, so it equals unsigned: <b>${sv}</b>`)
+        : L(`Bit dấu = 1 nên ${v} − 256 = <b>${sv}</b>`, `Sign bit = 1, so ${v} − 256 = <b>${sv}</b>`) + (s === v - 128 ? L(". (Không phải bỏ bit dấu rồi thêm dấu trừ, đó là sign-magnitude.)", ". (It is not \"drop the sign bit and add a minus\", that is sign-magnitude.)") : "")],
       a: [S.pickA === rightA, asciiWhy(v)],
-      g: [Number(S.pickG) === v, `Độ sáng ${v}/255 ≈ ${Math.round((v / 255) * 100)}%` + (Number(S.pickG) === 255 - v ? ". Bạn chọn ngược: 0 là đen, 255 là trắng." : "")],
+      g: [Number(S.pickG) === v, L(`Độ sáng ${v}/255 ≈ ${Math.round((v / 255) * 100)}%`, `Brightness ${v}/255 ≈ ${Math.round((v / 255) * 100)}%`) + (Number(S.pickG) === 255 - v ? L(". Bạn chọn ngược: 0 là đen, 255 là trắng.", ". You picked the inverse: 0 is black, 255 is white.") : "")],
     };
     let ok = 0;
     for (const [k, [good, why]] of Object.entries(res)) {
@@ -137,18 +137,21 @@
     if (ok === 4) S.perfect++;
     $("#hud-score").textContent = S.score;
     G.sound.play(ok === 4 ? "good" : "bad");
-    setFeedback(`${ok === 4 ? "🎉 Đúng cả 4 kính!" : `Đúng ${ok}/4 kính.`} +${gained} điểm
-      <span class="detail">Cùng một pattern <b class="mono">${bits}</b> (0x${v.toString(16).toUpperCase().padStart(2, "0")}), bốn ý nghĩa khác nhau. Máy tính không tự biết byte này là gì. Chương trình quyết định cách đọc nó.</span>`, ok === 4 ? "good" : "warn");
+    const hx = "0x" + v.toString(16).toUpperCase().padStart(2, "0");
+    setFeedback(`${ok === 4 ? L("🎉 Đúng cả 4 kính!", "🎉 All 4 lenses right!") : L(`Đúng ${ok}/4 kính.`, `${ok}/4 lenses right.`)} +${gained}
+      <span class="detail">${L(`Cùng một pattern <b class="mono">${bits}</b> (${hx}), bốn ý nghĩa khác nhau. Máy tính không tự biết byte này là gì. Chương trình quyết định cách đọc nó.`,
+        `One pattern <b class="mono">${bits}</b> (${hx}), four different meanings. The computer does not know what this byte "is". The program decides how to read it.`)}</span>`, ok === 4 ? "good" : "warn");
     $("#btn-check").hidden = true;
     $("#btn-next").hidden = false;
     $("#btn-next").focus();
   }
 
   function asciiWhy(v) {
-    if (v >= 128) return `${v} > 127: ASCII chỉ có 7 bit (0–127) nên byte này <b>không phải ký tự ASCII</b>.` + (printable(v & 0x7f) ? ` Bỏ qua bit đầu sẽ ra '${charLabel(v & 0x7f)}', nhưng như thế là đọc sai.` : "");
-    if (!printable(v)) return `Mã ${v} là ký tự điều khiển${CONTROL[v] ? ` <b>${CONTROL[v]}</b>` : ""}, không in ra màn hình được.`;
+    if (v >= 128) return L(`${v} > 127: ASCII chỉ có 7 bit (0–127) nên byte này <b>không phải ký tự ASCII</b>.`, `${v} > 127: ASCII has only 7 bits (0–127), so this byte is <b>not an ASCII character</b>.`) + (printable(v & 0x7f) ? L(` Bỏ qua bit đầu sẽ ra '${charLabel(v & 0x7f)}', nhưng như thế là đọc sai.`, ` Ignoring the first bit would give '${charLabel(v & 0x7f)}', but that is a misreading.`) : "");
+    const cname = CONTROL[v] ? ` <b>${CONTROL[v]}</b>` : "";
+    if (!printable(v)) return L(`Mã ${v} là ký tự điều khiển${cname}, không in ra màn hình được.`, `Code ${v} is a control character${cname} and cannot be printed.`);
     const anchor = v >= 97 ? ["a", 97] : v >= 65 ? ["A", 65] : v >= 48 ? ["0", 48] : [" ", 32];
-    return `Mã ${v} = '${anchor[0] === " " ? "space" : anchor[0]}' (${anchor[1]}) + ${v - anchor[1]} → <b>'${charLabel(v)}'</b>`;
+    return `${L("Mã", "Code")} ${v} = '${anchor[0] === " " ? "space" : anchor[0]}' (${anchor[1]}) + ${v - anchor[1]} → <b>'${charLabel(v)}'</b>`;
   }
 
   function finish() {
@@ -156,8 +159,8 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = S.perfect === S.level.rounds;
-    $("#end-title").textContent = all ? "Thám tử bit! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = `${S.perfect}/${S.level.rounds} vòng đúng cả 4 kính.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = all ? L("Thám tử bit! 🎉", "Bit detective! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = L(`${S.perfect}/${S.level.rounds} vòng đúng cả 4 kính.`, `${S.perfect}/${S.level.rounds} rounds with all 4 lenses right.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

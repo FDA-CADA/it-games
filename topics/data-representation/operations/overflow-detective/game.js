@@ -1,13 +1,13 @@
 /* Overflow Detective — cộng/trừ two's complement và cờ overflow. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Cộng 4-bit", desc: "Dải −8 … 7", ns: [4], ops: ["+"], rounds: 6 },
-    { name: "Trừ 4-bit", desc: "Trừ = cộng số bù 2", ns: [4], ops: ["-"], rounds: 6 },
-    { name: "6-bit hỗn hợp", desc: "Dải −32 … 31, cộng và trừ", ns: [6], ops: ["+", "-"], rounds: 6 },
-    { name: "Thám tử nhanh", desc: "60 giây: tràn hay không?", ns: [6], ops: ["+", "-"], quick: true, time: 60 },
+    { name: L("Cộng 4-bit", "4-bit addition"), desc: L("Dải −8 … 7", "Range −8 … 7"), ns: [4], ops: ["+"], rounds: 6 },
+    { name: L("Trừ 4-bit", "4-bit subtraction"), desc: L("Trừ = cộng số bù 2", "Subtract = add the two's complement"), ns: [4], ops: ["-"], rounds: 6 },
+    { name: L("6-bit hỗn hợp", "6-bit mixed"), desc: L("Dải −32 … 31, cộng và trừ", "Range −32 … 31, add and subtract"), ns: [6], ops: ["+", "-"], rounds: 6 },
+    { name: L("Thám tử nhanh", "Quick detective"), desc: L("60 giây: tràn hay không?", "60 seconds: overflow or not?"), ns: [6], ops: ["+", "-"], quick: true, time: 60 },
   ];
 
   const S = { lv: 0, level: null, round: 0, score: 0, perfect: 0, streak: 0, n: 4, a: 0, b: 0, op: "+", stage: "add", negB: 0, res: 0, flag: false, done: false, timer: null };
@@ -56,15 +56,16 @@
     $("#hud-round").textContent = `${S.round}/${S.level.rounds || "∞"}`;
     $("#hud-score").textContent = S.score;
     const opTxt = S.op === "+" ? "+" : "−";
-    $("#case").innerHTML = `Vụ án #${S.round}: <span class="num">${fmt(S.a)} ${opTxt} ${S.b < 0 ? `(${fmt(S.b)})` : S.b}</span> trên <b>${S.n} bit</b>`
-      + `<span class="range">Dải biểu diễn được: ${fmt(MIN())} … ${MAX()}</span>`;
+    const expr = `<span class="num">${fmt(S.a)} ${opTxt} ${S.b < 0 ? `(${fmt(S.b)})` : S.b}</span>`;
+    $("#case").innerHTML = L(`Vụ án #${S.round}: ${expr} trên <b>${S.n} bit</b>`, `Case #${S.round}: ${expr} on <b>${S.n} bits</b>`)
+      + `<span class="range">${L("Dải biểu diễn được", "Representable range")}: ${fmt(MIN())} … ${MAX()}</span>`;
     $("#btn-check").hidden = !!S.level.quick;
-    $("#btn-check").textContent = S.stage === "neg" ? "Xong bước 1 →" : "Kết luận";
+    $("#btn-check").textContent = S.stage === "neg" ? L("Xong bước 1 →", "Step 1 done →") : L("Kết luận", "Close the case");
     $("#btn-next").hidden = true;
     G.$$("#quick .btn").forEach((b) => { b.disabled = false; });
-    setFeedback(S.level.quick ? "Nhìn bit dấu: cộng hai số cùng dấu mà ra khác dấu là tràn."
-      : S.stage === "neg" ? `Bước 1: phép trừ đổi thành cộng. Ghi <b>−b = −(${fmt(S.b)})</b> dạng ${S.n} bit (đảo bit rồi +1).`
-      : "Ghi kết quả vào dòng cuối, rồi khai báo cờ overflow.");
+    setFeedback(S.level.quick ? L("Nhìn bit dấu: cộng hai số cùng dấu mà ra khác dấu là tràn.", "Watch the sign bits: same-sign inputs giving an opposite-sign result means overflow.")
+      : S.stage === "neg" ? L(`Bước 1: phép trừ đổi thành cộng. Ghi <b>−b = −(${fmt(S.b)})</b> dạng ${S.n} bit (đảo bit rồi +1).`, `Step 1: subtraction becomes addition. Write <b>−b = −(${fmt(S.b)})</b> in ${S.n} bits (flip the bits, then +1).`)
+      : L("Ghi kết quả vào dòng cuối, rồi khai báo cờ overflow.", "Write the result in the last row, then declare the overflow flag."));
     renderFlag();
     render();
   }
@@ -78,7 +79,7 @@
       let c = 0, carries = 0;
       const A = u(S.a), B = addend();
       for (let i = 0; i < S.n; i++) { if (c) carries |= 1 << i; c = ((A >> i & 1) + (B >> i & 1) + c) >> 1; }
-      row("<small>nhớ</small>", G.bitRow(carries, S.n, { cls: "sm" }), c ? `<span class="lost">↖ ${c} rơi ra ngoài</span>` : "", "carry");
+      row(`<small>${L("nhớ", "carry")}</small>`, G.bitRow(carries, S.n, { cls: "sm" }), c ? `<span class="lost">↖ ${c} ${L("rơi ra ngoài", "falls off")}</span>` : "", "carry");
     }
     row("a", G.bitRow(u(S.a), S.n), fmt(S.a), "signcol");
     if (S.op === "+" || S.level.quick) {
@@ -93,7 +94,7 @@
     sh.append(el("div", { class: "line" }));
     const editRes = S.stage === "add" && !S.done;
     const bad = reveal ? [...G.bits(S.res, S.n)].map((b, i) => (b !== G.bits(resU(), S.n)[i] ? i : -1)).filter((i) => i >= 0) : [];
-    row("Kết quả", S.stage === "neg" ? el("div", { class: "muted", text: "(làm bước 1 trước)" })
+    row(L("Kết quả", "Result"), S.stage === "neg" ? el("div", { class: "muted", text: L("(làm bước 1 trước)", "(do step 1 first)") })
       : G.bitRow(S.res, S.n, { onToggle: editRes ? (i) => { S.res ^= 1 << (S.n - 1 - i); G.sound.play("tick"); render(); } : null, bad }),
     reveal ? `= ${fmt(sv(resU()))}` : "", "signcol");
   }
@@ -101,7 +102,7 @@
   function renderFlag() {
     const f = $("#flag");
     f.classList.toggle("on", S.flag);
-    f.textContent = S.flag ? "🚩 Có overflow!" : "🏳️ Không overflow";
+    f.textContent = S.flag ? L("🚩 Có overflow!", "🚩 Overflow!") : L("🏳️ Không overflow", "🏳️ No overflow");
     f.disabled = S.done || S.stage === "neg";
   }
 
@@ -111,14 +112,14 @@
       if (S.negB === u(-S.b)) {
         S.stage = "add";
         G.sound.play("good");
-        setFeedback(`✓ −b = ${G.bits(u(-S.b), S.n)} = ${fmt(-S.b)}. Bước 2: cộng như bình thường, rồi khai báo cờ overflow.`, "good");
-        $("#btn-check").textContent = "Kết luận";
+        setFeedback(`✓ −b = ${G.bits(u(-S.b), S.n)} = ${fmt(-S.b)}. ${L("Bước 2: cộng như bình thường, rồi khai báo cờ overflow.", "Step 2: add as usual, then declare the overflow flag.")}`, "good");
+        $("#btn-check").textContent = L("Kết luận", "Close the case");
         renderFlag();
         render();
       } else {
         G.sound.play("bad");
         const inv = u(S.b) ^ (M() - 1);
-        setFeedback(`✗ Chưa đúng. Đảo bit của ${G.bits(u(S.b), S.n)} được ${G.bits(inv, S.n)}, rồi cộng thêm 1.`, "bad");
+        setFeedback(L(`✗ Chưa đúng. Đảo bit của ${G.bits(u(S.b), S.n)} được ${G.bits(inv, S.n)}, rồi cộng thêm 1.`, `✗ Not quite. Flipping the bits of ${G.bits(u(S.b), S.n)} gives ${G.bits(inv, S.n)}, then add 1.`), "bad");
       }
       return;
     }
@@ -130,7 +131,7 @@
     G.sound.play(resOk && flagOk ? "good" : "bad");
     renderFlag();
     render(true);
-    setFeedback(`${resOk ? "✓ Kết quả đúng" : "✗ Kết quả sai"} · ${flagOk ? "✓ cờ đúng" : "✗ cờ sai"}. +${gained}<span class="detail">${explain()}</span>`, resOk && flagOk ? "good" : "bad");
+    setFeedback(`${resOk ? L("✓ Kết quả đúng", "✓ Result right") : L("✗ Kết quả sai", "✗ Result wrong")} · ${flagOk ? L("✓ cờ đúng", "✓ flag right") : L("✗ cờ sai", "✗ flag wrong")}. +${gained}<span class="detail">${explain()}</span>`, resOk && flagOk ? "good" : "bad");
     $("#hud-score").textContent = S.score;
     $("#btn-check").hidden = true;
     $("#btn-next").hidden = false;
@@ -140,11 +141,13 @@
   function explain() {
     const t = trueVal(), r = sv(resU());
     const sub = S.op === "-" ? `${fmt(S.a)} − ${S.b < 0 ? `(${fmt(S.b)})` : S.b} = ${fmt(S.a)} + ${-S.b < 0 ? `(${fmt(-S.b)})` : -S.b}. ` : "";
-    const sa = S.a < 0 ? "âm" : "dương", sb = (S.op === "+" ? S.b : -S.b) < 0 ? "âm" : "dương";
-    if (overflow()) return `${sub}Kết quả thật là ${fmt(t)}, nằm ngoài ${fmt(MIN())} … ${MAX()}: <b>overflow</b>. Máy chỉ giữ ${S.n} bit nên ra ${G.bits(resU(), S.n)} = ${fmt(r)}. Dấu hiệu: hai số hạng đều ${sa} mà kết quả lại ${r < 0 ? "âm" : "dương"}.`;
-    let s = `${sub}Kết quả ${fmt(t)} nằm trong dải, <b>không overflow</b>.`;
-    if (sa !== sb) s += " Hai số hạng khác dấu thì không bao giờ tràn.";
-    if (u(S.a) + addend() >= M()) s += " Có bit nhớ rơi ra ngoài, nhưng với số có dấu thì <b>carry không phải overflow</b>. Cứ bỏ bit nhớ đó đi.";
+    const NEG = L("âm", "negative"), POS = L("dương", "positive");
+    const sa = S.a < 0 ? NEG : POS, sb = (S.op === "+" ? S.b : -S.b) < 0 ? NEG : POS;
+    const rs = r < 0 ? NEG : POS;
+    if (overflow()) return sub + L(`Kết quả thật là ${fmt(t)}, nằm ngoài ${fmt(MIN())} … ${MAX()}: <b>overflow</b>. Máy chỉ giữ ${S.n} bit nên ra ${G.bits(resU(), S.n)} = ${fmt(r)}. Dấu hiệu: hai số hạng đều ${sa} mà kết quả lại ${rs}.`, `The true result is ${fmt(t)}, outside ${fmt(MIN())} … ${MAX()}: <b>overflow</b>. The machine keeps only ${S.n} bits, giving ${G.bits(resU(), S.n)} = ${fmt(r)}. The tell-tale sign: both operands are ${sa} but the result is ${rs}.`);
+    let s = sub + L(`Kết quả ${fmt(t)} nằm trong dải, <b>không overflow</b>.`, `The result ${fmt(t)} is within range, <b>no overflow</b>.`);
+    if (sa !== sb) s += L(" Hai số hạng khác dấu thì không bao giờ tràn.", " Operands with different signs never overflow.");
+    if (u(S.a) + addend() >= M()) s += L(" Có bit nhớ rơi ra ngoài, nhưng với số có dấu thì <b>carry không phải overflow</b>. Cứ bỏ bit nhớ đó đi.", " A carry bit falls off the end, but for signed numbers <b>carry is not overflow</b>. Just drop that carry.");
     return s;
   }
 
@@ -157,7 +160,7 @@
     if (right) {
       S.streak++; S.score += 10 + 2 * (S.streak - 1); S.perfect++;
       G.sound.play("good");
-      setFeedback(`✓ ${overflow() ? "Tràn!" : "Không tràn."} ${fmt(S.a)} ${S.op === "+" ? "+" : "−"} ${S.b < 0 ? `(${fmt(S.b)})` : S.b} = ${fmt(trueVal())}`, "good");
+      setFeedback(`✓ ${overflow() ? L("Tràn!", "Overflow!") : L("Không tràn.", "No overflow.")} ${fmt(S.a)} ${S.op === "+" ? "+" : "−"} ${S.b < 0 ? `(${fmt(S.b)})` : S.b} = ${fmt(trueVal())}`, "good");
       $("#hud-score").textContent = S.score;
       setTimeout(() => { if (!$("[data-screen=play]").hidden && S.level.quick) nextRound(); }, 900);
     } else {
@@ -176,8 +179,8 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = !S.level.quick && S.perfect === S.level.rounds;
-    $("#end-title").textContent = S.level.quick ? "Hết giờ phá án!" : all ? "Thám tử lừng danh! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = (S.level.quick ? `Phá đúng ${S.perfect} vụ.` : `${S.perfect}/${S.level.rounds} vụ đúng cả kết quả lẫn cờ.`) + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = S.level.quick ? L("Hết giờ phá án!", "Time's up, detective!") : all ? L("Thám tử lừng danh! 🎉", "Legendary detective! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = (S.level.quick ? L(`Phá đúng ${S.perfect} vụ.`, `${S.perfect} cases solved.`) : L(`${S.perfect}/${S.level.rounds} vụ đúng cả kết quả lẫn cờ.`, `${S.perfect}/${S.level.rounds} cases with both result and flag right.`)) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all || (S.level.quick && S.perfect >= 12)) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

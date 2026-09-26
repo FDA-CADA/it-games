@@ -256,3 +256,7 @@ dialog.help li { margin-bottom: 4px; }
   .card { padding: 16px; }
   .site-header .title small { display: none; }
 }
+
+/* ---------- Đa ngôn ngữ: chỉ hiện khối đúng ngôn ngữ ---------- */
+html[lang="vi"] [data-lang="en"], html[lang="en"] [data-lang="vi"] { display: none !important; }
+.lang-btn { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.02em; }

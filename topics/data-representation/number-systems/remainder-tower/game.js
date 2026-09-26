@@ -1,14 +1,14 @@
 /* Remainder Tower — đổi thập phân sang hệ r bằng chia liên tiếp. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Nhị phân nhỏ", desc: "10–63 sang hệ 2", bases: [2], min: 10, max: 63, rounds: 4 },
-    { name: "Một byte", desc: "64–255 sang hệ 2", bases: [2], min: 64, max: 255, rounds: 4 },
-    { name: "Bát phân", desc: "65–999 sang hệ 8", bases: [8], min: 65, max: 999, rounds: 4 },
-    { name: "Thập lục phân", desc: "200–4095 sang hệ 16", bases: [16], min: 200, max: 4095, rounds: 4 },
-    { name: "Hỗn hợp", desc: "Hệ 2, 8, 16 ngẫu nhiên", bases: [2, 8, 16], min: 100, max: 2000, rounds: 5 },
+    { name: L("Nhị phân nhỏ", "Small binary"), desc: L("10–63 sang hệ 2", "10–63 to base 2"), bases: [2], min: 10, max: 63, rounds: 4 },
+    { name: L("Một byte", "One byte"), desc: L("64–255 sang hệ 2", "64–255 to base 2"), bases: [2], min: 64, max: 255, rounds: 4 },
+    { name: L("Bát phân", "Octal"), desc: L("65–999 sang hệ 8", "65–999 to base 8"), bases: [8], min: 65, max: 999, rounds: 4 },
+    { name: L("Thập lục phân", "Hexadecimal"), desc: L("200–4095 sang hệ 16", "200–4095 to base 16"), bases: [16], min: 200, max: 4095, rounds: 4 },
+    { name: L("Hỗn hợp", "Mixed"), desc: L("Hệ 2, 8, 16 ngẫu nhiên", "Random base 2, 8 or 16"), bases: [2, 8, 16], min: 100, max: 2000, rounds: 5 },
   ];
 
   const S = {
@@ -49,13 +49,13 @@
 
     $("#hud-round").textContent = `${S.round}/${S.level.rounds}`;
     $("#hud-score").textContent = S.score;
-    $("#task").innerHTML = `Đổi <span class="num">${S.n}</span><sub>10</sub> sang hệ <span class="num">${S.base}</span>`;
+    $("#task").innerHTML = L(`Đổi <span class="num">${S.n}</span><sub>10</sub> sang hệ <span class="num">${S.base}</span>`, `Convert <span class="num">${S.n}</span><sub>10</sub> to base <span class="num">${S.base}</span>`);
     G.$$(".step", $("#ladder")).forEach((s) => s.remove());
     $("#read-phase").hidden = true;
     G.$$(".dir").forEach((b) => { b.classList.remove("picked-wrong"); b.disabled = false; });
     $("#result").hidden = true;
     $("#btn-next").hidden = true;
-    setFeedback(`Dòng đầu tiên: chia ${S.n} cho ${S.base}.`);
+    setFeedback(L(`Dòng đầu tiên: chia ${S.n} cho ${S.base}.`, `First line: divide ${S.n} by ${S.base}.`));
     addStepRow();
   }
 
@@ -65,11 +65,11 @@
     const wide = st.q >= 1000 ? " wide" : "";
     const qIn = autoQ()
       ? el("span", { class: "q", text: st.q })
-      : el("input", { class: "qin" + wide, inputmode: "numeric", "aria-label": "Thương", autocomplete: "off" });
-    const rIn = el("input", { class: "rin", inputmode: S.base === 16 ? "text" : "numeric", "aria-label": "Số dư", autocomplete: "off", maxlength: 2 });
+      : el("input", { class: "qin" + wide, inputmode: "numeric", "aria-label": L("Thương", "Quotient"), autocomplete: "off" });
+    const rIn = el("input", { class: "rin", inputmode: S.base === 16 ? "text" : "numeric", "aria-label": L("Số dư", "Remainder"), autocomplete: "off", maxlength: 2 });
     const eq = el("div", { class: "eq" }, [
       el("span", { class: "d", text: st.d }), el("span", { class: "op", text: "÷" }), el("span", { text: S.base }),
-      el("span", { class: "op", text: "=" }), qIn, el("span", { class: "op", text: "dư" }), rIn,
+      el("span", { class: "op", text: "=" }), qIn, el("span", { class: "op", text: L("dư", "rem") }), rIn,
     ]);
     const row = el("div", { class: "step" }, [eq, el("div", { class: "slot" })]);
     $("#ladder").append(row);
@@ -104,9 +104,9 @@
       G.sound.play("bad");
       G.shake($(".eq", row));
       let msg;
-      if (!qOk) msg = `Thương là phần nguyên của ${st.d} ÷ ${S.base}. Thử: ${S.base} × ? ≤ ${st.d}, lấy số lớn nhất.`;
-      else if (r.v >= S.base) msg = `Số dư luôn nhỏ hơn cơ số ${S.base}.`;
-      else msg = `Số dư = ${st.d} − ${st.q} × ${S.base} = ?`;
+      if (!qOk) msg = L(`Thương là phần nguyên của ${st.d} ÷ ${S.base}. Thử: ${S.base} × ? ≤ ${st.d}, lấy số lớn nhất.`, `The quotient is the integer part of ${st.d} ÷ ${S.base}. Try: ${S.base} × ? ≤ ${st.d}, take the largest.`);
+      else if (r.v >= S.base) msg = L(`Số dư luôn nhỏ hơn cơ số ${S.base}.`, `The remainder is always smaller than the base ${S.base}.`);
+      else msg = L(`Số dư = ${st.d} − ${st.q} × ${S.base} = ?`, `Remainder = ${st.d} − ${st.q} × ${S.base} = ?`);
       setFeedback(msg, "bad");
       return;
     }
@@ -121,16 +121,16 @@
     const digit = G.digitChar(st.r);
     $(".slot", row).append(el("div", { class: "block", html: digit + (st.r >= 10 ? `<small>${st.r}</small>` : "") }));
     let note = "";
-    if (S.base === 16 && st.r >= 10) note = r.typedDecimal ? ` Lưu ý: trong hệ 16, số dư ${st.r} được viết là <b>${digit}</b>.` : ` (${digit} = ${st.r})`;
+    if (S.base === 16 && st.r >= 10) note = r.typedDecimal ? L(` Lưu ý: trong hệ 16, số dư ${st.r} được viết là <b>${digit}</b>.`, ` Note: in base 16, remainder ${st.r} is written as <b>${digit}</b>.`) : ` (${digit} = ${st.r})`;
     eq.dataset.done = "1";
 
     S.k++;
     if (S.k < S.steps.length) {
-      setFeedback(`✓ Đúng!${note} Thương ${st.q} trở thành số bị chia của dòng tiếp theo.`, "good");
+      setFeedback(L(`✓ Đúng!${note} Thương ${st.q} trở thành số bị chia của dòng tiếp theo.`, `✓ Correct!${note} The quotient ${st.q} becomes the dividend of the next line.`), "good");
       addStepRow();
     } else {
       S.phase = "read";
-      setFeedback(`✓ Thương bằng 0, dừng chia.${note}`, "good");
+      setFeedback(L(`✓ Thương bằng 0, dừng chia.${note}`, `✓ The quotient is 0, stop dividing.${note}`), "good");
       $("#read-phase").hidden = false;
       G.$$(".dir")[0].focus();
     }
@@ -151,8 +151,9 @@
       const s = readStr("down"), v = parseInt(s, S.base);
       G.$$(".block").forEach((b) => b.classList.add("wrongpath"));
       setTimeout(() => G.$$(".block").forEach((b) => b.classList.remove("wrongpath")), 900);
-      setFeedback(`✗ Đọc từ trên xuống cho ${G.based(s, S.base)} = <b>${v}</b><sub>10</sub>, không phải ${S.n}!`
-        + `<span class="detail">Số dư đầu tiên là chữ số <b>hàng đơn vị</b> (${S.base}${G.SUP(0)}), nên nó phải đứng ở <b>cuối cùng bên phải</b>. Thử hướng còn lại.</span>`, "bad");
+      setFeedback(L(`✗ Đọc từ trên xuống cho ${G.based(s, S.base)} = <b>${v}</b><sub>10</sub>, không phải ${S.n}!`, `✗ Reading top to bottom gives ${G.based(s, S.base)} = <b>${v}</b><sub>10</sub>, not ${S.n}!`)
+        + L(`<span class="detail">Số dư đầu tiên là chữ số <b>hàng đơn vị</b> (${S.base}${G.SUP(0)}), nên nó phải đứng ở <b>cuối cùng bên phải</b>. Thử hướng còn lại.</span>`,
+          `<span class="detail">The first remainder is the <b>units digit</b> (${S.base}${G.SUP(0)}), so it must go at the <b>far right</b>. Try the other direction.</span>`), "bad");
       return;
     }
     S.phase = "done";
@@ -180,9 +181,9 @@
     out.innerHTML = G.based(readStr("up"), S.base);
     const terms = S.steps.map((s, i) => ({ r: s.r, i })).reverse().filter((t) => t.r)
       .map((t) => `${t.r}×${S.base}${G.SUP(t.i)}`);
-    $("#res-check").innerHTML = `Kiểm tra: ${terms.join(" + ")} = ${S.n} ✓`;
+    $("#res-check").innerHTML = `${L("Kiểm tra", "Check")}: ${terms.join(" + ")} = ${S.n} ✓`;
     G.sound.play("good");
-    setFeedback(S.roundErr ? "✓ Hoàn thành vòng này." : "✓ Hoàn hảo! Không sai bước nào.", "good");
+    setFeedback(S.roundErr ? L("✓ Hoàn thành vòng này.", "✓ Round complete.") : L("✓ Hoàn hảo! Không sai bước nào.", "✓ Perfect! No mistakes."), "good");
     $("#btn-next").hidden = false;
     $("#btn-next").focus();
   }
@@ -192,8 +193,8 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = S.perfectRounds === S.level.rounds;
-    $("#end-title").textContent = all ? "Kiến trúc sư tháp số dư! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = `${S.perfectRounds}/${S.level.rounds} vòng không sai bước nào.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = all ? L("Kiến trúc sư tháp số dư! 🎉", "Master tower builder! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = L(`${S.perfectRounds}/${S.level.rounds} vòng không sai bước nào.`, `${S.perfectRounds}/${S.level.rounds} rounds without a single mistake.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

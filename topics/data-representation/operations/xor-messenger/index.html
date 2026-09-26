@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,83 +18,93 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>✉️ XOR Secret Messenger</h1>
-      <p>XOR có một tính chất kỳ diệu: <code>(P ⊕ K) ⊕ K = P</code>. XOR tin nhắn <b>P</b> với khóa <b>K</b> là ra bản mã <b>C</b>, rồi XOR <b>C</b> với <b>cùng khóa</b> là ra lại P. Cùng một phép toán dùng cho cả mã hóa lẫn giải mã.</p>
+      <p data-lang="vi">XOR có một tính chất kỳ diệu: <code>(P ⊕ K) ⊕ K = P</code>. XOR tin nhắn <b>P</b> với khóa <b>K</b> là ra bản mã <b>C</b>, rồi XOR <b>C</b> với <b>cùng khóa</b> là ra lại P. Cùng một phép toán dùng cho cả mã hóa lẫn giải mã.</p>
+      <p data-lang="en">XOR has a magical property: <code>(P ⊕ K) ⊕ K = P</code>. XOR a message <b>P</b> with a key <b>K</b> to get the ciphertext <b>C</b>, then XOR <b>C</b> with <b>the same key</b> to get P back. One operation does both encryption and decryption.</p>
       <div class="truth mono">
         <span>0 ⊕ 0 = 0</span><span>0 ⊕ 1 = 1</span><span>1 ⊕ 0 = 1</span><span>1 ⊕ 1 = 0</span>
       </div>
-      <p class="muted">Quy tắc nhớ: <b>giống nhau ra 0, khác nhau ra 1</b>.</p>
+      <p class="muted" data-lang="vi">Quy tắc nhớ: <b>giống nhau ra 0, khác nhau ra 1</b>.</p>
+      <p class="muted" data-lang="en">Rule of thumb: <b>same gives 0, different gives 1</b>.</p>
       <div class="level-list" id="levels"></div>
       <div class="pair-cta">
-        <div><b>👥 Chơi theo cặp</b><br><span class="muted">Một bạn mã hóa, gửi bản mã qua chat hoặc đọc to, bạn kia giải mã bằng cùng khóa.</span></div>
-        <button class="btn" id="btn-pair">Mở máy mã hóa</button>
+        <div data-lang="vi"><b>👥 Chơi theo cặp</b><br><span class="muted">Một bạn mã hóa, gửi bản mã qua chat hoặc đọc to, bạn kia giải mã bằng cùng khóa.</span></div>
+        <div data-lang="en"><b>👥 Play in pairs</b><br><span class="muted">One of you encrypts and sends the ciphertext by chat or reads it aloud; the other decrypts it with the same key.</span></div>
+        <button class="btn" id="btn-pair" data-en="Open the cipher machine">Mở máy mã hóa</button>
       </div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Nhiệm vụ<b id="hud-round">1/3</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Mission">Nhiệm vụ</span><b id="hud-round">1/3</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
       </div>
       <div class="card">
         <div class="mission" id="mission"></div>
         <div class="work" id="work"></div>
         <div class="feedback" id="feedback"></div>
         <div class="row" style="margin-top:14px;justify-content:flex-end">
-          <button class="btn" id="btn-check">Kiểm tra</button>
-          <button class="btn" id="btn-next" hidden>Nhiệm vụ tiếp →</button>
+          <button class="btn" id="btn-check" data-en="Check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden data-en="Next mission →">Nhiệm vụ tiếp →</button>
         </div>
       </div>
     </section>
 
     <section data-screen="pair" hidden>
       <div class="card">
-        <h2>👥 Máy mã hóa XOR</h2>
-        <p class="muted">Hai bạn thống nhất trước một <b>khóa bí mật</b> (ví dụ <code>neu</code>). Khóa được lặp lại cho đủ độ dài tin nhắn.</p>
+        <h2 data-en="👥 XOR cipher machine">👥 Máy mã hóa XOR</h2>
+        <p class="muted" data-lang="vi">Hai bạn thống nhất trước một <b>khóa bí mật</b> (ví dụ <code>neu</code>). Khóa được lặp lại cho đủ độ dài tin nhắn.</p>
+        <p class="muted" data-lang="en">Agree on a <b>secret key</b> beforehand (e.g. <code>neu</code>). The key is repeated to match the message length.</p>
         <div class="tabs">
-          <button class="btn sm tab sel" data-tab="send">📤 Gửi</button>
-          <button class="btn ghost sm tab" data-tab="recv">📥 Nhận</button>
+          <button class="btn sm tab sel" data-tab="send" data-en="📤 Send">📤 Gửi</button>
+          <button class="btn ghost sm tab" data-tab="recv" data-en="📥 Receive">📥 Nhận</button>
         </div>
         <div class="pane" id="pane-send">
-          <label>Tin nhắn (ASCII, không dấu) <input id="s-msg" class="txt" maxlength="40" value="Gap nhau o thu vien" autocomplete="off"></label>
-          <label>Khóa bí mật <input id="s-key" class="txt mono" maxlength="16" value="neu" autocomplete="off"></label>
-          <div class="out-label">Bản mã (hex) để gửi cho bạn:</div>
+          <label><span data-en="Message (ASCII, no accents)">Tin nhắn (ASCII, không dấu)</span> <input id="s-msg" class="txt" maxlength="40" value="Gap nhau o thu vien" autocomplete="off"></label>
+          <label><span data-en="Secret key">Khóa bí mật</span> <input id="s-key" class="txt mono" maxlength="16" value="neu" autocomplete="off"></label>
+          <div class="out-label" data-en="Ciphertext (hex) to send:">Bản mã (hex) để gửi cho bạn:</div>
           <div class="cipher-out mono" id="s-out"></div>
-          <div class="row"><button class="btn ghost sm" id="btn-copy">📋 Sao chép</button><span class="muted small" id="copy-note"></span></div>
-          <details class="trace-wrap"><summary>Xem từng byte được XOR</summary><div class="trace mono" id="s-trace"></div></details>
+          <div class="row"><button class="btn ghost sm" id="btn-copy" data-en="📋 Copy">📋 Sao chép</button><span class="muted small" id="copy-note"></span></div>
+          <details class="trace-wrap"><summary data-en="Show each byte being XORed">Xem từng byte được XOR</summary><div class="trace mono" id="s-trace"></div></details>
         </div>
         <div class="pane" id="pane-recv" hidden>
-          <label>Bản mã (hex) nhận được <textarea id="r-hex" class="txt mono" rows="3" placeholder="vd 09 04 15 ..."></textarea></label>
-          <label>Khóa bí mật <input id="r-key" class="txt mono" maxlength="16" value="neu" autocomplete="off"></label>
-          <div class="out-label">Tin nhắn giải mã:</div>
+          <label><span data-en="Received ciphertext (hex)">Bản mã (hex) nhận được</span> <textarea id="r-hex" class="txt mono" rows="3" placeholder="vd 09 04 15 ..." data-en-placeholder="e.g. 09 04 15 ..."></textarea></label>
+          <label><span data-en="Secret key">Khóa bí mật</span> <input id="r-key" class="txt mono" maxlength="16" value="neu" autocomplete="off"></label>
+          <div class="out-label" data-en="Decrypted message:">Tin nhắn giải mã:</div>
           <div class="plain-out" id="r-out"></div>
-          <p class="muted small">Thử gõ sai một chữ trong khóa xem tin nhắn biến thành gì.</p>
+          <p class="muted small" data-en="Try mistyping one letter of the key and see what the message turns into.">Thử gõ sai một chữ trong khóa xem tin nhắn biến thành gì.</p>
         </div>
-        <div class="row" style="margin-top:14px"><button class="btn ghost" id="btn-pair-back">← Quay lại</button></div>
+        <div class="row" style="margin-top:14px"><button class="btn ghost" id="btn-pair-back" data-en="← Back">← Quay lại</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Bấm vào các bit để đặt kết quả XOR, rồi <b>Kiểm tra</b> (<kbd>Enter</kbd>). Các bit sai được tô đỏ.</li>
       <li>Level 3–4: gõ ký tự của tin nhắn đã giải mã vào các ô. Mốc ASCII: 'A' = 65 = 01000001, 'a' = 97.</li>
       <li>Đúng ngay lần đầu +10, đúng sau khi sửa +4.</li>
       <li><b>Chơi theo cặp:</b> ở màn hình đầu, bấm "Mở máy mã hóa".</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Click bits to set the XOR result, then <b>Check</b> (<kbd>Enter</kbd>). Wrong bits turn red.</li>
+      <li>Levels 3–4: type the characters of the decrypted message into the boxes. ASCII anchors: 'A' = 65 = 01000001, 'a' = 97.</li>
+      <li>+10 if right first time, +4 after corrections.</li>
+      <li><b>Play in pairs:</b> on the start screen, press "Open the cipher machine".</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="assets/js/lang.js"></script>
   <link rel="stylesheet" href="assets/css/base.css">
   <style>
-    .hero { padding: 40px 0 12px; }
+    .hero { padding: 40px 0 12px; position: relative; }
+    .hero .lang-slot { position: absolute; top: 24px; right: 0; }
     .hero p { color: var(--muted); max-width: 640px; }
     .hero .bits { font-family: var(--mono); color: var(--accent); font-weight: 700; letter-spacing: 0.15em; font-size: 0.85rem; margin-bottom: 8px; }
     .topic { margin: 28px 0 40px; }
@@ -36,15 +38,16 @@
 <body>
   <main class="container">
     <section class="hero">
+      <div class="lang-slot" id="lang-slot"></div>
       <div class="bits">01001001 01010100</div>
-      <h1 id="course">Nhập môn Công nghệ thông tin</h1>
-      <p id="audience">Mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
-      <label class="row muted" style="font-size:.9rem" id="planned-toggle"><input type="checkbox" id="show-planned"> Hiện cả các game sắp ra mắt</label>
+      <h1 id="course" data-en="Introduction to Information Technology">Nhập môn Công nghệ thông tin</h1>
+      <p id="audience" data-en="Each game targets one common misconception. Play for 5–10 minutes before the exercises to really understand the topic.">Mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
+      <label class="row muted" style="font-size:.9rem" id="planned-toggle"><input type="checkbox" id="show-planned"> <span data-en="Also show upcoming games">Hiện cả các game sắp ra mắt</span></label>
     </section>
     <div id="topics"></div>
   </main>
   <footer>
-    <div class="container">Tiến độ và kỷ lục được lưu ngay trên trình duyệt của bạn, không gửi đi đâu cả.</div>
+    <div class="container" data-en="Your progress and best scores are stored only in your own browser and are never sent anywhere.">Tiến độ và kỷ lục được lưu ngay trên trình duyệt của bạn, không gửi đi đâu cả.</div>
   </footer>
 
   <script src="assets/js/catalog.js"></script>
@@ -54,13 +57,15 @@
       const cat = window.CATALOG;
       const root = document.getElementById("topics");
       const toggle = document.getElementById("show-planned");
-      document.getElementById("course").textContent = cat.course;
+      document.getElementById("course").textContent = G.tr(cat.course);
+      document.title = G.tr(cat.course);
+      document.getElementById("lang-slot").append(G.langButton());
 
       function progressText(game) {
         const p = G.progress.get(game.id);
         const done = Object.keys(p.levels).length;
         if (!done) return "";
-        return p.total ? `✓ ${done}/${p.total} level` : "✓ Đã chơi";
+        return p.total ? `✓ ${done}/${p.total} ${L("level", "levels")}` : L("✓ Đã chơi", "✓ Played");
       }
 
       function card(game) {
@@ -68,12 +73,12 @@
         const inner = [
           G.el("div", { class: "top" }, [
             G.el("div", { class: "ic", text: game.icon || "🎮" }),
-            G.el("div", {}, [G.el("h3", { text: game.title }), G.el("div", { class: "skill", text: game.skill || "" })]),
+            G.el("div", {}, [G.el("h3", { text: G.tr(game.title) }), G.el("div", { class: "skill", text: G.tr(game.skill) || "" })]),
           ]),
-          G.el("p", { text: game.desc || "" }),
+          G.el("p", { text: G.tr(game.desc) || "" }),
           G.el("div", { class: "foot" }, [
-            ready ? G.el("span", { class: "badge good", text: progressText(game) || "Chơi ngay" })
-                  : G.el("span", { class: "badge warn", text: "Sắp có" }),
+            ready ? G.el("span", { class: "badge good", text: progressText(game) || L("Chơi ngay", "Play now") })
+                  : G.el("span", { class: "badge warn", text: L("Sắp có", "Coming soon") }),
           ]),
         ];
         return ready
@@ -88,9 +93,9 @@
         for (const topic of cat.topics) {
           const t = G.el("section", { class: "topic" }, [
             G.el("div", { class: "topic-head" }, [
-              topic.label ? G.el("span", { class: "badge", text: topic.label }) : null,
-              G.el("h2", { text: topic.title }),
-              G.el("p", { text: topic.summary || "" }),
+              topic.label ? G.el("span", { class: "badge", text: G.tr(topic.label) }) : null,
+              G.el("h2", { text: G.tr(topic.title) }),
+              G.el("p", { text: G.tr(topic.summary) || "" }),
             ]),
           ]);
           for (const sec of topic.sections) {
@@ -98,7 +103,7 @@
             const readyCount = sec.games.filter((g) => g.status === "ready").length;
             if (!games.length) continue;
             t.append(G.el("div", { class: "section-title" }, [
-              document.createTextNode(sec.title),
+              document.createTextNode(G.tr(sec.title)),
               G.el("span", { class: "badge", text: `${readyCount}/${sec.games.length}` }),
             ]));
             t.append(G.el("div", { class: "grid" }, games.map(card)));

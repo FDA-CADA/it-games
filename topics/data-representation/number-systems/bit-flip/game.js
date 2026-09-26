@@ -1,15 +1,15 @@
 /* Bit Flip — cảm nhận trọng số vị trí (positional notation). Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Khởi động", desc: "4 bóng hệ 2 (0–15)", base: 2, digits: 4, rounds: 6, time: 30, showSum: true },
-    { name: "Một byte", desc: "8 bóng hệ 2 (0–255)", base: 2, digits: 8, rounds: 8, time: 30, showSum: true },
-    { name: "Không nhìn tổng", desc: "8 bóng, tự cộng nhẩm", base: 2, digits: 8, rounds: 8, time: 35, showSum: false },
-    { name: "Bánh xe bát phân", desc: "3 bánh xe hệ 8 (0–511)", base: 8, digits: 3, rounds: 6, time: 40, showSum: true },
-    { name: "Bánh xe hex", desc: "2 bánh xe hệ 16 (0–255)", base: 16, digits: 2, rounds: 6, time: 40, showSum: true },
-    { name: "Hex 3 chữ số", desc: "3 bánh xe hệ 16, không nhìn tổng", base: 16, digits: 3, rounds: 6, time: 50, showSum: false },
+    { name: L("Khởi động", "Warm-up"), desc: L("4 bóng hệ 2 (0–15)", "4 base-2 bulbs (0–15)"), base: 2, digits: 4, rounds: 6, time: 30, showSum: true },
+    { name: L("Một byte", "One byte"), desc: L("8 bóng hệ 2 (0–255)", "8 base-2 bulbs (0–255)"), base: 2, digits: 8, rounds: 8, time: 30, showSum: true },
+    { name: L("Không nhìn tổng", "No peeking"), desc: L("8 bóng, tự cộng nhẩm", "8 bulbs, add it up in your head"), base: 2, digits: 8, rounds: 8, time: 35, showSum: false },
+    { name: L("Bánh xe bát phân", "Octal dials"), desc: L("3 bánh xe hệ 8 (0–511)", "3 base-8 dials (0–511)"), base: 8, digits: 3, rounds: 6, time: 40, showSum: true },
+    { name: L("Bánh xe hex", "Hex dials"), desc: L("2 bánh xe hệ 16 (0–255)", "2 base-16 dials (0–255)"), base: 16, digits: 2, rounds: 6, time: 40, showSum: true },
+    { name: L("Hex 3 chữ số", "3-digit hex"), desc: L("3 bánh xe hệ 16, không nhìn tổng", "3 base-16 dials, no peeking"), base: 16, digits: 3, rounds: 6, time: 50, showSum: false },
   ];
 
   const S = { lv: 0, level: null, round: 0, score: 0, solved: 0, target: 0, values: [], timer: null, done: false, used: new Set() };
@@ -44,8 +44,8 @@
     $("#btn-next").hidden = true;
     $("#btn-clear").disabled = false;
     setFeedback(S.level.base === 2
-      ? "Bấm vào bóng đèn để bật/tắt. Phím số <kbd>1</kbd>…<kbd>" + S.level.digits + "</kbd> cũng được."
-      : "Bấm ▲/▼ hoặc cuộn chuột trên bánh xe để đổi chữ số.");
+      ? L("Bấm vào bóng đèn để bật/tắt. Phím số ", "Click a bulb to switch it. Number keys ") + "<kbd>1</kbd>…<kbd>" + S.level.digits + "</kbd>" + L(" cũng được.", " work too.")
+      : L("Bấm ▲/▼ hoặc cuộn chuột trên bánh xe để đổi chữ số.", "Use ▲/▼ or scroll on a dial to change the digit."));
     buildCells();
     update();
     S.timer && S.timer.stop();
@@ -64,7 +64,7 @@
       let control;
       if (base === 2) {
         control = el("button", {
-          class: "bulb", type: "button", "aria-label": `Bit trọng số ${w}`, "aria-pressed": "false",
+          class: "bulb", type: "button", "aria-label": L(`Bit trọng số ${w}`, `Bit of weight ${w}`), "aria-pressed": "false",
           onclick: () => setDigit(i, S.values[i] ? 0 : 1),
         });
       } else {
@@ -75,9 +75,9 @@
           setDigit(i, (S.values[i] + (e.deltaY < 0 ? 1 : base - 1)) % base);
         }, { passive: false });
         control = el("div", { class: "wheel" }, [
-          el("button", { type: "button", "aria-label": "Tăng", text: "▲", onclick: () => setDigit(i, (S.values[i] + 1) % base) }),
+          el("button", { type: "button", "aria-label": L("Tăng", "Up"), text: "▲", onclick: () => setDigit(i, (S.values[i] + 1) % base) }),
           face,
-          el("button", { type: "button", "aria-label": "Giảm", text: "▼", onclick: () => setDigit(i, (S.values[i] + base - 1) % base) }),
+          el("button", { type: "button", "aria-label": L("Giảm", "Down"), text: "▼", onclick: () => setDigit(i, (S.values[i] + base - 1) % base) }),
         ]);
       }
       box.append(el("div", { class: "cell", "data-i": i }, [
@@ -113,7 +113,7 @@
     $("#repr").innerHTML = G.based(reprStr(S.values), base);
     const sumEl = $("#sum");
     if (showSum || S.done) sumEl.innerHTML = `= <b>${cur}</b><sub>10</sub>`;
-    else sumEl.innerHTML = `= <b>?</b> <span class="muted">(level này ẩn tổng)</span>`;
+    else sumEl.innerHTML = `= <b>?</b> <span class="muted">${L("(level này ẩn tổng)", "(hidden in this level)")}</span>`;
     sumEl.classList.toggle("match", cur === S.target);
     if (!S.done && cur === S.target) win();
   }
@@ -133,7 +133,7 @@
     S.score += gained; S.solved++;
     $("#hud-score").textContent = S.score;
     G.sound.play("good");
-    setFeedback(`✓ Chính xác! +${gained} điểm <span class="detail expansion">${expansion(S.values)}</span>`, "good");
+    setFeedback(`✓ ${L("Chính xác!", "Correct!")} +${gained} <span class="detail expansion">${expansion(S.values)}</span>`, "good");
     update();
     $("#btn-clear").disabled = true;
     $("#btn-next").hidden = false;
@@ -150,7 +150,7 @@
     S.values = ans.split("").map(G.digitValue);
     G.$$(".cell", $("#cells")).forEach((c, i) => c.classList.toggle("hint", S.values[i] !== 0));
     update();
-    setFeedback(`⏰ Hết giờ! Đáp án: ${G.based(ans, base)} <span class="detail expansion">${expansion(S.values)}</span>`, "bad");
+    setFeedback(`⏰ ${L("Hết giờ! Đáp án:", "Time's up! Answer:")} ${G.based(ans, base)} <span class="detail expansion">${expansion(S.values)}</span>`, "bad");
     $("#btn-clear").disabled = true;
     $("#btn-next").hidden = false;
   }
@@ -160,8 +160,8 @@
     const { isNew } = G.progress.record("bit-flip", S.lv, S.score, LEVELS.length);
     G.showScreen("end");
     $("#end-score").textContent = S.score;
-    $("#end-title").textContent = S.solved === S.level.rounds ? "Hoàn hảo! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = `Giải đúng ${S.solved}/${S.level.rounds} vòng.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = S.solved === S.level.rounds ? L("Hoàn hảo! 🎉", "Perfect! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = L(`Giải đúng ${S.solved}/${S.level.rounds} vòng.`, `Solved ${S.solved}/${S.level.rounds} rounds.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (S.solved === S.level.rounds) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

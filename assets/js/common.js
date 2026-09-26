@@ -3,6 +3,12 @@
    Trang game khai báo trên <body>:
      data-root="../../../../"   đường dẫn tương đối về thư mục gốc site
      data-game="bit-flip"       id game, trùng với id trong catalog.js
+
+   Đa ngôn ngữ (vi/en), xem docs/adding-a-game.md:
+     - JS:   L("Tiếng Việt", "English")   hoặc G.tr({ vi, en })
+     - HTML: <span data-en="English">Tiếng Việt</span>             (câu ngắn)
+             <p data-lang="vi">…</p><p data-lang="en">…</p>          (đoạn dài)
+             data-en-placeholder / data-en-title / data-en-aria    (thuộc tính)
    ========================================================================== */
 (function () {
   "use strict";
@@ -11,6 +17,41 @@
   const body = document.body;
   G.root = (body && body.dataset.root) || "./";
   G.gameId = (body && body.dataset.game) || null;
+
+  /* ---------- Ngôn ngữ ---------- */
+  // lang.js (nạp trong <head>) đã chọn ngôn ngữ và đặt <html lang="…">
+  G.lang = window.ITG_LANG || (document.documentElement.lang === "en" ? "en" : "vi");
+  /** Chọn chuỗi theo ngôn ngữ hiện tại: L("Vòng", "Round"). */
+  G.L = (vi, en) => (G.lang === "en" && en != null ? en : vi);
+  /** Dịch giá trị có thể là chuỗi hoặc { vi, en } (dùng cho catalog). */
+  G.tr = (x) => (x && typeof x === "object" && !Array.isArray(x) ? (x[G.lang] ?? x.vi) : x);
+  /** Đổi ngôn ngữ: lưu lựa chọn rồi tải lại trang với ?lang=… */
+  G.setLang = (lang) => {
+    try { localStorage.setItem("itgames:lang", JSON.stringify(lang)); } catch { /* bỏ qua */ }
+    const u = new URL(location.href);
+    u.searchParams.set("lang", lang);
+    location.replace(u.toString());
+  };
+  /** Áp bản dịch cho chữ tĩnh trong HTML (data-en, data-en-*). */
+  G.applyStaticI18n = (root = document) => {
+    if (G.lang !== "en") return;
+    root.querySelectorAll("[data-en]").forEach((e) => { e.innerHTML = e.dataset.en; });
+    root.querySelectorAll("[data-en-placeholder]").forEach((e) => { e.placeholder = e.dataset.enPlaceholder; });
+    root.querySelectorAll("[data-en-title]").forEach((e) => { e.title = e.dataset.enTitle; });
+    root.querySelectorAll("[data-en-aria]").forEach((e) => { e.setAttribute("aria-label", e.dataset.enAria); });
+  };
+  /** Nút chuyển ngôn ngữ (dùng trên header và trang chủ). */
+  G.langButton = () => G.el("button", {
+    class: "icon-btn lang-btn", type: "button",
+    text: G.lang === "en" ? "VI" : "EN",
+    title: G.lang === "en" ? "Chuyển sang tiếng Việt" : "Switch to English", // i18n-ok
+    "aria-label": G.lang === "en" ? "Chuyển sang tiếng Việt" : "Switch to English", // i18n-ok
+    onclick: () => {
+      const playing = G.$("[data-screen=play]") && !G.$("[data-screen=play]").hidden;
+      if (playing && !confirm(G.L("Đổi ngôn ngữ sẽ tải lại trang, vòng đang chơi sẽ bị bỏ dở. Tiếp tục?", "Switching language reloads the page and the current round will be lost. Continue?"))) return;
+      G.setLang(G.lang === "en" ? "vi" : "en");
+    },
+  });
 
   /* ---------- Ngẫu nhiên & mảng ---------- */
   G.randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
@@ -60,7 +101,6 @@
     while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
     return `${i === 0 ? v : Number(v.toPrecision(digits))} ${units[i]}`;
   };
-  /** 1105920000 -> "1 105 920 000" (khoảng trắng hàng nghìn, tránh nhầm với dấu chấm thập phân). */
   /**
    * Hàng bit dùng chung: G.bitRow(v, 8, { onToggle(i), mark: [i…], bad: [i…], cls: "sm" }).
    * i = 0 là bit trái nhất (MSB). Có onToggle thì mỗi bit là một nút bấm.
@@ -75,6 +115,7 @@
     });
     return row;
   };
+  /** 1105920000 -> "1 105 920 000" (khoảng trắng hàng nghìn, tránh nhầm với dấu chấm thập phân). */
   G.fmtInt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
 
   /* ---------- DOM ---------- */
@@ -205,7 +246,7 @@
         G.el("span", { class: "lv", text: "Level " + (i + 1) }),
         G.el("span", { class: "nm", text: lv.name }),
         lv.desc ? G.el("span", { class: "ds", html: lv.desc }) : null,
-        best != null ? G.el("span", { class: "best", text: "Kỷ lục: " + best }) : null,
+        best != null ? G.el("span", { class: "best", text: G.L("Kỷ lục: ", "Best: ") + best }) : null,
       ]));
     });
   };
@@ -233,24 +274,25 @@
     const slot = G.$("[data-shell]");
     if (!slot) return;
     const info = G.gameId ? G.findGame(G.gameId) : null;
-    const title = info ? info.game.title : document.title;
-    const sub = info ? info.section.title : "";
+    const title = info ? G.tr(info.game.title) : document.title;
+    const sub = info ? G.tr(info.section.title) : "";
+    if (info) document.title = title;
     const help = G.$("dialog.help");
     slot.className = "site-header";
     slot.innerHTML = "";
     const soundBtn = G.el("button", {
-      class: "icon-btn", type: "button", title: "Bật/tắt âm thanh", "aria-label": "Bật/tắt âm thanh",
+      class: "icon-btn", type: "button", title: G.L("Bật/tắt âm thanh", "Sound on/off"), "aria-label": G.L("Bật/tắt âm thanh", "Sound on/off"),
       text: G.sound.muted ? "🔇" : "🔊",
       onclick: (e) => { e.currentTarget.textContent = G.sound.toggle() ? "🔇" : "🔊"; },
     });
     const helpBtn = help ? G.el("button", {
-      class: "icon-btn", type: "button", title: "Hướng dẫn", "aria-label": "Hướng dẫn", text: "?",
+      class: "icon-btn", type: "button", title: G.L("Hướng dẫn", "How to play"), "aria-label": G.L("Hướng dẫn", "How to play"), text: "?",
       onclick: () => help.showModal(),
     }) : null;
     slot.append(G.el("div", { class: "container" }, [
-      G.el("a", { class: "back", href: G.root + "index.html", text: "← Tất cả game" }),
+      G.el("a", { class: "back", href: G.root + "index.html", text: G.L("← Tất cả game", "← All games") }),
       G.el("div", { class: "title", html: `${title}${sub ? `<small>${sub}</small>` : ""}` }),
-      soundBtn, helpBtn,
+      G.langButton(), soundBtn, helpBtn,
     ]));
     if (help) {
       help.addEventListener("click", (e) => { if (e.target === help) help.close(); });
@@ -263,10 +305,12 @@
     const next = G.gameId && G.nextGame(G.gameId);
     if (!container || !next) return;
     container.innerHTML = "";
-    container.append(G.el("a", { class: "btn ghost", href: G.root + next.path, text: `Game tiếp theo: ${next.title} →` }));
+    container.append(G.el("a", { class: "btn ghost", href: G.root + next.path, text: `${G.L("Game tiếp theo", "Next game")}: ${G.tr(next.title)} →` }));
   };
 
   window.G = G;
+  window.L = G.L;
+  G.applyStaticI18n();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountHeader);
   else mountHeader();
 })();

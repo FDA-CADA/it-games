@@ -1,15 +1,15 @@
 /* Hex Color Mixer — hex ngoài đời thực: mã màu #RRGGBB. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const STEP33 = [0x00, 0x33, 0x66, 0x99, 0xcc, 0xff];
   const LEVELS = [
-    { name: "Màu thuần", desc: "Mỗi kênh chỉ là 00 hoặc FF", kind: "mix", values: [0x00, 0xff], rounds: 5, pass: 100 },
-    { name: "Đọc mã", desc: "Chọn đúng màu cho một mã hex", kind: "read", values: STEP33, rounds: 8 },
-    { name: "Bậc 0x33", desc: "Kênh ∈ {00, 33, 66, 99, CC, FF}", kind: "mix", values: STEP33, rounds: 5, pass: 100 },
-    { name: "Màu tự do", desc: "Bắt đầu bằng #FF5733 trên slide. Đạt ≥ 95% là qua", kind: "mix", values: null, rounds: 5, pass: 95, first: [0xff, 0x57, 0x33] },
-    { name: "Đọc mã khó", desc: "Màu bất kỳ, đáp án nhiễu gần giống", kind: "read", values: null, rounds: 8 },
+    { name: L("Màu thuần", "Pure colours"), desc: L("Mỗi kênh chỉ là 00 hoặc FF", "Each channel is 00 or FF"), kind: "mix", values: [0x00, 0xff], rounds: 5, pass: 100 },
+    { name: L("Đọc mã", "Read the code"), desc: L("Chọn đúng màu cho một mã hex", "Pick the colour for a hex code"), kind: "read", values: STEP33, rounds: 8 },
+    { name: L("Bậc 0x33", "Steps of 0x33"), desc: L("Kênh ∈ {00, 33, 66, 99, CC, FF}", "Channel ∈ {00, 33, 66, 99, CC, FF}"), kind: "mix", values: STEP33, rounds: 5, pass: 100 },
+    { name: L("Màu tự do", "Free colours"), desc: L("Bắt đầu bằng #FF5733 trên slide. Đạt ≥ 95% là qua", "Starts with #FF5733 from the slides. ≥ 95% to pass"), kind: "mix", values: null, rounds: 5, pass: 95, first: [0xff, 0x57, 0x33] },
+    { name: L("Đọc mã khó", "Hard reading"), desc: L("Màu bất kỳ, đáp án nhiễu gần giống", "Any colour, look-alike distractors"), kind: "read", values: null, rounds: 8 },
   ];
   const NAMES = ["R", "G", "B"];
   const MAX_DIST = Math.sqrt(3 * 255 * 255);
@@ -60,7 +60,7 @@
     $("#meter-val").textContent = "?";
     $("#btn-check").hidden = false;
     $("#btn-next").hidden = true;
-    setFeedback("#mix-feedback", "Chỉnh từng chữ số hex rồi bấm <b>Kiểm tra</b>.");
+    setFeedback("#mix-feedback", L("Chỉnh từng chữ số hex rồi bấm <b>Kiểm tra</b>.", "Adjust each hex digit, then press <b>Check</b>."));
     buildChannels();
     renderMine();
   }
@@ -76,9 +76,9 @@
         face.addEventListener("click", () => bump(1));
         face.addEventListener("wheel", (e) => { e.preventDefault(); bump(e.deltaY < 0 ? 1 : -1); }, { passive: false });
         digits.append(el("div", { class: "hexwheel" }, [
-          el("button", { type: "button", "aria-label": `Tăng chữ số ${d === 0 ? "trái" : "phải"} kênh ${name}`, text: "▲", onclick: () => bump(1) }),
+          el("button", { type: "button", "aria-label": L(`Tăng chữ số ${d === 0 ? "trái" : "phải"} kênh ${name}`, `Increase ${d === 0 ? "left" : "right"} digit of ${name}`), text: "▲", onclick: () => bump(1) }),
           face,
-          el("button", { type: "button", "aria-label": `Giảm chữ số ${d === 0 ? "trái" : "phải"} kênh ${name}`, text: "▼", onclick: () => bump(-1) }),
+          el("button", { type: "button", "aria-label": L(`Giảm chữ số ${d === 0 ? "trái" : "phải"} kênh ${name}`, `Decrease ${d === 0 ? "left" : "right"} digit of ${name}`), text: "▼", onclick: () => bump(-1) }),
           el("span", { class: "wt", text: d === 0 ? "×16" : "×1" }),
         ]));
       });
@@ -128,9 +128,9 @@
       const diff = S.target[i] - S.mine[i];
       const h = $(".hint", ch);
       const tol = S.level.pass < 100 ? 12 : 0;
-      if (Math.abs(diff) <= tol) { h.className = "hint ok"; h.textContent = diff === 0 ? "✓ đúng" : "✓ gần đúng"; }
-      else if (diff > 0) { h.className = "hint up"; h.textContent = diff > 64 ? "↑↑ tăng nhiều" : "↑ tăng"; }
-      else { h.className = "hint down"; h.textContent = diff < -64 ? "↓↓ giảm nhiều" : "↓ giảm"; }
+      if (Math.abs(diff) <= tol) { h.className = "hint ok"; h.textContent = diff === 0 ? L("✓ đúng", "✓ exact") : L("✓ gần đúng", "✓ close"); }
+      else if (diff > 0) { h.className = "hint up"; h.textContent = diff > 64 ? L("↑↑ tăng nhiều", "↑↑ much higher") : L("↑ tăng", "↑ higher"); }
+      else { h.className = "hint down"; h.textContent = diff < -64 ? L("↓↓ giảm nhiều", "↓↓ much lower") : L("↓ giảm", "↓ lower"); }
     });
 
     if (passed) {
@@ -141,15 +141,15 @@
       $("#hud-score").textContent = S.score;
       G.sound.play("good");
       const t = code(S.target);
-      setFeedback("#mix-feedback", `✓ Khớp! +${gained} điểm. Mã mẫu là <b class="mono">${t}</b>`
+      setFeedback("#mix-feedback", L(`✓ Khớp! +${gained} điểm. Mã mẫu là <b class="mono">${t}</b>`, `✓ Match! +${gained} points. The target code is <b class="mono">${t}</b>`)
         + `<span class="detail mono">${breakdown(S.target)}</span>`, "good");
       $("#btn-check").hidden = true;
       $("#btn-next").hidden = false;
       $("#btn-next").focus();
     } else {
       G.sound.play("bad");
-      setFeedback("#mix-feedback", `Chưa khớp. Xem gợi ý ↑/↓ dưới từng kênh.`
-        + (S.tries >= 4 ? `<span class="detail">Gợi ý: chỉnh chữ số <b>trái</b> (×16) trước để tiến nhanh, chữ số phải chỉ để tinh chỉnh.</span>` : ""), "warn");
+      setFeedback("#mix-feedback", L(`Chưa khớp. Xem gợi ý ↑/↓ dưới từng kênh.`, `Not yet. See the ↑/↓ hint under each channel.`)
+        + (S.tries >= 4 ? `<span class="detail">${L("Gợi ý: chỉnh chữ số <b>trái</b> (×16) trước để tiến nhanh, chữ số phải chỉ để tinh chỉnh.", "Tip: adjust the <b>left</b> digit (×16) first for big steps, and use the right digit only to fine-tune.")}</span>` : ""), "warn");
     }
   }
 
@@ -176,12 +176,12 @@
     box.classList.remove("revealed");
     options.forEach((c, i) => {
       box.append(el("button", {
-        class: "choice", type: "button", "aria-label": `Lựa chọn ${i + 1}`, style: `background:${code(c)}`,
+        class: "choice", type: "button", "aria-label": L(`Lựa chọn ${i + 1}`, `Option ${i + 1}`), style: `background:${code(c)}`,
         "data-code": code(c), onclick: (e) => answerRead(e.currentTarget, code(c) === t),
       }));
     });
     $("#btn-read-next").hidden = true;
-    setFeedback("#read-feedback", "Đọc từng cặp chữ số: RR, GG, BB. Phím <kbd>1</kbd>–<kbd>4</kbd> để chọn.");
+    setFeedback("#read-feedback", L("Đọc từng cặp chữ số: RR, GG, BB. Phím <kbd>1</kbd>–<kbd>4</kbd> để chọn.", "Read the digits in pairs: RR, GG, BB. Keys <kbd>1</kbd>–<kbd>4</kbd> to pick."));
   }
 
   /** Đáp án nhiễu dựa trên lỗi hay gặp: đảo R↔B, đảo 2 chữ số trong một kênh, nhầm kênh. */
@@ -218,16 +218,16 @@
       S.score += 10; S.perfect++;
       $("#hud-score").textContent = S.score;
       G.sound.play("good");
-      setFeedback("#read-feedback", `✓ Đúng! +10 <span class="detail mono">${breakdown(S.target)}</span>`, "good");
+      setFeedback("#read-feedback", `✓ ${L("Đúng!", "Correct!")} +10 <span class="detail mono">${breakdown(S.target)}</span>`, "good");
     } else {
       btn.classList.add("wrong");
       G.shake(btn);
       G.sound.play("bad");
       const picked = btn.dataset.code;
       let why = "";
-      if (picked === code([S.target[2], S.target[1], S.target[0]])) why = "Bạn đã đọc ngược thứ tự thành B-G-R. Thứ tự luôn là <b>R</b>, <b>G</b>, <b>B</b> từ trái sang phải.";
-      else if (dist(picked.slice(1).match(/../g).map((h) => parseInt(h, 16)), S.target.map((v) => 255 - v)) === 0) why = "Đó là màu bù (255 − mỗi kênh).";
-      setFeedback("#read-feedback", `✗ Chưa đúng, bạn chọn <b class="mono">${picked}</b>. ${why}<span class="detail mono">${breakdown(S.target)}</span>`, "bad");
+      if (picked === code([S.target[2], S.target[1], S.target[0]])) why = L("Bạn đã đọc ngược thứ tự thành B-G-R. Thứ tự luôn là <b>R</b>, <b>G</b>, <b>B</b> từ trái sang phải.", "You read it backwards as B-G-R. The order is always <b>R</b>, <b>G</b>, <b>B</b> from left to right.");
+      else if (dist(picked.slice(1).match(/../g).map((h) => parseInt(h, 16)), S.target.map((v) => 255 - v)) === 0) why = L("Đó là màu bù (255 − mỗi kênh).", "That is the complementary colour (255 − each channel).");
+      setFeedback("#read-feedback", `✗ ${L("Chưa đúng, bạn chọn", "Not quite, you picked")} <b class="mono">${picked}</b>. ${why}<span class="detail mono">${breakdown(S.target)}</span>`, "bad");
     }
     $("#btn-read-next").hidden = false;
     $("#btn-read-next").focus();
@@ -239,10 +239,10 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = S.perfect === S.level.rounds;
-    $("#end-title").textContent = all ? "Mắt hex siêu đẳng! 🎉" : "Hoàn thành level!";
+    $("#end-title").textContent = all ? L("Mắt hex siêu đẳng! 🎉", "Hex vision master! 🎉") : L("Hoàn thành level!", "Level complete!");
     $("#end-detail").textContent = (S.level.kind === "mix"
-      ? `${S.perfect}/${S.level.rounds} vòng khớp ngay lần kiểm tra đầu.`
-      : `Đúng ${S.perfect}/${S.level.rounds} câu.`) + (isNew ? " Kỷ lục mới!" : "");
+      ? L(`${S.perfect}/${S.level.rounds} vòng khớp ngay lần kiểm tra đầu.`, `${S.perfect}/${S.level.rounds} rounds matched on the first check.`)
+      : L(`Đúng ${S.perfect}/${S.level.rounds} câu.`, `${S.perfect}/${S.level.rounds} correct.`)) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,16 +18,18 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🚨 Overflow Detective</h1>
-      <p>Máy tính chỉ có <b>một mạch cộng</b>. Phép trừ được làm bằng cách cộng số bù 2: <code>a − b = a + (−b)</code>. Kết quả luôn bị cắt còn <i>n</i> bit. Nếu kết quả thật nằm ngoài dải −2<sup>n−1</sup> … 2<sup>n−1</sup> − 1 thì xảy ra <b>overflow</b>.</p>
-      <p class="muted"><b>Dấu hiệu nhận biết:</b> cộng hai số <b>cùng dấu</b> mà kết quả lại <b>khác dấu</b>. Cộng hai số khác dấu thì không bao giờ tràn.</p>
+      <p data-lang="vi">Máy tính chỉ có <b>một mạch cộng</b>. Phép trừ được làm bằng cách cộng số bù 2: <code>a − b = a + (−b)</code>. Kết quả luôn bị cắt còn <i>n</i> bit. Nếu kết quả thật nằm ngoài dải −2<sup>n−1</sup> … 2<sup>n−1</sup> − 1 thì xảy ra <b>overflow</b>.</p>
+      <p data-lang="en">A computer has only <b>one adder</b>. Subtraction is done by adding the two's complement: <code>a − b = a + (−b)</code>. The result is always cut down to <i>n</i> bits. If the true result lies outside −2<sup>n−1</sup> … 2<sup>n−1</sup> − 1, you get an <b>overflow</b>.</p>
+      <p class="muted" data-lang="vi"><b>Dấu hiệu nhận biết:</b> cộng hai số <b>cùng dấu</b> mà kết quả lại <b>khác dấu</b>. Cộng hai số khác dấu thì không bao giờ tràn.</p>
+      <p class="muted" data-lang="en"><b>Tell-tale sign:</b> adding two numbers with the <b>same sign</b> gives a result with the <b>opposite sign</b>. Adding numbers with different signs never overflows.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat" id="hud-round-wrap">Vụ án<b id="hud-round">1/6</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat" id="hud-round-wrap"><span data-en="Case">Vụ án</span><b id="hud-round">1/6</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
         <span class="stat" id="hud-time-wrap">⏱<b id="hud-time">60</b></span>
       </div>
       <div class="timer-bar" id="timer-bar"><span></span></div>
@@ -35,41 +38,47 @@
         <div class="case" id="case"></div>
         <div class="sheet" id="sheet"></div>
         <div class="flag-row" id="flag-row">
-          <button class="btn ghost flag" id="flag" type="button">🏳️ Không overflow</button>
+          <button class="btn ghost flag" id="flag" type="button" data-en="🏳️ No overflow">🏳️ Không overflow</button>
         </div>
         <div class="quick" id="quick" hidden>
           <button class="btn lg bad" data-v="1">🚩 Overflow <kbd>←</kbd></button>
-          <button class="btn lg good" data-v="0">✓ Không tràn <kbd>→</kbd></button>
+          <button class="btn lg good" data-v="0"><span data-en="✓ No overflow">✓ Không tràn</span> <kbd>→</kbd></button>
         </div>
         <div class="feedback" id="feedback"></div>
         <div class="row" style="margin-top:14px;justify-content:flex-end">
-          <button class="btn" id="btn-check">Kết luận</button>
-          <button class="btn" id="btn-next" hidden>Vụ tiếp →</button>
+          <button class="btn" id="btn-check" data-en="Close the case">Kết luận</button>
+          <button class="btn" id="btn-next" hidden data-en="Next case →">Vụ tiếp →</button>
         </div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Bấm các bit của dòng <b>Kết quả</b> để ghi kết quả phép cộng (đã cắt còn n bit).</li>
       <li>Bấm nút cờ để khai báo có <b>overflow</b> hay không, rồi <b>Kết luận</b> (<kbd>Enter</kbd>).</li>
       <li><b>Phép trừ:</b> bước 1 ghi <b>−b</b> (đảo bit rồi +1), bước 2 mới cộng.</li>
       <li>Kết quả đúng +5, cờ đúng +5. Level "Thám tử nhanh": 60 giây, chỉ cần phán tràn hay không.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Click the bits of the <b>Result</b> row to write the sum (already cut to n bits).</li>
+      <li>Click the flag button to declare whether there is an <b>overflow</b>, then <b>Close the case</b> (<kbd>Enter</kbd>).</li>
+      <li><b>Subtraction:</b> step 1 writes <b>−b</b> (flip the bits, then +1), step 2 does the addition.</li>
+      <li>+5 for the right result, +5 for the right flag. "Quick detective" level: 60 seconds, just call overflow or not.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

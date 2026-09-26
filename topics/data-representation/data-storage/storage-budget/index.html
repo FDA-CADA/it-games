@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,55 +18,67 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>💾 Storage Budget</h1>
-      <p>Một file ảnh, âm thanh hay video <b>chưa nén</b> nặng bao nhiêu? Chỉ cần nhân đúng các thông số rồi <b>chia 8</b> để đổi bit ra byte.</p>
-      <ul class="formulas">
+      <p data-lang="vi">Một file ảnh, âm thanh hay video <b>chưa nén</b> nặng bao nhiêu? Chỉ cần nhân đúng các thông số rồi <b>chia 8</b> để đổi bit ra byte.</p>
+      <p data-lang="en">How big is an <b>uncompressed</b> image, sound or video file? Just multiply the right parameters and <b>divide by 8</b> to turn bits into bytes.</p>
+      <ul class="formulas" data-lang="vi">
         <li>🖼️ Ảnh = rộng × cao × bit depth ÷ 8</li>
         <li>🔊 Âm thanh = sampling rate × bit depth × số kênh × số giây ÷ 8</li>
         <li>🎬 Video = rộng × cao × bit depth × fps × số giây ÷ 8</li>
       </ul>
-      <p class="muted">Quy ước 1 KB = 1024 B, 1 MB = 1024 KB, 1 GB = 1024 MB.</p>
+      <ul class="formulas" data-lang="en">
+        <li>🖼️ Image = width × height × bit depth ÷ 8</li>
+        <li>🔊 Audio = sampling rate × bit depth × channels × seconds ÷ 8</li>
+        <li>🎬 Video = width × height × bit depth × fps × seconds ÷ 8</li>
+      </ul>
+      <p class="muted" data-en="Convention: 1 KB = 1024 B, 1 MB = 1024 KB, 1 GB = 1024 MB.">Quy ước 1 KB = 1024 B, 1 MB = 1024 KB, 1 GB = 1024 MB.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Câu<b id="hud-round">1/5</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Question">Câu</span><b id="hud-round">1/5</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
         <span class="stat">⏱<b id="hud-time">40</b></span>
       </div>
       <div class="timer-bar" id="timer-bar"><span></span></div>
 
       <div class="card">
         <div class="clip" id="clip"></div>
-        <p class="q">File này (chưa nén) nặng khoảng bao nhiêu?</p>
+        <p class="q" data-en="Roughly how big is this file (uncompressed)?">File này (chưa nén) nặng khoảng bao nhiêu?</p>
         <div class="opts" id="opts"></div>
         <div class="feedback" id="feedback"></div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden>Câu tiếp →</button></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden data-en="Next question →">Câu tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Đọc thông số, ước lượng dung lượng rồi chọn 1 trong 4 đáp án (phím <kbd>1</kbd>–<kbd>4</kbd>).</li>
       <li>Các đáp án sai được tạo từ lỗi hay gặp: quên chia 8, quên số kênh màu/âm thanh, quên fps, quên thời lượng.</li>
       <li>Đúng được 10 điểm + thưởng thời gian. Trả lời xong sẽ thấy lời giải từng bước.</li>
       <li>Level Boss kết thúc bằng bài trên slide 81: video 640×480, 24-bit, 120 fps, 10 giây.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Read the parameters, estimate the size, and pick 1 of 4 answers (keys <kbd>1</kbd>–<kbd>4</kbd>).</li>
+      <li>Wrong answers come from common mistakes: forgetting ÷ 8, the colour/audio channels, the fps, or the duration.</li>
+      <li>A correct answer earns 10 points + a time bonus. Afterwards you see the step-by-step solution.</li>
+      <li>The Boss level ends with the exercise from slide 81: a 640×480, 24-bit, 120 fps, 10-second video.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

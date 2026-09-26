@@ -4,6 +4,10 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 
 🎮 **Chơi ngay:** `https://<github-username>.github.io/<tên-repo>/` (cập nhật link sau khi bật GitHub Pages)
 
+🌐 **Song ngữ Việt / Anh:** bấm nút **EN / VI** trên đầu trang, hoặc gửi link kèm `?lang=en` để mở thẳng bản tiếng Anh.
+
+> **English:** Interactive web games for an *Introduction to Information Technology* course (Data Science & AI students). Each 5–10 minute game targets one common misconception, from number systems and IEEE 754 floats to bitwise operations. Plain HTML/CSS/JS, no build step, hosted on GitHub Pages. Every game is available in Vietnamese and English (append `?lang=en` to any URL). Maintainer docs are in Vietnamese.
+
 ## Danh sách game
 
 | Chủ đề | Phần | Game | Luyện kỹ năng |
@@ -40,7 +44,8 @@ Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Khi th
 ├── .nojekyll                   # Báo GitHub Pages phục vụ file tĩnh nguyên trạng
 ├── assets/
 │   ├── css/base.css            # Giao diện chung: token màu sáng/tối, nút, card, HUD…
-│   ├── js/common.js            # Tiện ích chung (namespace G): header, timer, điểm, âm thanh…
+│   ├── js/lang.js              # Chọn ngôn ngữ (vi/en) trước khi trang hiển thị
+│   ├── js/common.js            # Tiện ích chung (namespace G): header, đa ngôn ngữ, timer, điểm…
 │   ├── js/catalog.js           # ⭐ DANH MỤC mọi chủ đề, phần và game
 │   └── favicon.svg
 ├── topics/                     # Mỗi chủ đề (chương) một thư mục
@@ -52,9 +57,11 @@ Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Khi th
 │               ├── style.css
 │               ├── game.js
 │               └── README.md   # Mục tiêu, lỗi sai nhắm tới, luật, level, ghi chú kỹ thuật
-├── templates/game/             # Khung để copy khi tạo game mới
+├── templates/game/             # Khung để copy khi tạo game mới (đã song ngữ)
+├── tools/
+│   └── i18n_lint.py            # Báo chữ tiếng Việt chưa có bản tiếng Anh
 └── docs/
-    └── adding-a-game.md        # Hướng dẫn thêm game và chủ đề, API dùng chung
+    └── adding-a-game.md        # Hướng dẫn thêm game, đa ngôn ngữ, API dùng chung
 ```
 
 Vì sao chọn cấu trúc này:
@@ -63,6 +70,7 @@ Vì sao chọn cấu trúc này:
 - **Mỗi game một thư mục kèm README riêng**, nên sửa một game không ảnh hưởng game khác, và tài liệu nằm ngay cạnh code.
 - **Một file `catalog.js` duy nhất** là nguồn sự thật cho trang chủ, header và nút "Game tiếp theo". Thêm game chỉ cần thêm một mục vào đây.
 - **HTML/CSS/JS thuần, không build step:** push là GitHub Pages phục vụ ngay, ai cũng sửa được.
+- **Bản dịch đặt ngay cạnh bản gốc** (`data-en="…"` trong HTML, `L("…", "…")` trong JS) thay vì file từ điển riêng, nên sửa câu nào thì thấy ngay bản dịch cần sửa theo. Chi tiết ở [docs/adding-a-game.md](docs/adding-a-game.md#đa-ngôn-ngữ-việt--anh).
 
 ## Chạy trên máy
 
@@ -97,6 +105,7 @@ Xem [docs/adding-a-game.md](docs/adding-a-game.md). Tóm tắt:
 1. `cp -r templates/game topics/<chủ-đề>/<phần>/<game-id>`
 2. Sửa `data-game`, `LEVELS` và logic trong `game.js`, viết `README.md`.
 3. Thêm mục vào `assets/js/catalog.js` với `status: "ready"`.
+4. Viết chữ ở cả hai ngôn ngữ, rồi chạy `python3 tools/i18n_lint.py` để chắc không sót chỗ nào.
 
 ## Quyền riêng tư
 

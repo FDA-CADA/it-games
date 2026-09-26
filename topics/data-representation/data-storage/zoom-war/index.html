@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,16 +18,17 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🔎 Zoom War</h1>
-      <p>Có hai cách lưu hình ảnh. <b>Raster</b> (bitmap: JPG, PNG) lưu một lưới <b>điểm ảnh</b>. <b>Vector</b> (SVG, PDF, font chữ) lưu <b>công thức hình học</b>: đường thẳng, đường cong, màu tô.</p>
-      <p class="muted">Ở kích thước bình thường, hai loại trông y hệt nhau. Zoom vào thì mới biết ai là ai.</p>
+      <p data-lang="vi">Có hai cách lưu hình ảnh. <b>Raster</b> (bitmap: JPG, PNG) lưu một lưới <b>điểm ảnh</b>. <b>Vector</b> (SVG, PDF, font chữ) lưu <b>công thức hình học</b>: đường thẳng, đường cong, màu tô.</p>
+      <p data-lang="en">There are two ways to store a picture. <b>Raster</b> (bitmap: JPG, PNG) stores a grid of <b>pixels</b>. <b>Vector</b> (SVG, PDF, fonts) stores <b>geometry</b>: lines, curves and fill colours.</p>
+      <p class="muted" data-en="At normal size they look identical. Only zooming in reveals which is which.">Ở kích thước bình thường, hai loại trông y hệt nhau. Zoom vào thì mới biết ai là ai.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Vòng<b id="hud-round">1/5</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Round">Vòng</span><b id="hud-round">1/5</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
       </div>
 
       <div class="card">
@@ -39,13 +41,13 @@
           </div>
           <div class="zoom-row">
             <span>🔍</span>
-            <input type="range" id="zoom" min="0" max="5" step="0.01" value="0" aria-label="Mức zoom">
+            <input type="range" id="zoom" min="0" max="5" step="0.01" value="0" aria-label="Mức zoom" data-en-aria="Zoom level">
             <b class="mono" id="zoom-val">1×</b>
-            <button class="btn ghost sm" id="btn-auto">▶ Zoom liên tục</button>
+            <button class="btn ghost sm" id="btn-auto" data-en="▶ Keep zooming">▶ Zoom liên tục</button>
           </div>
           <div class="row answers" id="answers">
-            <button class="btn" data-pick="a">A là raster</button>
-            <button class="btn" data-pick="b">B là raster</button>
+            <button class="btn" data-pick="a" data-en="A is raster">A là raster</button>
+            <button class="btn" data-pick="b" data-en="B is raster">B là raster</button>
           </div>
         </div>
 
@@ -54,31 +56,37 @@
         </div>
 
         <div class="feedback" id="feedback"></div>
-        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden>Tiếp →</button></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="btn-next" hidden data-en="Next →">Tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li><b>Ai vỡ trước?</b> Kéo thanh zoom (hoặc bấm ▶ Zoom liên tục) rồi chỉ ra hình nào là raster. Raster độ phân giải càng cao thì càng phải zoom sâu.</li>
       <li><b>Dung lượng:</b> tính và so sánh kích thước file raster với vector.</li>
       <li><b>Chọn định dạng:</b> mỗi tình huống nên dùng raster hay vector?</li>
       <li>Mỗi câu đúng ngay lần đầu +10 điểm.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li><b>Who breaks first?</b> Drag the zoom slider (or press ▶ Keep zooming) and say which picture is raster. The higher the raster resolution, the deeper you must zoom.</li>
+      <li><b>File size:</b> compute and compare raster and vector file sizes.</li>
+      <li><b>Pick the format:</b> raster or vector for each situation?</li>
+      <li>+10 for every answer right on the first try.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

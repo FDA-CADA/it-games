@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,16 +18,18 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🔍 One Byte, Many Meanings</h1>
-      <p>Bộ nhớ chỉ chứa bit. Cùng một byte <code>01000001</code> có thể là số <b>65</b>, là chữ <b>'A'</b>, hay là một điểm ảnh xám tối. <b>Ý nghĩa nằm ở cách diễn giải</b>, không nằm trong bit.</p>
-      <p class="muted">Mỗi vòng, bạn nhìn một byte qua 4 "kính lọc" và đoán giá trị qua từng kính.</p>
+      <p data-lang="vi">Bộ nhớ chỉ chứa bit. Cùng một byte <code>01000001</code> có thể là số <b>65</b>, là chữ <b>'A'</b>, hay là một điểm ảnh xám tối. <b>Ý nghĩa nằm ở cách diễn giải</b>, không nằm trong bit.</p>
+      <p data-lang="en">Memory only holds bits. The same byte <code>01000001</code> can be the number <b>65</b>, the letter <b>'A'</b>, or a dark gray pixel. <b>Meaning lives in the interpretation</b>, not in the bits.</p>
+      <p class="muted" data-lang="vi">Mỗi vòng, bạn nhìn một byte qua 4 "kính lọc" và đoán giá trị qua từng kính.</p>
+      <p class="muted" data-lang="en">Each round you look at one byte through 4 "lenses" and work out its value through each one.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Vòng<b id="hud-round">1/5</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Round">Vòng</span><b id="hud-round">1/5</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
       </div>
 
       <div class="card">
@@ -37,59 +40,64 @@
 
         <div class="lenses">
           <div class="lens" data-lens="u">
-            <div class="lens-head"><span class="glass">🔢</span> Unsigned <small>số không dấu</small></div>
-            <input id="in-u" class="mono num-in" inputmode="numeric" autocomplete="off" placeholder="0 … 255" aria-label="Giá trị unsigned">
+            <div class="lens-head"><span class="glass">🔢</span> Unsigned <small data-en="no sign">số không dấu</small></div>
+            <input id="in-u" class="mono num-in" inputmode="numeric" autocomplete="off" placeholder="0 … 255" aria-label="Giá trị unsigned" data-en-aria="Unsigned value">
             <div class="verdict"></div>
           </div>
           <div class="lens" data-lens="s">
-            <div class="lens-head"><span class="glass">±</span> Two's complement <small>số có dấu</small></div>
-            <input id="in-s" class="mono num-in" inputmode="text" autocomplete="off" placeholder="−128 … 127" aria-label="Giá trị two's complement">
+            <div class="lens-head"><span class="glass">±</span> Two's complement <small data-en="signed">số có dấu</small></div>
+            <input id="in-s" class="mono num-in" inputmode="text" autocomplete="off" placeholder="−128 … 127" aria-label="Giá trị two's complement" data-en-aria="Two's complement value">
             <div class="verdict"></div>
           </div>
           <div class="lens" data-lens="a">
-            <div class="lens-head"><span class="glass">🔤</span> ASCII <small>ký tự</small></div>
+            <div class="lens-head"><span class="glass">🔤</span> ASCII <small data-en="character">ký tự</small></div>
             <div class="opts" id="opts-a"></div>
             <div class="verdict"></div>
           </div>
           <div class="lens" data-lens="g">
-            <div class="lens-head"><span class="glass">🖼️</span> Pixel xám <small>0 = đen, 255 = trắng</small></div>
+            <div class="lens-head"><span class="glass">🖼️</span> <span data-en="Gray pixel">Pixel xám</span> <small data-en="0 = black, 255 = white">0 = đen, 255 = trắng</small></div>
             <div class="opts swatches" id="opts-g"></div>
             <div class="verdict"></div>
           </div>
         </div>
 
         <details class="cheat" id="cheat">
-          <summary>📋 Bảng tra nhanh</summary>
-          <ul>
+          <summary data-en="📋 Cheat sheet">📋 Bảng tra nhanh</summary>
+          <ul data-lang="en">
+            <li>In two's complement the leftmost bit (128) is the <b>sign bit</b>: if it is 1, value = unsigned − 256.</li>
+            <li>ASCII uses only 7 bits (0–127). Anchors to remember: <code>space = 32</code>, <code>'0' = 48</code>, <code>'A' = 65</code>, <code>'a' = 97</code>. Codes 0–31 and 127 are control characters (not printable).</li>
+            <li>8-bit gray pixel: 0 is pure black, 255 is pure white, 128 is mid-gray.</li>
+          </ul>
+          <ul data-lang="vi">
             <li>Bit trái nhất (128) là <b>bit dấu</b> trong two's complement: nếu bằng 1 thì giá trị = unsigned − 256.</li>
             <li>ASCII chỉ dùng 7 bit (0–127). Mốc cần nhớ: <code>space = 32</code>, <code>'0' = 48</code>, <code>'A' = 65</code>, <code>'a' = 97</code>. Mã 0–31 và 127 là ký tự điều khiển (không in được).</li>
             <li>Pixel xám 8-bit: 0 là đen tuyền, 255 là trắng tinh, 128 là xám giữa.</li>
           </ul>
         </details>
 
-        <div class="feedback" id="feedback">Điền cả 4 kính rồi bấm <b>Kiểm tra</b> (<kbd>Enter</kbd>).</div>
+        <div class="feedback" id="feedback"></div>
         <div class="row" style="margin-top:14px;justify-content:flex-end">
-          <button class="btn" id="btn-check">Kiểm tra</button>
-          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+          <button class="btn" id="btn-check" data-en="Check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden data-en="Next round →">Vòng tiếp →</button>
         </div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Mỗi vòng cho một byte (8 bit).</li>
       <li><b>Unsigned:</b> cộng trọng số của các bit 1.</li>
       <li><b>Two's complement:</b> nếu bit đầu là 0 thì giống unsigned. Nếu là 1 thì lấy unsigned − 256.</li>
@@ -97,7 +105,15 @@
       <li><b>Pixel xám:</b> chọn ô xám có độ sáng đúng.</li>
       <li>Mỗi kính đúng +5 điểm, đúng cả 4 kính thưởng thêm +5.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Each round gives you one byte (8 bits).</li>
+      <li><b>Unsigned:</b> add up the weights of the 1 bits.</li>
+      <li><b>Two's complement:</b> if the first bit is 0 it equals unsigned. If it is 1, take unsigned − 256.</li>
+      <li><b>ASCII:</b> pick the character for that code, or "no printable character".</li>
+      <li><b>Gray pixel:</b> pick the swatch with the right brightness.</li>
+      <li>+5 per correct lens, +5 bonus when all 4 are right.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

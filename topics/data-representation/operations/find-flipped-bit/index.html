@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,50 +18,58 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>📡 Find the Flipped Bit</h1>
-      <p>Dữ liệu truyền qua mạng hay đọc từ ổ đĩa có thể bị <b>lật bit</b> do nhiễu. Cách phát hiện đơn giản nhất là <b>parity bit</b>: thêm 1 bit sao cho tổng số bit 1 luôn là <b>số chẵn</b> (even parity).</p>
-      <p>Bên nhận đếm lại số bit 1: nếu ra số lẻ thì chắc chắn gói tin đã bị lỗi. Thực chất parity bit chính là <b>XOR</b> của tất cả các bit dữ liệu.</p>
+      <p data-lang="vi">Dữ liệu truyền qua mạng hay đọc từ ổ đĩa có thể bị <b>lật bit</b> do nhiễu. Cách phát hiện đơn giản nhất là <b>parity bit</b>: thêm 1 bit sao cho tổng số bit 1 luôn là <b>số chẵn</b> (even parity).</p>
+      <p data-lang="en">Data sent over a network or read from a disk can have <b>bits flipped</b> by noise. The simplest way to detect it is a <b>parity bit</b>: add 1 bit so that the total number of 1 bits is always <b>even</b> (even parity).</p>
+      <p data-lang="vi">Bên nhận đếm lại số bit 1: nếu ra số lẻ thì chắc chắn gói tin đã bị lỗi. Thực chất parity bit chính là <b>XOR</b> của tất cả các bit dữ liệu.</p>
+      <p data-lang="en">The receiver counts the 1 bits again: an odd count means the packet was definitely corrupted. In fact, the parity bit is just the <b>XOR</b> of all the data bits.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Round">Vòng</span><b id="hud-round">1/4</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
       </div>
       <div class="card">
         <div class="mission" id="mission"></div>
-        <div class="channel" aria-hidden="true"><span>📤</span><span class="noise">⚡ kênh nhiễu ⚡</span><span>📥</span></div>
+        <div class="channel" aria-hidden="true"><span>📤</span><span class="noise" data-en="⚡ noisy channel ⚡">⚡ kênh nhiễu ⚡</span><span>📥</span></div>
         <div class="packets" id="packets"></div>
         <div class="feedback" id="feedback"></div>
         <div class="row" style="margin-top:14px;justify-content:flex-end">
-          <button class="btn" id="btn-check">Kiểm tra</button>
-          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+          <button class="btn" id="btn-check" data-en="Check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden data-en="Next round →">Vòng tiếp →</button>
         </div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li><b>Tính parity:</b> bấm vào bit parity (viền cam, cuối mỗi gói) để tổng số bit 1 là số chẵn.</li>
       <li><b>Trạm kiểm tra:</b> bấm nút của từng gói để chuyển giữa ✅ OK và ❌ Lỗi.</li>
       <li><b>Parity 2 chiều:</b> mỗi hàng và mỗi cột đều có parity riêng. Bấm vào đúng ô bị lật để sửa lỗi.</li>
       <li>Mỗi gói hoặc ô đúng +3, cả vòng đúng ngay lần đầu thưởng thêm +5.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li><b>Compute parity:</b> click the parity bit (orange outline, end of each packet) so the number of 1 bits is even.</li>
+      <li><b>Checkpoint:</b> click each packet's button to switch between ✅ OK and ❌ Error.</li>
+      <li><b>2D parity:</b> every row and every column has its own parity. Click the flipped cell to fix it.</li>
+      <li>+3 per correct packet or cell, +5 bonus when the whole round is right first time.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

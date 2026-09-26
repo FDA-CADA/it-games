@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,22 +18,28 @@
   <main class="container game-main">
     <section data-screen="start" class="card">
       <h1>🏭 Bit Conveyor</h1>
-      <p>Băng chuyền dịch các bit sang trái hoặc phải. Có ba kiểu dịch:</p>
-      <ul class="legend-list">
+      <p data-en="The conveyor shifts bits left or right. There are three kinds of shift:">Băng chuyền dịch các bit sang trái hoặc phải. Có ba kiểu dịch:</p>
+      <ul class="legend-list" data-lang="vi">
         <li><b>Logical</b>: bit rơi ra ngoài thì mất, chỗ trống được điền <b>0</b>. Dịch trái 1 = ×2, dịch phải 1 = ÷2 (số không dấu).</li>
         <li><b>Circular</b> (rotate): bit rơi ra ở đầu này thì <b>quay lại</b> ở đầu kia. Không mất bit nào.</li>
         <li><b>Arithmetic</b> dịch phải: chỗ trống được điền bằng <b>bit dấu</b>, nên số âm vẫn âm. Đây là ÷2 cho số two's complement.</li>
       </ul>
-      <p class="muted">Nhiệm vụ: đưa pattern về đúng đích với <b>ít bước nhất</b>.</p>
+      <ul class="legend-list" data-lang="en">
+        <li><b>Logical</b>: bits that fall off are lost, and the gap is filled with <b>0</b>. Shift left 1 = ×2, shift right 1 = ÷2 (unsigned).</li>
+        <li><b>Circular</b> (rotate): a bit falling off one end <b>comes back</b> at the other. No bits are lost.</li>
+        <li><b>Arithmetic</b> right shift: the gap is filled with the <b>sign bit</b>, so negatives stay negative. It is ÷2 for two's complement numbers.</li>
+      </ul>
+      <p class="muted" data-lang="vi">Nhiệm vụ: đưa pattern về đúng đích với <b>ít bước nhất</b>.</p>
+      <p class="muted" data-lang="en">Your job: move the pattern to its target in the <b>fewest steps</b>.</p>
       <div class="level-list" id="levels"></div>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
         <span class="stat">Level<b id="hud-level">1</b></span>
-        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat">Bước<b id="hud-moves">0</b></span>
+        <span class="stat"><span data-en="Round">Vòng</span><b id="hud-round">1/4</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Steps">Bước</span><b id="hud-moves">0</b></span>
       </div>
       <div class="card">
         <div class="mission" id="mission"></div>
@@ -41,35 +48,41 @@
         <div class="history" id="history"></div>
         <div class="feedback" id="feedback"></div>
         <div class="row" style="margin-top:14px">
-          <button class="btn ghost sm" id="btn-undo">↶ Hoàn tác</button>
-          <button class="btn ghost sm" id="btn-reset">↺ Làm lại</button>
+          <button class="btn ghost sm" id="btn-undo" data-en="↶ Undo">↶ Hoàn tác</button>
+          <button class="btn ghost sm" id="btn-reset" data-en="↺ Restart">↺ Làm lại</button>
           <span class="spacer"></span>
-          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+          <button class="btn" id="btn-next" hidden data-en="Next round →">Vòng tiếp →</button>
         </div>
       </div>
     </section>
 
     <section data-screen="end" class="card center" hidden>
-      <h2 id="end-title">Hoàn thành!</h2>
+      <h2 id="end-title" data-en="Done!">Hoàn thành!</h2>
       <div class="end-score" id="end-score">0</div>
       <p class="muted" id="end-detail"></p>
       <div class="row" style="justify-content:center">
-        <button class="btn" id="btn-again">Chơi lại level này</button>
-        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+        <button class="btn" id="btn-again" data-en="Replay this level">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu" data-en="Choose another level">Chọn level khác</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Bấm một nút dịch là áp dụng ngay lên byte <b>Hiện tại</b>. Dùng ↶ để hoàn tác (vẫn tính bước), ↺ để làm lại từ đầu.</li>
       <li>Khớp <b>Đích</b> với đúng số bước tối thiểu được +15, mỗi bước thừa −3.</li>
       <li>Bước tối thiểu được máy tính trước bằng cách thử mọi cách kết hợp (BFS).</li>
       <li>Phím tắt: <kbd>1</kbd>–<kbd>5</kbd> theo thứ tự các nút, <kbd>Z</kbd> để hoàn tác.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Pressing a shift button applies it straight to the <b>Current</b> byte. Use ↶ to undo (the step still counts) and ↺ to start over.</li>
+      <li>Reaching the <b>Target</b> in the minimum number of steps earns +15, −3 per extra step.</li>
+      <li>The minimum is computed in advance by trying every combination (BFS).</li>
+      <li>Shortcuts: <kbd>1</kbd>–<kbd>5</kbd> for the buttons in order, <kbd>Z</kbd> to undo.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>

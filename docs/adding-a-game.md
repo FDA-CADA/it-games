@@ -16,8 +16,8 @@ Quy ước đặt tên:
 
 ## 2. Sửa 3 chỗ bắt buộc
 
-1. `index.html`: sửa `<title>`, `data-game="number-wheel"`, nội dung màn hình start và hộp thoại hướng dẫn.
-2. `game.js`: sửa `GAME_ID`, `LEVELS`, logic trong `nextRound()` / `answer()`.
+1. `index.html`: sửa `<title>`, `data-game="number-wheel"`, nội dung màn hình start và hộp thoại hướng dẫn (viết cả tiếng Việt lẫn tiếng Anh, xem mục [Đa ngôn ngữ](#đa-ngôn-ngữ-việt--anh)).
+2. `game.js`: sửa `GAME_ID`, `LEVELS`, logic trong `nextRound()` / `answer()`. Mọi chữ hiển thị viết dạng `L("tiếng Việt", "English")`.
 3. [`assets/js/catalog.js`](../assets/js/catalog.js): thêm (hoặc sửa) mục của game:
 
 ```js
@@ -25,9 +25,14 @@ Quy ước đặt tên:
   id: "number-wheel", title: "Number Wheel", icon: "🎡", status: "ready",
   path: "topics/data-representation/data-storage/number-wheel/",
   skill: "2.2 Integers",
-  desc: "Một câu mô tả hiện trên thẻ ở trang chủ.",
+  desc: {
+    vi: "Một câu mô tả hiện trên thẻ ở trang chủ.",
+    en: "One sentence shown on the home page card.",
+  },
 },
 ```
+
+`title`, `skill`, `desc` có thể là chuỗi (giống nhau ở mọi ngôn ngữ) hoặc object `{ vi, en }`.
 
 Trang chủ, header của game ("← Tất cả game", tên phần) và nút "Game tiếp theo" đều tự sinh từ `catalog.js`.
 
@@ -51,7 +56,33 @@ Checklist trước khi push:
 - [ ] Thử ở chiều rộng điện thoại (DevTools → Toggle device toolbar, 360–390px): không bị cuộn ngang.
 - [ ] Thử ở chế độ tối (DevTools → Rendering → `prefers-color-scheme: dark`).
 - [ ] Chơi được bằng bàn phím cho các thao tác chính (`Enter` để kiểm tra / sang vòng tiếp).
+- [ ] Chơi thử ở cả hai ngôn ngữ: thêm `?lang=en` hoặc `?lang=vi` vào cuối URL.
+- [ ] `python3 tools/i18n_lint.py` báo 0 chỗ chưa dịch.
 - [ ] Game đã có trong `catalog.js` với `status: "ready"`.
+
+## Đa ngôn ngữ (Việt / Anh)
+
+Mọi trang đều có nút **EN / VI** trên header. Lựa chọn được lưu trên trình duyệt. Có thể gửi link mở thẳng một ngôn ngữ bằng `?lang=en` hoặc `?lang=vi`. Mặc định là tiếng Việt.
+
+`assets/js/lang.js` (nạp trong `<head>`) chọn ngôn ngữ **trước khi trang hiển thị**, đặt `<html lang="vi|en">`, nên không bị nháy chữ. Nguyên tắc chung: **bản tiếng Việt và tiếng Anh luôn nằm cạnh nhau** ngay tại chỗ dùng, không có file từ điển riêng, nên sửa câu nào thì thấy ngay bản dịch cần sửa theo.
+
+| Loại chữ | Cách viết |
+| --- | --- |
+| Câu ngắn trong HTML (nút, nhãn HUD, tiêu đề) | `<button data-en="Next round →">Vòng tiếp →</button>` |
+| Đoạn dài trong HTML (có thẻ `<b>`, `<code>`…) | Hai khối cạnh nhau: `<p data-lang="vi">…</p>` và `<p data-lang="en">…</p>` |
+| Thuộc tính | `placeholder` + `data-en-placeholder`, `title` + `data-en-title`, `aria-label` + `data-en-aria` |
+| Chữ sinh ra trong JS | `L("Vòng tiếp →", "Next round →")`, hoặc template: ``L(`Đúng ${n} câu.`, `${n} correct.`)`` |
+| Dữ liệu trong `catalog.js` | `{ vi: "…", en: "…" }`, đọc bằng `G.tr(x)` |
+| Nội dung cố ý giữ tiếng Việt (vd. câu "Kinh tế Quốc dân" trong ASCII Spy) | Bọc trong `data-i18n-skip`. Trong JS thì thêm chú thích `// i18n-ok` cuối dòng |
+
+Lưu ý khi viết JS:
+
+- `L()` được gọi lúc game chạy, nên có thể dùng ngay trong mảng `LEVELS`, câu hỏi, đáp án.
+- **Không đặt tên biến cục bộ là `L`**, vì nó sẽ che mất hàm dịch. Lỗi này từng xảy ra với `const L = S.level`.
+- Nếu đáp án được so khớp theo chữ (ví dụ nút "+ Dương" / "− Âm"), hãy lưu chuỗi đã dịch vào biến rồi dùng biến đó cho cả nút lẫn phép so sánh.
+- Đổi ngôn ngữ sẽ tải lại trang (có hỏi xác nhận nếu đang chơi dở), nên game không cần tự vẽ lại giao diện.
+
+Kiểm tra: `python3 tools/i18n_lint.py` liệt kê mọi chữ tiếng Việt chưa có bản tiếng Anh, trả mã lỗi 1 nếu còn sót.
 
 ## Thêm chủ đề mới (chương mới)
 
@@ -62,8 +93,8 @@ Checklist trước khi push:
 {
   id: "computer-architecture",
   title: "Computer Architecture",
-  label: "Tuần 3",
-  summary: "CPU, bộ nhớ và chu trình fetch–decode–execute.",
+  label: { vi: "Tuần 3", en: "Week 3" },
+  summary: { vi: "CPU, bộ nhớ và chu trình fetch–decode–execute.", en: "The CPU, memory and the fetch–decode–execute cycle." },
   sections: [
     { id: "cpu", title: "CPU", games: [ /* ... */ ] },
   ],
@@ -96,6 +127,7 @@ Game ở dạng ý tưởng dùng `status: "planned"` (không cần `path`). Ch�
 | `G.gcd`, `G.parseFraction`, `G.isPowerOfTwo` | Phân số |
 | `G.bits(v, n)`, `G.signed(bits)` | Số → chuỗi n bit (số âm theo bù 2), chuỗi bit → số có dấu |
 | `G.formatBytes(bytes)`, `G.fmtInt(n)` | "1.03 GB" (1 KB = 1024 B), "1 105 920 000" |
+| `G.L(vi, en)` (cũng có sẵn là `L`), `G.tr({ vi, en })`, `G.lang` | Đa ngôn ngữ |
 | `G.bitRow(v, n, { onToggle, mark, bad, cls })` | Vẽ một hàng n bit (bấm được nếu có `onToggle(i)`), dùng class `.bitrow` trong base.css |
 | `G.mountNextLink(container)` | Nút "Game tiếp theo" |
 

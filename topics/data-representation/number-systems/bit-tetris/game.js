@@ -1,14 +1,14 @@
 /* Bit Tetris — nhóm bit 3/4 tính từ dấu chấm để đổi bin ↔ oct/hex. Xem README.md. */
 (function () {
   "use strict";
-  const { $, el } = G;
+  const { $, el, L } = G;
 
   const LEVELS = [
-    { name: "Bin → Oct", desc: "Nhóm 3 bit, chỉ phần nguyên", dirs: ["b2x"], ks: [3], int: [5, 9], frac: [0, 0], fall: 60, rounds: 6 },
-    { name: "Bin → Hex", desc: "Nhóm 4 bit, chỉ phần nguyên", dirs: ["b2x"], ks: [4], int: [6, 10], frac: [0, 0], fall: 60, rounds: 6 },
-    { name: "Có dấu chấm", desc: "Phần thập phân nhóm sang phải", dirs: ["b2x"], ks: [3, 4], int: [3, 7], frac: [2, 5], fall: 60, rounds: 6 },
-    { name: "Oct/Hex → Bin", desc: "Mỗi chữ số bung ra 3 hoặc 4 bit", dirs: ["x2b"], ks: [3, 4], dInt: [2, 3], dFrac: [0, 2], fall: 55, rounds: 6 },
-    { name: "Tổng lực", desc: "Trộn tất cả, rơi nhanh hơn", dirs: ["b2x", "x2b"], ks: [3, 4], int: [3, 8], frac: [0, 4], dInt: [2, 3], dFrac: [0, 1], fall: 42, rounds: 8 },
+    { name: "Bin → Oct", desc: L("Nhóm 3 bit, chỉ phần nguyên", "Groups of 3, integers only"), dirs: ["b2x"], ks: [3], int: [5, 9], frac: [0, 0], fall: 60, rounds: 6 },
+    { name: "Bin → Hex", desc: L("Nhóm 4 bit, chỉ phần nguyên", "Groups of 4, integers only"), dirs: ["b2x"], ks: [4], int: [6, 10], frac: [0, 0], fall: 60, rounds: 6 },
+    { name: L("Có dấu chấm", "With a point"), desc: L("Phần thập phân nhóm sang phải", "The fraction groups to the right"), dirs: ["b2x"], ks: [3, 4], int: [3, 7], frac: [2, 5], fall: 60, rounds: 6 },
+    { name: "Oct/Hex → Bin", desc: L("Mỗi chữ số bung ra 3 hoặc 4 bit", "Each digit unfolds into 3 or 4 bits"), dirs: ["x2b"], ks: [3, 4], dInt: [2, 3], dFrac: [0, 2], fall: 55, rounds: 6 },
+    { name: L("Tổng lực", "All-out"), desc: L("Trộn tất cả, rơi nhanh hơn", "Everything mixed, falls faster"), dirs: ["b2x", "x2b"], ks: [3, 4], int: [3, 8], frac: [0, 4], dInt: [2, 3], dFrac: [0, 1], fall: 42, rounds: 8 },
   ];
   const PENALTY = 0.12; // mỗi lần sai, khối rơi thêm 12% quãng đường
   const LIFE_H = 44;
@@ -25,17 +25,17 @@
   };
 
   function makePiece() {
-    const L = S.level;
-    const dir = G.pick(L.dirs), k = G.pick(L.ks), base = k === 3 ? 8 : 16;
+    const lvl = S.level;
+    const dir = G.pick(lvl.dirs), k = G.pick(lvl.ks), base = k === 3 ? 8 : 16;
     if (dir === "b2x") {
-      let iLen = G.randInt(L.int[0], L.int[1]);
-      if (iLen % k === 0 && Math.random() < 0.7 && iLen < L.int[1]) iLen++; // thường cần đệm số 0
-      let fLen = G.randInt(L.frac[0], L.frac[1]);
-      if (iLen + fLen > 11) fLen = Math.max(L.frac[0], 11 - iLen);
+      let iLen = G.randInt(lvl.int[0], lvl.int[1]);
+      if (iLen % k === 0 && Math.random() < 0.7 && iLen < lvl.int[1]) iLen++; // thường cần đệm số 0
+      let fLen = G.randInt(lvl.frac[0], lvl.frac[1]);
+      if (iLen + fLen > 11) fLen = Math.max(lvl.frac[0], 11 - iLen);
       return { dir, k, base, int: randBits(iLen, true, false), frac: randBits(fLen, false, true) };
     }
-    const nI = G.randInt(L.dInt[0], L.dInt[1]);
-    let nF = G.randInt(L.dFrac[0], L.dFrac[1]);
+    const nI = G.randInt(lvl.dInt[0], lvl.dInt[1]);
+    let nF = G.randInt(lvl.dFrac[0], lvl.dFrac[1]);
     if (k === 4) nF = Math.min(nF, 4 - nI); // hex: tối đa 4 chữ số cho vừa màn hình
     const dg = () => G.digitChar(G.randInt(0, base - 1));
     let int = G.digitChar(G.randInt(1, base - 1)); for (let i = 1; i < nI; i++) int += dg();
@@ -72,13 +72,13 @@
     $("#hud-lives").textContent = "❤".repeat(S.lives) + "♡".repeat(3 - S.lives);
     $("#btn-next").hidden = true;
     $("#btn-action").hidden = false;
-    const name = S.p.base === 8 ? "bát phân (hệ 8)" : "thập lục phân (hệ 16)";
+    const name = S.p.base === 8 ? L("bát phân (hệ 8)", "octal (base 8)") : L("thập lục phân (hệ 16)", "hexadecimal (base 16)");
     if (S.p.dir === "b2x") {
-      $("#goal").innerHTML = `Đổi sang <span class="tag">${name}</span>: cắt thành nhóm <span class="tag">${S.p.k}</span> bit`;
-      setFeedback("Bấm vào khe giữa các bit để đặt vết cắt. Dấu chấm đã là ranh giới sẵn.");
+      $("#goal").innerHTML = L(`Đổi sang <span class="tag">${name}</span>: cắt thành nhóm <span class="tag">${S.p.k}</span> bit`, `Convert to <span class="tag">${name}</span>: cut into groups of <span class="tag">${S.p.k}</span> bits`);
+      setFeedback(L("Bấm vào khe giữa các bit để đặt vết cắt. Dấu chấm đã là ranh giới sẵn.", "Click the gaps between bits to place cuts. The point is already a boundary."));
     } else {
-      $("#goal").innerHTML = `Đổi số <span class="tag">${name}</span> sang nhị phân: mỗi chữ số → <span class="tag">${S.p.k}</span> bit`;
-      setFeedback(`Gõ ${S.p.k} bit cho từng chữ số.`);
+      $("#goal").innerHTML = L(`Đổi số <span class="tag">${name}</span> sang nhị phân: mỗi chữ số → <span class="tag">${S.p.k}</span> bit`, `Convert the <span class="tag">${name}</span> number to binary: each digit → <span class="tag">${S.p.k}</span> bits`);
+      setFeedback(L(`Gõ ${S.p.k} bit cho từng chữ số.`, `Type ${S.p.k} bits for each digit.`));
     }
     renderPiece();
     const piece = $("#piece");
@@ -101,10 +101,10 @@
         if (t.pt) return piece.append(el("span", { class: "pt", text: "." }));
         piece.append(el("div", { class: "digit-tile" }, [
           el("span", { class: "dg", text: t.d }),
-          el("input", { maxlength: p.k, inputmode: "numeric", autocomplete: "off", "data-d": t.d, "aria-label": `Bit của chữ số ${t.d}`, onkeydown: onInputKey, oninput: onBitsInput }),
+          el("input", { maxlength: p.k, inputmode: "numeric", autocomplete: "off", "data-d": t.d, "aria-label": L(`Bit của chữ số ${t.d}`, `Bits of digit ${t.d}`), onkeydown: onInputKey, oninput: onBitsInput }),
         ]));
       });
-      $("#btn-action").textContent = "💥 Nổ";
+      $("#btn-action").textContent = L("💥 Nổ", "💥 Blast");
       $("#btn-reset").hidden = true;
       $("input", piece).focus();
       return;
@@ -115,14 +115,14 @@
         if (i > 0) piece.append(gapBtn("i", p.int.length - i));
         piece.append(el("span", { class: "bit", text: b }));
       });
-      piece.append(el("span", { class: "pt" + (p.frac ? "" : " ghost"), text: ".", title: "Dấu chấm (mốc để đếm nhóm)" }));
+      piece.append(el("span", { class: "pt" + (p.frac ? "" : " ghost"), text: ".", title: L("Dấu chấm (mốc để đếm nhóm)", "The point (where grouping starts)") }));
       if (p.frac) {
         [...p.frac].forEach((b, i) => {
           if (i > 0) piece.append(gapBtn("f", i));
           piece.append(el("span", { class: "bit", text: b }));
         });
       }
-      $("#btn-action").textContent = "✂ Cắt";
+      $("#btn-action").textContent = L("✂ Cắt", "✂ Cut");
       $("#btn-reset").hidden = false;
     } else {
       // phase "digits": hiện các nhóm đã đệm số 0 và ô nhập chữ số
@@ -137,14 +137,14 @@
             bits.append(el("span", { class: "bit" + (isPad ? " pad" : ""), text: b }));
           });
           piece.append(el("div", { class: "group" }, [bits, el("input", {
-            maxlength: 1, autocomplete: "off", "data-g": g, "aria-label": `Chữ số cho nhóm ${g}`, onkeydown: onInputKey, oninput: onDigitInput,
+            maxlength: 1, autocomplete: "off", "data-g": g, "aria-label": L(`Chữ số cho nhóm ${g}`, `Digit for group ${g}`), onkeydown: onInputKey, oninput: onDigitInput,
           })]));
         });
       };
       addGroups(p.int, "i");
       piece.append(el("span", { class: "pt" + (p.frac ? "" : " ghost"), text: "." }));
       if (p.frac) addGroups(p.frac, "f");
-      $("#btn-action").textContent = "💥 Nổ";
+      $("#btn-action").textContent = L("💥 Nổ", "💥 Blast");
       $("#btn-reset").hidden = true;
       $("input", piece).focus();
     }
@@ -152,7 +152,7 @@
 
   function gapBtn(side, j) {
     const key = side + j;
-    const b = el("button", { class: "gap" + (S.p.cuts.has(key) ? " cut" : ""), type: "button", "data-key": key, "aria-label": "Khe cắt" });
+    const b = el("button", { class: "gap" + (S.p.cuts.has(key) ? " cut" : ""), type: "button", "data-key": key, "aria-label": L("Khe cắt", "Cut slot") });
     b.addEventListener("click", () => {
       if (!S.active) return;
       S.p.cuts.has(key) ? S.p.cuts.delete(key) : S.p.cuts.add(key);
@@ -185,10 +185,10 @@
     $("#pile").append(el("div", { class: "dead", text: `${q} → ${a}` }));
     $("#hud-lives").textContent = "❤".repeat(S.lives) + "♡".repeat(3 - S.lives);
     $("#piece").innerHTML = "";
-    setFeedback(`💥 Khối chạm đáy! Đáp án: <b class="mono">${q}</b><sub>${p.dir === "b2x" ? 2 : p.base}</sub> = <b class="mono">${a}</b><sub>${p.dir === "b2x" ? p.base : 2}</sub>`, "bad");
+    setFeedback(`💥 ${L("Khối chạm đáy! Đáp án:", "The block hit the bottom! Answer:")} <b class="mono">${q}</b><sub>${p.dir === "b2x" ? 2 : p.base}</sub> = <b class="mono">${a}</b><sub>${p.dir === "b2x" ? p.base : 2}</sub>`, "bad");
     $("#btn-action").hidden = true;
     $("#btn-next").hidden = false;
-    $("#btn-next").textContent = S.lives > 0 ? "Khối tiếp →" : "Xem kết quả";
+    $("#btn-next").textContent = S.lives > 0 ? L("Khối tiếp →", "Next block →") : L("Xem kết quả", "See results");
     $("#btn-next").focus();
   }
 
@@ -222,7 +222,7 @@
     if (same(p.cuts, expect)) {
       p.phase = "digits";
       G.sound.play("good");
-      setFeedback(`✓ Cắt chuẩn! Số 0 mờ là phần đệm thêm. Giờ gõ chữ số ${p.base === 8 ? "bát phân" : "hex"} cho từng nhóm.`, "good");
+      setFeedback(L(`✓ Cắt chuẩn! Số 0 mờ là phần đệm thêm. Giờ gõ chữ số ${p.base === 8 ? "bát phân" : "hex"} cho từng nhóm.`, `✓ Clean cut! Faded 0s are padding. Now type the ${p.base === 8 ? "octal" : "hex"} digit for each group.`), "good");
       return renderPiece();
     }
     // Chẩn đoán lỗi hay gặp
@@ -230,9 +230,9 @@
     for (let j = 1; j < p.int.length; j++) if ((p.int.length - j) % k === 0) leftInt.add("i" + j);
     for (let j = 1; j < p.frac.length; j++) if ((p.frac.length - j) % k === 0) rightFrac.add("f" + j);
     const pick = (set, side) => new Set([...set].filter((x) => x[0] === side));
-    let msg = `Chưa đúng. Mỗi nhóm phải có đúng ${k} bit, đếm <b>từ dấu chấm</b> ra hai phía.`;
-    if (p.int.length % k && same(pick(p.cuts, "i"), leftInt)) msg = "Bạn đang nhóm phần nguyên <b>từ trái sang</b>. Phần nguyên phải nhóm <b>từ dấu chấm sang trái</b> (tức từ phải qua), nhóm thiếu nằm ở bên trái và được đệm 0.";
-    else if (p.frac.length % k && same(pick(p.cuts, "f"), rightFrac)) msg = "Phần thập phân phải nhóm <b>từ dấu chấm sang phải</b>. Nhóm thiếu nằm ở cuối bên phải và được đệm 0 phía sau.";
+    let msg = L(`Chưa đúng. Mỗi nhóm phải có đúng ${k} bit, đếm <b>từ dấu chấm</b> ra hai phía.`, `Not quite. Each group must have exactly ${k} bits, counted outwards <b>from the point</b>.`);
+    if (p.int.length % k && same(pick(p.cuts, "i"), leftInt)) msg = L("Bạn đang nhóm phần nguyên <b>từ trái sang</b>. Phần nguyên phải nhóm <b>từ dấu chấm sang trái</b> (tức từ phải qua), nhóm thiếu nằm ở bên trái và được đệm 0.", "You are grouping the integer part <b>from the left</b>. It must be grouped <b>from the point leftwards</b> (i.e. from the right); the short group sits on the left and is padded with 0s.");
+    else if (p.frac.length % k && same(pick(p.cuts, "f"), rightFrac)) msg = L("Phần thập phân phải nhóm <b>từ dấu chấm sang phải</b>. Nhóm thiếu nằm ở cuối bên phải và được đệm 0 phía sau.", "The fraction part must be grouped <b>from the point rightwards</b>. The short group sits at the far right and is padded with trailing 0s.");
     G.$$(".gap", $("#piece")).forEach((g) => {
       const key = g.dataset.key;
       if (p.cuts.has(key) && !expect.has(key)) g.classList.add("bad");
@@ -250,7 +250,7 @@
     });
     if (ok) return win(inputs.length);
     const bad = inputs.find((i) => i.classList.contains("err"));
-    punish(`✗ Nhóm <b class="mono">${bad.dataset.g}</b> chưa đúng. Trọng số trong nhóm là ${S.p.k === 3 ? "4 2 1" : "8 4 2 1"}.`);
+    punish(L(`✗ Nhóm <b class="mono">${bad.dataset.g}</b> chưa đúng. Trọng số trong nhóm là ${S.p.k === 3 ? "4 2 1" : "8 4 2 1"}.`, `✗ Group <b class="mono">${bad.dataset.g}</b> is wrong. The weights inside a group are ${S.p.k === 3 ? "4 2 1" : "8 4 2 1"}.`));
     bad.select();
   }
 
@@ -268,9 +268,9 @@
     if (ok) return win(inputs.length);
     const bad = inputs.find((i) => i.classList.contains("err"));
     const v = bad.value.trim();
-    const hint = v.length && v.length < p.k ? ` Nhớ viết đủ ${p.k} bit, kể cả số 0 ở đầu (vd. 1 → ${"1".padStart(p.k, "0")}).`
-      : ` Trọng số: ${p.k === 3 ? "4 2 1" : "8 4 2 1"}.`;
-    punish(`✗ Chữ số <b class="mono">${bad.dataset.d}</b> chưa đúng.${hint}`);
+    const hint = v.length && v.length < p.k ? L(` Nhớ viết đủ ${p.k} bit, kể cả số 0 ở đầu (vd. 1 → ${"1".padStart(p.k, "0")}).`, ` Remember to write all ${p.k} bits, including leading 0s (e.g. 1 → ${"1".padStart(p.k, "0")}).`)
+      : ` ${L("Trọng số", "Weights")}: ${p.k === 3 ? "4 2 1" : "8 4 2 1"}.`;
+    punish(L(`✗ Chữ số <b class="mono">${bad.dataset.d}</b> chưa đúng.${hint}`, `✗ Digit <b class="mono">${bad.dataset.d}</b> is wrong.${hint}`));
     bad.select();
   }
 
@@ -287,12 +287,12 @@
     const res = p.dir === "b2x"
       ? `${p.int}${p.frac ? "." + p.frac : ""}<sub>2</sub> = <b class="mono">${answerStr(p)}</b><sub>${p.base}</sub>`
       : `${p.int}${p.frac ? "." + p.frac : ""}<sub>${p.base}</sub> = <b class="mono">${binaryOf(p)}</b><sub>2</sub>`;
-    setFeedback(`💥 Nổ! +${gained} điểm <span class="detail mono">${res}</span>`, "good");
+    setFeedback(`💥 ${L("Nổ!", "Boom!")} +${gained} <span class="detail mono">${res}</span>`, "good");
     $("#piece").classList.add("boom");
     $("#btn-action").hidden = true;
     await G.wait(450);
     $("#btn-next").hidden = false;
-    $("#btn-next").textContent = "Khối tiếp →";
+    $("#btn-next").textContent = L("Khối tiếp →", "Next block →");
     $("#btn-next").focus();
   }
 
@@ -303,8 +303,8 @@
     G.showScreen("end");
     $("#end-score").textContent = S.score;
     const all = S.cleared === S.level.rounds;
-    $("#end-title").textContent = S.lives <= 0 ? "Hết mạng!" : all ? "Không khối nào chạm đáy! 🎉" : "Hoàn thành level!";
-    $("#end-detail").textContent = `Phá ${S.cleared}/${S.level.rounds} khối.` + (isNew ? " Kỷ lục mới!" : "");
+    $("#end-title").textContent = S.lives <= 0 ? L("Hết mạng!", "Out of lives!") : all ? L("Không khối nào chạm đáy! 🎉", "Not a single block landed! 🎉") : L("Hoàn thành level!", "Level complete!");
+    $("#end-detail").textContent = L(`Phá ${S.cleared}/${S.level.rounds} khối.`, `Cleared ${S.cleared}/${S.level.rounds} blocks.`) + (isNew ? L(" Kỷ lục mới!", " New best!") : "");
     if (all) { G.confetti(); G.sound.play("win"); }
     G.mountNextLink($("#next-game"));
   }

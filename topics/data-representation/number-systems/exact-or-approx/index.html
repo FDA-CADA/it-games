@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
   <link rel="stylesheet" href="../../../../assets/css/base.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -16,94 +17,110 @@
 
   <main class="container game-main">
     <section data-screen="start" class="card">
-      <h1>🎯 Máy tính có lưu chính xác không?</h1>
-      <p>Máy tính lưu số thực bằng hệ 2 với số bit hữu hạn. Có số được lưu <b>chính xác (Exact)</b>, có số chỉ lưu được <b>gần đúng (Approximate)</b>. Trả lời thật nhanh, rồi thử tự tìm ra quy luật.</p>
-      <p class="muted">Gợi ý: nhớ lại game Bit Fishing. Con cá nào câu hết được?</p>
+      <h1 data-lang="vi">🎯 Máy tính có lưu chính xác không?</h1>
+      <h1 data-lang="en">🎯 Exact or Approximate?</h1>
+      <p data-lang="vi">Máy tính lưu số thực bằng hệ 2 với số bit hữu hạn. Có số được lưu <b>chính xác (Exact)</b>, có số chỉ lưu được <b>gần đúng (Approximate)</b>. Trả lời thật nhanh, rồi thử tự tìm ra quy luật.</p>
+      <p data-lang="en">Computers store real numbers in base 2 with a finite number of bits. Some numbers are stored <b>exactly</b>, others only <b>approximately</b>. Answer fast, then try to discover the rule yourself.</p>
+      <p class="muted" data-lang="vi">Gợi ý: nhớ lại game Bit Fishing. Con cá nào câu hết được?</p>
+      <p class="muted" data-lang="en">Hint: remember Bit Fishing. Which fish could you catch completely?</p>
       <div class="level-list" id="levels"></div>
-      <p style="margin-top:16px"><button class="btn ghost sm" id="btn-lab">Vào thẳng phòng thí nghiệm 0.1 + 0.2 →</button></p>
+      <p style="margin-top:16px"><button class="btn ghost sm" id="btn-lab" data-en="Go straight to the 0.1 + 0.2 lab →">Vào thẳng phòng thí nghiệm 0.1 + 0.2 →</button></p>
     </section>
 
     <section data-screen="play" hidden>
       <div class="hud">
-        <span class="stat">Câu<b id="hud-q">1/12</b></span>
-        <span class="stat">Điểm<b id="hud-score">0</b></span>
-        <span class="stat">Chuỗi đúng<b id="hud-streak">0</b></span>
+        <span class="stat"><span data-en="Question">Câu</span><b id="hud-q">1/12</b></span>
+        <span class="stat"><span data-en="Score">Điểm</span><b id="hud-score">0</b></span>
+        <span class="stat"><span data-en="Streak">Chuỗi đúng</span><b id="hud-streak">0</b></span>
       </div>
       <div class="timer-bar" id="timer-bar"><span></span></div>
       <div class="card center">
-        <p class="muted" style="margin:0">Máy tính lưu số này…</p>
+        <p class="muted" style="margin:0" data-en="The computer stores this number…">Máy tính lưu số này…</p>
         <div class="number mono" id="number">0.1</div>
         <div class="answers">
-          <button class="btn lg good ans" data-a="exact">✓ Chính xác <kbd>←</kbd></button>
-          <button class="btn lg ans approx" data-a="approx">≈ Gần đúng <kbd>→</kbd></button>
+          <button class="btn lg good ans" data-a="exact"><span data-en="✓ Exactly">✓ Chính xác</span> <kbd>←</kbd></button>
+          <button class="btn lg ans approx" data-a="approx"><span data-en="≈ Approximately">≈ Gần đúng</span> <kbd>→</kbd></button>
         </div>
-        <div class="feedback" id="feedback" style="text-align:left">Chọn thật nhanh. Mỗi câu có vài giây.</div>
-        <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-next" hidden>Tiếp →</button></div>
+        <div class="feedback" id="feedback" style="text-align:left"></div>
+        <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-next" hidden data-en="Next →">Tiếp →</button></div>
       </div>
     </section>
 
     <section data-screen="pattern" class="card" hidden>
-      <h2>🔎 Bạn đã thấy quy luật chưa?</h2>
-      <p>Số thập phân như thế nào thì máy tính lưu <b>chính xác</b> được?</p>
+      <h2 data-en="🔎 Have you spotted the rule?">🔎 Bạn đã thấy quy luật chưa?</h2>
+      <p data-lang="vi">Số thập phân như thế nào thì máy tính lưu <b>chính xác</b> được?</p>
+      <p data-lang="en">Which decimal numbers can a computer store <b>exactly</b>?</p>
       <div class="choices" id="pattern-choices"></div>
-      <div class="feedback" id="pattern-feedback">Chọn một đáp án.</div>
-      <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-reveal" hidden>Xem màn reveal →</button></div>
+      <div class="feedback" id="pattern-feedback"></div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="btn-reveal" hidden data-en="See the reveal →">Xem màn reveal →</button></div>
     </section>
 
     <section data-screen="reveal" hidden>
       <div class="card center" id="score-card">
-        <div class="muted">Điểm của bạn</div>
+        <div class="muted" data-en="Your score">Điểm của bạn</div>
         <div class="end-score" id="end-score">0</div>
         <p class="muted" id="end-detail"></p>
       </div>
 
       <div class="card lab">
-        <h2>🧪 Hậu quả: 0.1 + 0.2 = ?</h2>
-        <p>0.1 và 0.2 đều là loại <b>gần đúng</b>. Cộng hai số đã bị làm tròn thì kết quả ra sao? Bấm để máy tính của bạn tự tính thật (JavaScript dùng số thực 64-bit IEEE 754, giống Python).</p>
+        <h2 data-en="🧪 The consequence: 0.1 + 0.2 = ?">🧪 Hậu quả: 0.1 + 0.2 = ?</h2>
+        <p data-lang="vi">0.1 và 0.2 đều là loại <b>gần đúng</b>. Cộng hai số đã bị làm tròn thì kết quả ra sao? Bấm để máy tính của bạn tự tính thật (JavaScript dùng số thực 64-bit IEEE 754, giống Python).</p>
+        <p data-lang="en">0.1 and 0.2 are both <b>approximate</b>. What happens when you add two rounded numbers? Press the button and let your own computer do the real calculation (JavaScript uses 64-bit IEEE 754 floats, just like Python).</p>
         <div class="console mono">
           <div><span class="prompt">&gt;</span> 0.1 + 0.2</div>
           <div class="out" id="out-sum">…</div>
           <div><span class="prompt">&gt;</span> 0.1 + 0.2 == 0.3</div>
           <div class="out" id="out-eq">…</div>
         </div>
-        <button class="btn" id="btn-run">▶ Chạy</button>
+        <button class="btn" id="btn-run" data-en="▶ Run">▶ Chạy</button>
         <div id="lab-explain" hidden>
-          <p style="margin-top:16px">Vì thật ra máy tính <b>không</b> lưu 0.1. Nó lưu số nhị phân gần nhất:</p>
+          <p style="margin-top:16px" data-lang="vi">Vì thật ra máy tính <b>không</b> lưu 0.1. Nó lưu số nhị phân gần nhất:</p>
+          <p style="margin-top:16px" data-lang="en">Because the computer does <b>not</b> actually store 0.1. It stores the nearest binary number:</p>
           <div class="stored mono" id="stored-01"></div>
-          <p>Hai sai số nhỏ cộng dồn lại, nên kết quả lệch khỏi số gần 0.3 nhất mà máy biểu diễn được.</p>
-          <div class="tip">
+          <p data-lang="vi">Hai sai số nhỏ cộng dồn lại, nên kết quả lệch khỏi số gần 0.3 nhất mà máy biểu diễn được.</p>
+          <p data-lang="en">The two tiny errors add up, so the result misses the closest representable number to 0.3.</p>
+          <div class="tip" data-lang="vi">
             <b>Dành cho dân Data/AI:</b> đừng so sánh số thực bằng <code>==</code>. Hãy dùng <code>math.isclose(a, b)</code> hoặc <code>np.isclose(a, b)</code>. Tính tiền thì dùng <code>decimal.Decimal</code> hoặc lưu theo đơn vị nhỏ nhất (đồng, cent) bằng số nguyên.
+          </div>
+          <div class="tip" data-lang="en">
+            <b>For Data/AI folks:</b> never compare floats with <code>==</code>. Use <code>math.isclose(a, b)</code> or <code>np.isclose(a, b)</code>. For money, use <code>decimal.Decimal</code> or store integers in the smallest unit (cents).
           </div>
         </div>
       </div>
 
       <div class="card lab">
-        <h2>🔬 Thử số của bạn</h2>
-        <p class="muted">Gõ một số thập phân để xem máy tính thực sự lưu giá trị gì.</p>
+        <h2 data-en="🔬 Try your own number">🔬 Thử số của bạn</h2>
+        <p class="muted" data-en="Type a decimal number to see what the computer really stores.">Gõ một số thập phân để xem máy tính thực sự lưu giá trị gì.</p>
         <div class="row">
-          <input id="probe" class="mono probe" value="0.375" spellcheck="false" autocomplete="off" aria-label="Số cần thử">
-          <button class="btn" id="btn-probe">Xem</button>
+          <input id="probe" class="mono probe" value="0.375" spellcheck="false" autocomplete="off" aria-label="Số cần thử" data-en-aria="Number to try">
+          <button class="btn" id="btn-probe" data-en="Show">Xem</button>
         </div>
         <div id="probe-out" class="probe-out"></div>
       </div>
 
       <div class="row" style="justify-content:center;margin-top:16px">
-        <button class="btn" id="btn-again">Chơi lại</button>
-        <button class="btn ghost" id="btn-menu">Về màn hình đầu</button>
+        <button class="btn" id="btn-again" data-en="Play again">Chơi lại</button>
+        <button class="btn ghost" id="btn-menu" data-en="Back to start">Về màn hình đầu</button>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
     </section>
   </main>
 
   <dialog class="help">
-    <h2>Cách chơi</h2>
-    <ul>
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
       <li>Mỗi câu hiện một số thập phân. Chọn <b>Chính xác</b> (<kbd>←</kbd> hoặc <kbd>E</kbd>) hay <b>Gần đúng</b> (<kbd>→</kbd> hoặc <kbd>A</kbd>).</li>
       <li>Đúng được 10 điểm + số giây còn lại. Hết giờ tính là sai.</li>
       <li>Sau mỗi câu có giải thích: đổi số ra phân số tối giản rồi nhìn vào mẫu số.</li>
       <li>Cuối game: đoán quy luật (+20 nếu đúng ngay), rồi vào phòng thí nghiệm 0.1 + 0.2.</li>
     </ul>
-    <button class="btn" data-close>Đã hiểu</button>
+    <ul data-lang="en">
+      <li>Each question shows a decimal number. Choose <b>Exact</b> (<kbd>←</kbd> or <kbd>E</kbd>) or <b>Approximate</b> (<kbd>→</kbd> or <kbd>A</kbd>).</li>
+      <li>A correct answer earns 10 points + the seconds left. Running out of time counts as wrong.</li>
+      <li>Every answer is explained: write the number as a reduced fraction and look at the denominator.</li>
+      <li>At the end: guess the rule (+20 if right first time), then visit the 0.1 + 0.2 lab.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
   </dialog>
 
   <script src="../../../../assets/js/catalog.js"></script>
