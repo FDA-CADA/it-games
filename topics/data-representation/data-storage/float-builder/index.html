@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Float Builder</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="float-builder">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🏗️ Float Builder</h1>
+      <p>Số thực dạng IEEE 754 single precision gồm 32 bit chia làm 3 khu: <b class="c-s">Sign</b> (1 bit), <b class="c-e">Exponent</b> (8 bit, lệch 127) và <b class="c-m">Mantissa</b> (23 bit, phần sau dấu chấm của 1.xxx).</p>
+      <p class="muted">Lắp thử <code>−6.75</code> theo đúng 5 bước trên slide, rồi làm ngược lại: nhìn 32 bit và đọc ra số thực.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+      </div>
+
+      <div class="card">
+        <div class="task" id="task"></div>
+
+        <div class="float" id="float">
+          <div class="field f-s"><div class="fname">Sign</div><div class="fbits" data-f="s"></div><div class="fval" id="v-s">&nbsp;</div></div>
+          <div class="field f-e"><div class="fname">Exponent (8)</div><div class="fbits" data-f="e"></div><div class="fval" id="v-e">&nbsp;</div></div>
+          <div class="field f-m"><div class="fname">Mantissa (23)</div><div class="fbits" data-f="m"></div><div class="fval" id="v-m">&nbsp;</div></div>
+        </div>
+        <div class="hexline mono" id="hexline"></div>
+
+        <ol class="steps" id="steps"></ol>
+
+        <div class="quick" id="quick" hidden>
+          <label class="row" style="justify-content:center">Giá trị = <input id="quick-in" class="mono step-in" autocomplete="off" aria-label="Giá trị thập phân"></label>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost sm" id="btn-hint">💡 Gợi ý (−2)</button>
+          <span class="spacer"></span>
+          <button class="btn" id="btn-check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>5 bước mã hóa (slide 65)</h2>
+    <ol>
+      <li><b>Dấu:</b> âm thì Sign = 1, dương thì Sign = 0.</li>
+      <li><b>Đổi |x| sang nhị phân:</b> 6.75 = 110.11</li>
+      <li><b>Chuẩn hóa:</b> dời dấu chấm để còn đúng một chữ số 1 phía trước: 110.11 = 1.1011 × 2²</li>
+      <li><b>Exponent</b> = số mũ + 127 = 129 = <code>10000001</code></li>
+      <li><b>Mantissa:</b> chép phần sau dấu chấm (<code>1011</code>) rồi thêm 0 cho đủ 23 bit. Số 1 phía trước không cần lưu.</li>
+    </ol>
+    <p>Giải mã thì đi ngược: (−1)<sup>Sign</sup> × 1.Mantissa × 2<sup>Exponent − 127</sup>.</p>
+    <p class="muted">Bấm vào bit để bật/tắt. Mỗi bước đúng ngay lần đầu +4 điểm, dùng gợi ý −2.</p>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

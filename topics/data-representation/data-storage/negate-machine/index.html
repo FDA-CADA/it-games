@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Negate Machine</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="negate-machine">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>⚙️ Negate Machine</h1>
+      <p>Trong two's complement, muốn đổi <b>x</b> thành <b>−x</b> thì cho byte chạy qua hai trạm: <b>Invert</b> (đảo mọi bit) rồi <b>+1</b>. Hãy lắp máy, tự tay vận hành nó, rồi dùng nó để giải mã số âm.</p>
+      <p class="muted">Tất cả các level đều dùng byte 8 bit (−128 … 127).</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat" id="hud-round-wrap">Vòng<b id="hud-round">1/5</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+        <span class="stat" id="hud-time-wrap">⏱<b id="hud-time">0</b></span>
+      </div>
+      <div class="timer-bar" id="timer-bar"><span></span></div>
+
+      <div class="card">
+        <div class="task" id="task"></div>
+
+        <!-- Level 1: lắp máy -->
+        <div id="p-build" hidden>
+          <div class="belt" id="belt"></div>
+          <p class="muted small">Chạm trạm trong kho để thêm vào băng chuyền (tối đa 3). Chạm trạm trên băng chuyền để gỡ ra.</p>
+          <div class="stations" id="stations"></div>
+          <div class="trace mono" id="trace"></div>
+        </div>
+
+        <!-- Level 2: tự vận hành -->
+        <div id="p-manual" hidden>
+          <div class="stage-label" id="stage-label"></div>
+          <div class="bytebox" id="manual-byte"></div>
+          <div class="trace mono" id="manual-trace"></div>
+        </div>
+
+        <!-- Level 3, 4: nhập đáp án -->
+        <div id="p-type" hidden>
+          <div class="bytebox big" id="type-byte"></div>
+          <div class="row" style="justify-content:center;margin-top:12px">
+            <input id="answer" class="mono answer" autocomplete="off" spellcheck="false" aria-label="Đáp án">
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end">
+          <button class="btn" id="btn-action">▶ Chạy</button>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li><b>Lắp máy:</b> chọn các trạm theo đúng thứ tự để biến byte vào thành −x. Có trạm gây nhiễu!</li>
+      <li><b>Tự vận hành:</b> tự bấm từng bit. Trạm 1 đảo hết 8 bit, trạm 2 cộng 1 (nhớ phần nhớ).</li>
+      <li><b>Giải mã ngược:</b> cho pattern như <code>11110110</code>, gõ giá trị thập phân. Nếu bit đầu là 1 thì chạy máy để tìm độ lớn rồi thêm dấu trừ.</li>
+      <li><b>Tổng lực:</b> 90 giây, trộn hai kiểu câu hỏi.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

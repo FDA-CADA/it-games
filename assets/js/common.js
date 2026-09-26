@@ -45,6 +45,24 @@
   };
   G.isPowerOfTwo = (d) => d > 0 && (d & (d - 1)) === 0;
 
+  /* ---------- Bit & dung lượng ---------- */
+  /** 65 -> "01000001" (n bit, số âm lấy theo bù 2). */
+  G.bits = (v, n = 8) => {
+    const m = 2 ** n;
+    return (((v % m) + m) % m).toString(2).padStart(n, "0");
+  };
+  /** Đọc n bit theo bù 2: "11110110" -> -10. */
+  G.signed = (str) => { const u = parseInt(str, 2), n = str.length; return u >= 2 ** (n - 1) ? u - 2 ** n : u; };
+  /** 1536 -> "1.5 KB". Quy ước 1 KB = 1024 B (như trên slide). */
+  G.formatBytes = (bytes, digits = 3) => {
+    const units = ["B", "KB", "MB", "GB", "TB"];
+    let i = 0, v = bytes;
+    while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+    return `${i === 0 ? v : Number(v.toPrecision(digits))} ${units[i]}`;
+  };
+  /** 1105920000 -> "1 105 920 000" (khoảng trắng hàng nghìn, tránh nhầm với dấu chấm thập phân). */
+  G.fmtInt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+
   /* ---------- DOM ---------- */
   G.$ = (sel, root = document) => root.querySelector(sel);
   G.$$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));

@@ -12,10 +12,21 @@ Tuần 2 bám theo slide _Data, Information, and Their Representation_, gồm 3 
 | | 🎣 Bit Fishing | ✅ | [README](number-systems/bit-fishing/README.md) |
 | | 🧩 Bit Tetris | ✅ | [README](number-systems/bit-tetris/README.md) |
 | | 🎯 Máy tính có lưu chính xác không? | ✅ | [README](number-systems/exact-or-approx/README.md) |
-| 2. Data Storage | One Byte Many Meanings, Odometer Overflow, Number Wheel, Negate Machine, Float Builder, Exponent Zones, ASCII Spy, Sample the Wave, Zoom War, Storage Budget | 💡 Ý tưởng | xem bên dưới |
+| 2. Data Storage | 🔍 One Byte, Many Meanings | ✅ | [README](data-storage/one-byte-many-meanings/README.md) |
+|  | 🚗 Odometer Overflow | ✅ | [README](data-storage/odometer-overflow/README.md) |
+|  | 🎡 Number Wheel | ✅ | [README](data-storage/number-wheel/README.md) |
+|  | ⚙️ Negate Machine | ✅ | [README](data-storage/negate-machine/README.md) |
+|  | 🏗️ Float Builder | ✅ | [README](data-storage/float-builder/README.md) |
+|  | 🌡️ Exponent Zones | ✅ | [README](data-storage/exponent-zones/README.md) |
+|  | 🕵️ ASCII Spy | ✅ | [README](data-storage/ascii-spy/README.md) |
+|  | 🔊 Sample the Wave | ✅ | [README](data-storage/sample-the-wave/README.md) |
+|  | 🔎 Zoom War | ✅ | [README](data-storage/zoom-war/README.md) |
+|  | 💾 Storage Budget | ✅ | [README](data-storage/storage-budget/README.md) |
 | 3. Operations on Data | Mask Master, XOR Secret Messenger, Find the Flipped Bit, Bit Conveyor, Overflow Detective | 💡 Ý tưởng | xem bên dưới |
 
 **Thứ tự chơi gợi ý cho phần 1:** Bit Flip → Hex Color Mixer → Remainder Tower → Bit Fishing → Bit Tetris → Máy tính có lưu chính xác không?
+
+**Thứ tự chơi gợi ý cho phần 2:** One Byte, Many Meanings → Odometer Overflow → Number Wheel → Negate Machine → Float Builder → Exponent Zones → ASCII Spy → Sample the Wave → Zoom War → Storage Budget
 
 Khi bắt tay làm một game trong danh sách ý tưởng, tạo thư mục `<phần>/<game-id>/` từ [templates/game](../../templates/game/), chuyển mô tả bên dưới sang README riêng của game, rồi đổi `status` trong [catalog.js](../../assets/js/catalog.js) thành `"ready"`.
 

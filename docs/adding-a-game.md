@@ -94,6 +94,8 @@ Game ở dạng ý tưởng dùng `status: "planned"` (không cần `path`). Ch�
 | `G.randInt`, `G.pick`, `G.shuffle` | Ngẫu nhiên |
 | `G.toBase`, `G.digitChar`, `G.digitValue`, `G.SUP`, `G.based` | Hệ cơ số và định dạng hiển thị |
 | `G.gcd`, `G.parseFraction`, `G.isPowerOfTwo` | Phân số |
+| `G.bits(v, n)`, `G.signed(bits)` | Số → chuỗi n bit (số âm theo bù 2), chuỗi bit → số có dấu |
+| `G.formatBytes(bytes)`, `G.fmtInt(n)` | "1.03 GB" (1 KB = 1024 B), "1 105 920 000" |
 | `G.mountNextLink(container)` | Nút "Game tiếp theo" |
 
 CSS dùng chung (`assets/css/base.css`): `.card`, `.btn` (`.ghost`, `.good`, `.bad`, `.lg`, `.sm`), `.hud .stat`, `.timer-bar`, `.feedback` (`.good`, `.bad`, `.warn`), `.badge`, `.row`, `.muted`, `.mono`. Màu dùng token `var(--accent)`, `var(--good)`, … để tự hỗ trợ chế độ tối.

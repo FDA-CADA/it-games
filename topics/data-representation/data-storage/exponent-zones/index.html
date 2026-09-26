@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exponent Zones</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="exponent-zones">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🌡️ Exponent Zones</h1>
+      <p>Số mũ trong IEEE 754 có giới hạn. Kéo quá xa về bên phải thì số <b>tràn thành ∞</b> (overflow). Kéo quá xa về bên trái thì số <b>rơi về 0</b> (underflow). Ở giữa còn một vùng "hoàng hôn" gọi là <b>subnormal</b>.</p>
+      <p class="muted">Mọi giá trị trong game đều do trình duyệt tính thật bằng float32/float64, giống NumPy.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Nhiệm vụ<b id="hud-round">1/4</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+      </div>
+
+      <div class="card">
+        <div class="mission" id="mission"></div>
+
+        <div id="p-slider">
+          <div class="readout">
+            <div class="formula mono" id="formula"></div>
+            <div class="stored"><span class="muted">Máy lưu:</span> <b class="mono" id="stored"></b> <span class="zone-badge" id="zone-badge"></span></div>
+            <div class="precision muted" id="precision"></div>
+          </div>
+          <div class="slider-row">
+            <button class="btn ghost sm" id="btn-minus" aria-label="Giảm 1">−1</button>
+            <input type="range" id="slider" aria-label="Số mũ">
+            <button class="btn ghost sm" id="btn-plus" aria-label="Tăng 1">+1</button>
+          </div>
+          <div class="zonebar" id="zonebar"><span class="marker" id="marker"></span></div>
+          <div class="legend">
+            <span><i class="z-zero"></i>Underflow → 0</span>
+            <span><i class="z-sub"></i>Subnormal</span>
+            <span><i class="z-norm"></i>Normal</span>
+            <span><i class="z-inf"></i>Overflow → ∞</span>
+          </div>
+          <div class="fields mono" id="fields"></div>
+        </div>
+
+        <div id="p-mc" hidden>
+          <pre class="code mono" id="code"></pre>
+          <div class="opts" id="opts"></div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end">
+          <button class="btn" id="btn-lock">📌 Chốt đáp án</button>
+          <button class="btn" id="btn-next" hidden>Nhiệm vụ tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li><b>Nhiệm vụ thanh trượt:</b> kéo (hoặc dùng −1/+1, phím ←/→) tới đúng vị trí đề bài yêu cầu rồi bấm <b>📌 Chốt</b>. Đúng ngay lần đầu +15, đúng sau khi đã sai +5.</li>
+      <li><b>Nhiệm vụ dự đoán:</b> đoán kết quả trước, rồi xem máy tính thật ra gì. Đúng ngay lần đầu +10.</li>
+      <li>Float32: exponent 8 bit, số mũ thật từ −126 đến 127. Float64: exponent 11 bit, từ −1022 đến 1023.</li>
+      <li><b>Subnormal:</b> khi số mũ đã chạm đáy, máy "mượn" bit của mantissa để đi xuống tiếp. Số vẫn khác 0 nhưng mất dần độ chính xác.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -14,6 +14,16 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 | | | [🎣 Bit Fishing](topics/data-representation/number-systems/bit-fishing/README.md) | Phần thập phân → nhị phân, số lặp vô hạn |
 | | | [🧩 Bit Tetris](topics/data-representation/number-systems/bit-tetris/README.md) | Nhóm bit bin ↔ oct/hex |
 | | | [🎯 Máy tính có lưu chính xác không?](topics/data-representation/number-systems/exact-or-approx/README.md) | Exact vs approximate, `0.1 + 0.2` |
+| | Data Storage | [🔍 One Byte, Many Meanings](topics/data-representation/data-storage/one-byte-many-meanings/README.md) | Một byte, bốn cách diễn giải |
+| |  | [🚗 Odometer Overflow](topics/data-representation/data-storage/odometer-overflow/README.md) | Tràn số không dấu, mod 2ⁿ |
+| |  | [🎡 Number Wheel](topics/data-representation/data-storage/number-wheel/README.md) | Sign-and-magnitude vs two's complement |
+| |  | [⚙️ Negate Machine](topics/data-representation/data-storage/negate-machine/README.md) | Đổi dấu: Invert rồi +1 |
+| |  | [🏗️ Float Builder](topics/data-representation/data-storage/float-builder/README.md) | Mã hóa và giải mã IEEE 754 |
+| |  | [🌡️ Exponent Zones](topics/data-representation/data-storage/exponent-zones/README.md) | Overflow, underflow, subnormal |
+| |  | [🕵️ ASCII Spy](topics/data-representation/data-storage/ascii-spy/README.md) | ASCII, mẹo 0x20, Unicode/UTF-8 |
+| |  | [🔊 Sample the Wave](topics/data-representation/data-storage/sample-the-wave/README.md) | Sampling rate, bit depth, Nyquist |
+| |  | [🔎 Zoom War](topics/data-representation/data-storage/zoom-war/README.md) | Raster vs vector |
+| |  | [💾 Storage Budget](topics/data-representation/data-storage/storage-budget/README.md) | Dung lượng ảnh, âm thanh, video |
 
 Các game đang ở dạng ý tưởng được liệt kê trong README của từng chủ đề và trong [`assets/js/catalog.js`](assets/js/catalog.js) (`status: "planned"`).
 

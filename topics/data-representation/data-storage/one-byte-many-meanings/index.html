@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Byte, Many Meanings</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="one-byte-many-meanings">
+  <header data-shell></header>
+
+  <main class="container game-main">
+    <section data-screen="start" class="card">
+      <h1>🔍 One Byte, Many Meanings</h1>
+      <p>Bộ nhớ chỉ chứa bit. Cùng một byte <code>01000001</code> có thể là số <b>65</b>, là chữ <b>'A'</b>, hay là một điểm ảnh xám tối. <b>Ý nghĩa nằm ở cách diễn giải</b>, không nằm trong bit.</p>
+      <p class="muted">Mỗi vòng, bạn nhìn một byte qua 4 "kính lọc" và đoán giá trị qua từng kính.</p>
+      <div class="level-list" id="levels"></div>
+    </section>
+
+    <section data-screen="play" hidden>
+      <div class="hud">
+        <span class="stat">Level<b id="hud-level">1</b></span>
+        <span class="stat">Vòng<b id="hud-round">1/5</b></span>
+        <span class="stat">Điểm<b id="hud-score">0</b></span>
+      </div>
+
+      <div class="card">
+        <div class="byte-wrap">
+          <div class="byte mono" id="byte"></div>
+          <div class="weights mono" aria-hidden="true"><span>128</span><span>64</span><span>32</span><span>16</span><span>8</span><span>4</span><span>2</span><span>1</span></div>
+        </div>
+
+        <div class="lenses">
+          <div class="lens" data-lens="u">
+            <div class="lens-head"><span class="glass">🔢</span> Unsigned <small>số không dấu</small></div>
+            <input id="in-u" class="mono num-in" inputmode="numeric" autocomplete="off" placeholder="0 … 255" aria-label="Giá trị unsigned">
+            <div class="verdict"></div>
+          </div>
+          <div class="lens" data-lens="s">
+            <div class="lens-head"><span class="glass">±</span> Two's complement <small>số có dấu</small></div>
+            <input id="in-s" class="mono num-in" inputmode="text" autocomplete="off" placeholder="−128 … 127" aria-label="Giá trị two's complement">
+            <div class="verdict"></div>
+          </div>
+          <div class="lens" data-lens="a">
+            <div class="lens-head"><span class="glass">🔤</span> ASCII <small>ký tự</small></div>
+            <div class="opts" id="opts-a"></div>
+            <div class="verdict"></div>
+          </div>
+          <div class="lens" data-lens="g">
+            <div class="lens-head"><span class="glass">🖼️</span> Pixel xám <small>0 = đen, 255 = trắng</small></div>
+            <div class="opts swatches" id="opts-g"></div>
+            <div class="verdict"></div>
+          </div>
+        </div>
+
+        <details class="cheat" id="cheat">
+          <summary>📋 Bảng tra nhanh</summary>
+          <ul>
+            <li>Bit trái nhất (128) là <b>bit dấu</b> trong two's complement: nếu bằng 1 thì giá trị = unsigned − 256.</li>
+            <li>ASCII chỉ dùng 7 bit (0–127). Mốc cần nhớ: <code>space = 32</code>, <code>'0' = 48</code>, <code>'A' = 65</code>, <code>'a' = 97</code>. Mã 0–31 và 127 là ký tự điều khiển (không in được).</li>
+            <li>Pixel xám 8-bit: 0 là đen tuyền, 255 là trắng tinh, 128 là xám giữa.</li>
+          </ul>
+        </details>
+
+        <div class="feedback" id="feedback">Điền cả 4 kính rồi bấm <b>Kiểm tra</b> (<kbd>Enter</kbd>).</div>
+        <div class="row" style="margin-top:14px;justify-content:flex-end">
+          <button class="btn" id="btn-check">Kiểm tra</button>
+          <button class="btn" id="btn-next" hidden>Vòng tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen="end" class="card center" hidden>
+      <h2 id="end-title">Hoàn thành!</h2>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again">Chơi lại level này</button>
+        <button class="btn ghost" id="btn-menu">Chọn level khác</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Mỗi vòng cho một byte (8 bit).</li>
+      <li><b>Unsigned:</b> cộng trọng số của các bit 1.</li>
+      <li><b>Two's complement:</b> nếu bit đầu là 0 thì giống unsigned. Nếu là 1 thì lấy unsigned − 256.</li>
+      <li><b>ASCII:</b> chọn ký tự ứng với mã đó, hoặc chọn "không có ký tự in được".</li>
+      <li><b>Pixel xám:</b> chọn ô xám có độ sáng đúng.</li>
+      <li>Mỗi kính đúng +5 điểm, đúng cả 4 kính thưởng thêm +5.</li>
+    </ul>
+    <button class="btn" data-close>Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
