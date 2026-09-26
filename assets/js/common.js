@@ -210,6 +210,29 @@
       return { best: Math.max(score, prev ?? score), isNew };
     },
     best(gameId, levelIdx) { return this.get(gameId).levels[levelIdx]; },
+    /** Tóm tắt cho trang chủ: { done, total, state: "new" | "started" | "done" }. */
+    summary(gameId) {
+      const p = this.get(gameId);
+      const done = Object.keys(p.levels).length, total = p.total || 0;
+      return { done, total, state: !done ? "new" : total && done >= total ? "done" : "started" };
+    },
+    /** Xoá tiến độ của mọi game (giữ ngôn ngữ, âm thanh). Trả về số game bị xoá. */
+    resetAll() {
+      let n = 0;
+      try {
+        for (const k of Object.keys(localStorage)) {
+          if (k.startsWith("itgames:progress:")) n++;
+          if (k.startsWith("itgames:progress:") || k === "itgames:recent" || k === "itgames:hub" || k === "itgames:showPlanned") localStorage.removeItem(k);
+        }
+      } catch { /* bỏ qua */ }
+      return n;
+    },
+  };
+
+  /* ---------- Game vừa mở gần đây (cho nút "Chơi tiếp" ở trang chủ) ---------- */
+  G.recent = {
+    list() { return store.get("itgames:recent", []); },
+    add(id) { store.set("itgames:recent", [id, ...this.list().filter((x) => x !== id)].slice(0, 8)); },
   };
 
   /* ---------- Đếm ngược ---------- */
@@ -276,7 +299,7 @@
     const info = G.gameId ? G.findGame(G.gameId) : null;
     const title = info ? G.tr(info.game.title) : document.title;
     const sub = info ? G.tr(info.section.title) : "";
-    if (info) document.title = title;
+    if (info) { document.title = title; G.recent.add(info.game.id); }
     const help = G.$("dialog.help");
     slot.className = "site-header";
     slot.innerHTML = "";
@@ -290,7 +313,7 @@
       onclick: () => help.showModal(),
     }) : null;
     slot.append(G.el("div", { class: "container" }, [
-      G.el("a", { class: "back", href: G.root + "index.html", text: G.L("← Tất cả game", "← All games") }),
+      G.el("a", { class: "back", href: G.root + "index.html#games", text: G.L("← Tất cả game", "← All games") }),
       G.el("div", { class: "title", html: `${title}${sub ? `<small>${sub}</small>` : ""}` }),
       G.langButton(), soundBtn, helpBtn,
     ]));

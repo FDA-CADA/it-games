@@ -4,6 +4,8 @@
      "ready"    đã chơi được (bắt buộc có path)
      "planned"  mới là ý tưởng, hiển thị "Sắp có"
    path luôn tính từ thư mục gốc của site và kết thúc bằng "/".
+   tags (tuỳ chọn): từ khoá tìm kiếm ở trang chủ, nên có cả tiếng Việt lẫn
+   tiếng Anh (vd "bù 2", "two's complement"). Không hiển thị, không cần dịch.
    Chữ hiển thị có thể là chuỗi (giống nhau ở mọi ngôn ngữ) hoặc { vi, en }.
    ========================================================================== */
 window.CATALOG = {
@@ -26,6 +28,7 @@ window.CATALOG = {
             {
               id: "bit-flip", title: "Bit Flip", icon: "💡", status: "ready",
               path: "topics/data-representation/number-systems/bit-flip/",
+              tags: ["hệ đếm", "trọng số", "nhị phân", "bát phân", "thập lục phân", "binary", "octal", "hex", "base"],
               skill: "1.1–1.4 Positional notation",
               desc: {
                 vi: "Bật/tắt bóng đèn có trọng số để ra số thập phân mục tiêu. Level sau chuyển sang bánh xe hệ 8 và 16.",
@@ -35,6 +38,7 @@ window.CATALOG = {
             {
               id: "hex-color-mixer", title: "Hex Color Mixer", icon: "🎨", status: "ready",
               path: "topics/data-representation/number-systems/hex-color-mixer/",
+              tags: ["thập lục phân", "màu sắc", "rgb", "css", "hex", "color", "colour"],
               skill: "1.3 Hexadecimal",
               desc: {
                 vi: "Pha mã #RRGGBB cho khớp màu mẫu và đọc mã hex ra màu, như lập trình viên web vẫn làm.",
@@ -44,6 +48,7 @@ window.CATALOG = {
             {
               id: "remainder-tower", title: "Remainder Tower", icon: "🧱", status: "ready",
               path: "topics/data-representation/number-systems/remainder-tower/",
+              tags: ["chia lấy dư", "đổi cơ số", "nhị phân", "binary", "division", "base conversion"],
               skill: "1.5 Decimal → base r",
               desc: {
                 vi: "Chia liên tiếp, xếp số dư thành tháp rồi chọn đúng hướng đọc kết quả.",
@@ -53,6 +58,7 @@ window.CATALOG = {
             {
               id: "bit-fishing", title: "Bit Fishing", icon: "🎣", status: "ready",
               path: "topics/data-representation/number-systems/bit-fishing/",
+              tags: ["phần thập phân", "phân số", "nhân 2", "nhị phân", "fraction", "binary"],
               skill: { vi: "1.5 Phần thập phân → nhị phân", en: "1.5 Fractions → binary" },
               desc: {
                 vi: "Nhân 2 để câu từng bit. Có con cá câu mãi không hết. Bạn dừng ở đâu?",
@@ -62,6 +68,7 @@ window.CATALOG = {
             {
               id: "bit-tetris", title: "Bit Tetris", icon: "🧩", status: "ready",
               path: "topics/data-representation/number-systems/bit-tetris/",
+              tags: ["nhóm bit", "bát phân", "thập lục phân", "octal", "hex", "grouping"],
               skill: "1.5 Binary ↔ Octal/Hex",
               desc: {
                 vi: "Cắt dãy bit đang rơi thành nhóm 3 hoặc 4 tính từ dấu chấm, mỗi nhóm nổ thành một chữ số.",
@@ -71,6 +78,7 @@ window.CATALOG = {
             {
               id: "exact-or-approx", title: { vi: "Máy tính có lưu chính xác không?", en: "Exact or Approximate?" }, icon: "🎯", status: "ready",
               path: "topics/data-representation/number-systems/exact-or-approx/",
+              tags: ["số thực", "làm tròn", "sai số", "0.1 + 0.2", "float", "rounding", "precision"],
               skill: { vi: "1.5 Giới hạn biểu diễn", en: "1.5 Representation limits" },
               desc: {
                 vi: "Quick-fire: Exact hay Approximate? Tự tìm ra quy luật, rồi xem vì sao 0.1 + 0.2 ≠ 0.3.",
@@ -86,6 +94,7 @@ window.CATALOG = {
             {
               id: "one-byte-many-meanings", title: "One Byte, Many Meanings", icon: "🔍", status: "ready",
               path: "topics/data-representation/data-storage/one-byte-many-meanings/",
+              tags: ["byte", "kiểu dữ liệu", "bù 2", "ascii", "ảnh xám", "pixel", "data type", "grayscale"],
               skill: "2.1 Data types",
               desc: {
                 vi: "Cùng một byte, nhìn qua 4 kính lọc: unsigned, two's complement, ASCII, pixel xám.",
@@ -95,6 +104,7 @@ window.CATALOG = {
             {
               id: "odometer-overflow", title: "Odometer Overflow", icon: "🚗", status: "ready",
               path: "topics/data-representation/data-storage/odometer-overflow/",
+              tags: ["tràn số", "số không dấu", "overflow", "unsigned", "wrap around"],
               skill: "2.2 Unsigned overflow",
               desc: {
                 vi: "Đặt cược kết quả 11 + 9 trên đồng hồ 4-bit rồi xem số nhảy vòng.",
@@ -104,6 +114,7 @@ window.CATALOG = {
             {
               id: "number-wheel", title: "Number Wheel", icon: "🎡", status: "ready",
               path: "topics/data-representation/data-storage/number-wheel/",
+              tags: ["dấu lượng", "bù 2", "số âm", "số có dấu", "sign magnitude", "negative", "signed"],
               skill: "2.2 Sign-magnitude vs two's complement",
               desc: {
                 vi: "Xếp nhãn giá trị vào vòng 16 pattern 4-bit. Vì sao có −0? Vì sao −8..+7?",
@@ -113,6 +124,7 @@ window.CATALOG = {
             {
               id: "negate-machine", title: "Negate Machine", icon: "⚙️", status: "ready",
               path: "topics/data-representation/data-storage/negate-machine/",
+              tags: ["bù 2", "số âm", "đảo bit", "số có dấu", "negative", "invert", "signed"],
               skill: "2.2 Two's complement",
               desc: {
                 vi: "Lắp và vận hành băng chuyền Invert → +1, rồi giải mã số âm như 11110110.",
@@ -122,6 +134,7 @@ window.CATALOG = {
             {
               id: "float-builder", title: "Float Builder", icon: "🏗️", status: "ready",
               path: "topics/data-representation/data-storage/float-builder/",
+              tags: ["số thực", "dấu chấm động", "float", "mantissa", "exponent", "floating point"],
               skill: "2.3 IEEE 754",
               desc: {
                 vi: "Lắp Sign, Exponent, Mantissa để ra −6.75 theo 5 bước, và giải mã ngược lại.",
@@ -131,6 +144,7 @@ window.CATALOG = {
             {
               id: "exponent-zones", title: "Exponent Zones", icon: "🌡️", status: "ready",
               path: "topics/data-representation/data-storage/exponent-zones/",
+              tags: ["tràn số", "số mũ", "dấu chấm động", "float", "overflow", "underflow", "infinity"],
               skill: "2.3 Overflow & underflow",
               desc: {
                 vi: "Kéo số mũ tới ∞ và về 0. Tìm biên, dự đoán kết quả, cứu xác suất khỏi underflow.",
@@ -140,6 +154,7 @@ window.CATALOG = {
             {
               id: "ascii-spy", title: "ASCII Spy", icon: "🕵️", status: "ready",
               path: "topics/data-representation/data-storage/ascii-spy/",
+              tags: ["văn bản", "ký tự", "mã hoá ký tự", "unicode", "utf-8", "text", "character", "encoding"],
               skill: "2.4 Text",
               desc: {
                 vi: "Giải mã tin nhắn bit, mẹo lật bit 0x20, và vì sao ASCII không gõ được “Quốc dân”.",
@@ -149,6 +164,7 @@ window.CATALOG = {
             {
               id: "sample-the-wave", title: "Sample the Wave", icon: "🔊", status: "ready",
               path: "topics/data-representation/data-storage/sample-the-wave/",
+              tags: ["âm thanh", "lấy mẫu", "tần số", "dung lượng", "audio", "sampling", "bit depth"],
               skill: "2.4 Audio",
               desc: {
                 vi: "Chỉnh sampling rate và bit depth, nghe thử, đạt chất lượng với ngân sách dung lượng.",
@@ -158,6 +174,7 @@ window.CATALOG = {
             {
               id: "zoom-war", title: "Zoom War", icon: "🔎", status: "ready",
               path: "topics/data-representation/data-storage/zoom-war/",
+              tags: ["hình ảnh", "điểm ảnh", "ảnh vector", "bitmap", "raster", "vector", "pixel", "image"],
               skill: "2.4 Image",
               desc: {
                 vi: "Zoom liên tục: raster vỡ pixel, vector vẫn nét. Khi nào dùng loại nào?",
@@ -167,6 +184,7 @@ window.CATALOG = {
             {
               id: "storage-budget", title: "Storage Budget", icon: "💾", status: "ready",
               path: "topics/data-representation/data-storage/storage-budget/",
+              tags: ["dung lượng", "hình ảnh", "âm thanh", "video", "file size", "storage"],
               skill: "2.4 Image, audio, video",
               desc: {
                 vi: "Ước lượng dung lượng ảnh, âm thanh, video. Boss: 640×480×24-bit×120fps×10s.",
@@ -182,6 +200,7 @@ window.CATALOG = {
             {
               id: "mask-master", title: "Mask Master", icon: "🎭", status: "ready",
               path: "topics/data-representation/operations/mask-master/",
+              tags: ["phép logic", "mặt nạ", "and", "or", "xor", "not", "bitwise", "mask"],
               skill: "3.1 Logic operations",
               desc: {
                 vi: "Dùng AND, OR, XOR và mask để set, clear, toggle đúng các bit với ít lượt nhất.",
@@ -191,6 +210,7 @@ window.CATALOG = {
             {
               id: "xor-messenger", title: "XOR Secret Messenger", icon: "✉️", status: "ready",
               path: "topics/data-representation/operations/xor-messenger/",
+              tags: ["mã hoá", "mật mã", "khoá", "xor", "encryption", "cipher", "key"],
               skill: "3.1 XOR",
               desc: {
                 vi: "Mã hóa và giải mã bằng XOR, phá khóa, và gửi tin mật cho bạn cùng bàn.",
@@ -200,6 +220,7 @@ window.CATALOG = {
             {
               id: "find-flipped-bit", title: "Find the Flipped Bit", icon: "📡", status: "ready",
               path: "topics/data-representation/operations/find-flipped-bit/",
+              tags: ["chẵn lẻ", "phát hiện lỗi", "sửa lỗi", "xor", "parity", "error detection", "error correction"],
               skill: "3.1 Parity",
               desc: {
                 vi: "Tính parity, bắt gói tin lỗi qua kênh nhiễu, và sửa lỗi bằng parity 2 chiều.",
@@ -209,6 +230,7 @@ window.CATALOG = {
             {
               id: "bit-conveyor", title: "Bit Conveyor", icon: "🏭", status: "ready",
               path: "topics/data-representation/operations/bit-conveyor/",
+              tags: ["dịch bit", "phép dịch", "xoay bit", "shift", "rotate", "circular", "arithmetic shift"],
               skill: "3.2 Shift operations",
               desc: {
                 vi: "Logical, circular, arithmetic shift: đưa pattern về đích với ít bước nhất.",
@@ -218,6 +240,7 @@ window.CATALOG = {
             {
               id: "overflow-detective", title: "Overflow Detective", icon: "🚨", status: "ready",
               path: "topics/data-representation/operations/overflow-detective/",
+              tags: ["tràn số", "bù 2", "phép cộng", "phép trừ", "overflow", "addition", "subtraction"],
               skill: "3.3 Two's complement arithmetic",
               desc: {
                 vi: "Cộng, trừ bù 2 trên 4 và 6 bit, rồi bật cờ overflow đúng lúc.",

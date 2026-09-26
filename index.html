@@ -10,114 +10,83 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <script src="assets/js/lang.js"></script>
+  <script>/* Vào thẳng thư viện (không nháy màn hình chào) khi URL có #games */ if (location.hash.startsWith("#games")) document.documentElement.classList.add("to-library");</script>
   <link rel="stylesheet" href="assets/css/base.css">
-  <style>
-    .hero { padding: 40px 0 12px; position: relative; }
-    .hero .lang-slot { position: absolute; top: 24px; right: 0; }
-    .hero p { color: var(--muted); max-width: 640px; }
-    .hero .bits { font-family: var(--mono); color: var(--accent); font-weight: 700; letter-spacing: 0.15em; font-size: 0.85rem; margin-bottom: 8px; }
-    .topic { margin: 28px 0 40px; }
-    .topic-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 8px; }
-    .topic-head h2 { margin: 0; }
-    .topic-head p { margin: 0; color: var(--muted); width: 100%; }
-    .section-title { margin: 22px 0 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; display: flex; gap: 8px; align-items: center; }
-    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-    .game-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; transition: transform 0.12s, border-color 0.12s; }
-    a.game-card:hover { transform: translateY(-2px); border-color: var(--accent); }
-    .game-card .top { display: flex; align-items: center; gap: 10px; }
-    .game-card .ic { font-size: 1.6rem; width: 44px; height: 44px; display: grid; place-items: center; background: var(--surface-2); border-radius: 12px; flex: none; }
-    .game-card h3 { margin: 0; }
-    .game-card .skill { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
-    .game-card p { font-size: 0.92rem; color: var(--muted); margin: 0; flex: 1; }
-    .game-card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.85rem; }
-    .game-card.planned { opacity: 0.6; box-shadow: none; border-style: dashed; }
-    .planned-toggle { margin-top: 12px; }
-    footer { border-top: 1px solid var(--border); padding: 20px 0 40px; color: var(--muted); font-size: 0.88rem; }
-  </style>
+  <link rel="stylesheet" href="assets/css/hub.css">
+  <style>.to-library [data-view="welcome"] { display: none; }</style>
 </head>
 <body>
-  <main class="container">
-    <section class="hero">
-      <div class="lang-slot" id="lang-slot"></div>
-      <div class="bits">01001001 01010100</div>
-      <h1 id="course" data-en="Introduction to Information Technology">Nhập môn Công nghệ thông tin</h1>
-      <p id="audience" data-en="Each game targets one common misconception. Play for 5–10 minutes before the exercises to really understand the topic.">Mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
-      <label class="row muted" style="font-size:.9rem" id="planned-toggle"><input type="checkbox" id="show-planned"> <span data-en="Also show upcoming games">Hiện cả các game sắp ra mắt</span></label>
-    </section>
-    <div id="topics"></div>
-  </main>
-  <footer>
-    <div class="container" data-en="Your progress and best scores are stored only in your own browser and are never sent anywhere.">Tiến độ và kỷ lục được lưu ngay trên trình duyệt của bạn, không gửi đi đâu cả.</div>
-  </footer>
+  <!-- ===== Màn hình chào ===== -->
+  <section class="welcome" data-view="welcome">
+    <div class="bits-bg" id="bits-bg" aria-hidden="true"></div>
+    <div class="welcome-top" id="welcome-lang"></div>
+    <div class="welcome-body">
+      <div class="kicker">01001001 01010100</div>
+      <h1 class="course-name" data-en="Introduction to Information Technology">Nhập môn Công nghệ thông tin</h1>
+      <p class="lead" data-en="Short interactive games, each aimed at one common misconception. Play for 5–10 minutes before the exercises to really understand the topic.">Những game ngắn, mỗi game nhắm vào một lỗi sai hay gặp. Chơi 5–10 phút trước khi làm bài tập để hiểu bài chắc hơn.</p>
+      <div class="stats" id="welcome-stats"></div>
+      <div class="actions">
+        <a class="btn lg" id="btn-start" href="#games" data-en="▶ Start playing">▶ Bắt đầu chơi</a>
+        <a class="btn ghost continue" id="btn-continue" hidden></a>
+        <button class="reset-link" id="btn-reset" type="button" hidden data-en="↺ Reset all progress">↺ Xoá toàn bộ tiến độ</button>
+      </div>
+    </div>
+    <div class="welcome-foot" data-en="Progress and best scores are stored only in your browser and never sent anywhere.">Tiến độ và kỷ lục chỉ lưu trên trình duyệt của bạn, không gửi đi đâu cả.</div>
+  </section>
+
+  <!-- ===== Thư viện game ===== -->
+  <div data-view="library" hidden>
+    <header class="lib-header">
+      <div class="container wide inner">
+        <a class="home" href="./" title="Màn hình chào" data-en-title="Welcome screen"><span class="logo">IT</span><span class="course-name" data-en="Introduction to Information Technology">Nhập môn Công nghệ thông tin</span></a>
+        <span class="spacer"></span>
+        <span id="lib-lang"></span>
+      </div>
+    </header>
+
+    <main class="container wide library">
+      <nav class="chapters" id="chapters" aria-label="Chương" data-en-aria="Chapters"></nav>
+
+      <div>
+        <div class="toolbar">
+          <div class="search">
+            <span class="ic" aria-hidden="true">🔍</span>
+            <input id="q" type="search" autocomplete="off" spellcheck="false"
+              placeholder="Tìm game, khái niệm… (vd: xor, bù 2, ascii)" data-en-placeholder="Search games, concepts… (e.g. xor, two's complement, ascii)"
+              aria-label="Tìm game" data-en-aria="Search games">
+            <kbd id="q-kbd" title="Phím tắt" data-en-title="Shortcut">/</kbd>
+            <button class="clear" id="q-clear" type="button" hidden aria-label="Xoá tìm kiếm" data-en-aria="Clear search">✕</button>
+          </div>
+          <div class="chips scroll" id="sections" hidden></div>
+          <div class="chips scroll" id="status"></div>
+        </div>
+
+        <div id="recent"></div>
+        <div id="results"></div>
+      </div>
+    </main>
+
+    <footer class="lib-foot">
+      <div class="container wide">
+        <span data-en="Progress is stored only in your browser.">Tiến độ chỉ lưu trên trình duyệt của bạn.</span>
+        <span class="spacer"></span>
+        <button class="btn ghost sm" id="btn-reset-2" type="button" data-en="↺ Reset progress">↺ Xoá tiến độ</button>
+      </div>
+    </footer>
+  </div>
+
+  <dialog class="confirm" id="confirm-reset">
+    <h2 data-en="Reset all progress?">Xoá toàn bộ tiến độ?</h2>
+    <p id="confirm-text"></p>
+    <p class="muted" data-en="Your language and sound settings are kept.">Cài đặt ngôn ngữ và âm thanh vẫn được giữ nguyên.</p>
+    <div class="row">
+      <button class="btn ghost" data-close type="button" data-en="Cancel">Huỷ</button>
+      <button class="btn bad" id="confirm-yes" type="button" data-en="Reset">Xoá</button>
+    </div>
+  </dialog>
 
   <script src="assets/js/catalog.js"></script>
   <script src="assets/js/common.js"></script>
-  <script>
-    (function () {
-      const cat = window.CATALOG;
-      const root = document.getElementById("topics");
-      const toggle = document.getElementById("show-planned");
-      document.getElementById("course").textContent = G.tr(cat.course);
-      document.title = G.tr(cat.course);
-      document.getElementById("lang-slot").append(G.langButton());
-
-      function progressText(game) {
-        const p = G.progress.get(game.id);
-        const done = Object.keys(p.levels).length;
-        if (!done) return "";
-        return p.total ? `✓ ${done}/${p.total} ${L("level", "levels")}` : L("✓ Đã chơi", "✓ Played");
-      }
-
-      function card(game) {
-        const ready = game.status === "ready";
-        const inner = [
-          G.el("div", { class: "top" }, [
-            G.el("div", { class: "ic", text: game.icon || "🎮" }),
-            G.el("div", {}, [G.el("h3", { text: G.tr(game.title) }), G.el("div", { class: "skill", text: G.tr(game.skill) || "" })]),
-          ]),
-          G.el("p", { text: G.tr(game.desc) || "" }),
-          G.el("div", { class: "foot" }, [
-            ready ? G.el("span", { class: "badge good", text: progressText(game) || L("Chơi ngay", "Play now") })
-                  : G.el("span", { class: "badge warn", text: L("Sắp có", "Coming soon") }),
-          ]),
-        ];
-        return ready
-          ? G.el("a", { class: "card game-card", href: game.path }, inner)
-          : G.el("div", { class: "card game-card planned" }, inner);
-      }
-
-      function render() {
-        const showPlanned = toggle.checked;
-        G.store.set("itgames:showPlanned", showPlanned);
-        root.innerHTML = "";
-        for (const topic of cat.topics) {
-          const t = G.el("section", { class: "topic" }, [
-            G.el("div", { class: "topic-head" }, [
-              topic.label ? G.el("span", { class: "badge", text: G.tr(topic.label) }) : null,
-              G.el("h2", { text: G.tr(topic.title) }),
-              G.el("p", { text: G.tr(topic.summary) || "" }),
-            ]),
-          ]);
-          for (const sec of topic.sections) {
-            const games = sec.games.filter((g) => showPlanned || g.status === "ready");
-            const readyCount = sec.games.filter((g) => g.status === "ready").length;
-            if (!games.length) continue;
-            t.append(G.el("div", { class: "section-title" }, [
-              document.createTextNode(G.tr(sec.title)),
-              G.el("span", { class: "badge", text: `${readyCount}/${sec.games.length}` }),
-            ]));
-            t.append(G.el("div", { class: "grid" }, games.map(card)));
-          }
-          root.append(t);
-        }
-      }
-
-      const hasPlanned = cat.topics.some((t) => t.sections.some((s) => s.games.some((g) => g.status !== "ready")));
-      document.getElementById("planned-toggle").hidden = !hasPlanned;
-      toggle.checked = hasPlanned && G.store.get("itgames:showPlanned", false);
-      toggle.addEventListener("change", render);
-      render();
-    })();
-  </script>
+  <script src="assets/js/hub.js"></script>
 </body>
 </html>

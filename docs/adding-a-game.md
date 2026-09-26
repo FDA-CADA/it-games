@@ -24,6 +24,7 @@ Quy ước đặt tên:
 {
   id: "number-wheel", title: "Number Wheel", icon: "🎡", status: "ready",
   path: "topics/data-representation/data-storage/number-wheel/",
+  tags: ["bù 2", "số âm", "sign magnitude", "negative"],
   skill: "2.2 Integers",
   desc: {
     vi: "Một câu mô tả hiện trên thẻ ở trang chủ.",
@@ -33,6 +34,8 @@ Quy ước đặt tên:
 ```
 
 `title`, `skill`, `desc` có thể là chuỗi (giống nhau ở mọi ngôn ngữ) hoặc object `{ vi, en }`.
+
+`tags` (tuỳ chọn) là từ khoá cho ô tìm kiếm ở trang chủ. Chúng không hiển thị nên không cần dịch, nhưng nên có cả tiếng Việt lẫn tiếng Anh: sinh viên gõ "bù 2", "tràn số" hay "overflow" đều phải ra game. Ô tìm kiếm đã tự đọc `title`, `skill`, `desc` và tên chương/phần; `tags` dành cho khái niệm hoặc tên gọi khác không có sẵn trong mấy trường đó. Tìm kiếm không phân biệt dấu và khớp từ đầu một từ ("bu 2" ra "bù 2", nhưng "bu" không ra "bước").
 
 Trang chủ, header của game ("← Tất cả game", tên phần) và nút "Game tiếp theo" đều tự sinh từ `catalog.js`.
 
@@ -101,7 +104,9 @@ Kiểm tra: `python3 tools/i18n_lint.py` liệt kê mọi chữ tiếng Việt c
 },
 ```
 
-Game ở dạng ý tưởng dùng `status: "planned"` (không cần `path`). Chúng hiện trên trang chủ khi bật "Hiện cả các game sắp ra mắt".
+Game ở dạng ý tưởng dùng `status: "planned"` (không cần `path`). Chúng không hiện trong danh sách mặc định mà nằm ở bộ lọc "Sắp có" (bộ lọc này chỉ xuất hiện khi có ít nhất một game planned).
+
+Trang chủ không cần sửa khi thêm chương: cột "Chương" bên trái, chip lọc theo phần, bộ đếm và ô tìm kiếm đều tự sinh từ `catalog.js`. Để gửi sinh viên link thẳng tới một chương hoặc một phần, dùng `#games?topic=<id-chủ-đề>` hoặc `#games?topic=<id-chủ-đề>&section=<id-phần>`, ví dụ `…/#games?topic=data-representation&section=operations`. Thêm `&q=xor` để mở sẵn kết quả tìm kiếm, `&lang=en` đặt trước dấu `#` để mở bản tiếng Anh.
 
 ## Nguyên tắc thiết kế
 

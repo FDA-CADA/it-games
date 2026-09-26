@@ -67,13 +67,14 @@ def lint_js(path):
     string = r"(`(?:[^`\\]|\\.|\$\{[^}]*\})*`|\"(?:[^\"\\]|\\.)*\"|'(?:[^'\\]|\\.)*')"
     src = re.sub(r"L\(\s*" + string, lambda m: "L(" + keep(m), src, flags=re.S)
     src = re.sub(r"vi:\s*" + string, lambda m: "vi:" + keep(m), src, flags=re.S)
+    src = re.sub(r"tags:\s*\[[^\]]*\]", keep, src)  # từ khoá tìm kiếm, không hiển thị
     src = re.sub(r"<(\w+)[^>]*data-i18n-skip[^>]*>.*?</\1>", keep, src, flags=re.S)
     return [f"dòng {n}: {line.strip()[:100]}" for n, line in enumerate(src.split("\n"), 1) if VI.search(line)]
 
 
 def main(args):
     files = [ROOT / a for a in args] if args else sorted(
-        [ROOT / "index.html", ROOT / "assets/js/common.js", ROOT / "assets/js/catalog.js"]
+        [ROOT / "index.html"] + [ROOT / "assets/js" / f for f in ("common.js", "catalog.js", "hub.js")]
         + list(ROOT.glob("topics/*/*/*/index.html")) + list(ROOT.glob("topics/*/*/*/game.js")))
     total = 0
     for f in files:

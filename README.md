@@ -40,13 +40,15 @@ Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Khi th
 
 ```text
 .
-├── index.html                  # Trang chủ, tự sinh danh sách game từ catalog.js
+├── index.html                  # Trang chủ: màn hình chào + thư viện game (#games)
 ├── .nojekyll                   # Báo GitHub Pages phục vụ file tĩnh nguyên trạng
 ├── assets/
 │   ├── css/base.css            # Giao diện chung: token màu sáng/tối, nút, card, HUD…
+│   ├── css/hub.css             # Giao diện riêng của trang chủ
 │   ├── js/lang.js              # Chọn ngôn ngữ (vi/en) trước khi trang hiển thị
 │   ├── js/common.js            # Tiện ích chung (namespace G): header, đa ngôn ngữ, timer, điểm…
 │   ├── js/catalog.js           # ⭐ DANH MỤC mọi chủ đề, phần và game
+│   ├── js/hub.js               # Trang chủ: tìm kiếm, lọc theo chương/phần/tiến độ
 │   └── favicon.svg
 ├── topics/                     # Mỗi chủ đề (chương) một thư mục
 │   └── data-representation/
@@ -69,6 +71,7 @@ Vì sao chọn cấu trúc này:
 - **`topics/<chủ-đề>/<phần>/<game>/`** bám theo cấu trúc bài giảng, nên dễ tìm game theo slide. Mọi game đều sâu đúng 4 cấp, nên đường dẫn `../../../../assets/` giống hệt nhau và copy template là chạy.
 - **Mỗi game một thư mục kèm README riêng**, nên sửa một game không ảnh hưởng game khác, và tài liệu nằm ngay cạnh code.
 - **Một file `catalog.js` duy nhất** là nguồn sự thật cho trang chủ, header và nút "Game tiếp theo". Thêm game chỉ cần thêm một mục vào đây.
+- **Trang chủ chia hai bước:** màn hình chào (Bắt đầu chơi, Chơi tiếp, Xoá tiến độ), rồi tới thư viện game có cột chương, chip lọc theo phần, lọc theo tiến độ (chưa chơi, đang chơi, hoàn thành) và ô tìm kiếm không phân biệt dấu. Nhờ vậy khi có thêm hàng chục chương, sinh viên vẫn tìm được game nhanh. Bộ lọc nằm trên URL nên giảng viên gửi được link thẳng tới một chương, ví dụ `…/#games?topic=data-representation&section=operations`.
 - **HTML/CSS/JS thuần, không build step:** push là GitHub Pages phục vụ ngay, ai cũng sửa được.
 - **Bản dịch đặt ngay cạnh bản gốc** (`data-en="…"` trong HTML, `L("…", "…")` trong JS) thay vì file từ điển riêng, nên sửa câu nào thì thấy ngay bản dịch cần sửa theo. Chi tiết ở [docs/adding-a-game.md](docs/adding-a-game.md#đa-ngôn-ngữ-việt--anh).
 
