@@ -236,7 +236,7 @@
   $("#probe").addEventListener("keydown", (e) => { if (e.key === "Enter") probe(); });
   $("#btn-lab").addEventListener("click", () => showReveal(false));
   $("#btn-again").addEventListener("click", () => startLevel(S.lv));
-  $("#btn-menu").addEventListener("click", () => { G.renderLevels($("#levels"), LEVELS, startLevel); G.showScreen("start"); });
+  $("#btn-menu").addEventListener("click", () => { clearTimeout(S.auto); G.renderLevels($("#levels"), LEVELS, startLevel); G.showScreen("start"); });
   document.addEventListener("keydown", (e) => {
     if ($("[data-screen=play]").hidden || e.target.tagName === "INPUT") return;
     const k = e.key.toLowerCase();

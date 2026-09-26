@@ -116,14 +116,19 @@ Trang chủ không cần sửa khi thêm chương: cột "Chương" bên trái, 
 - **Không cần backend.** Tiến độ lưu trong `localStorage` qua `G.progress`. Mọi thứ phải chạy được dưới dạng file tĩnh trên GitHub Pages.
 - **Không build step, không framework.** HTML/CSS/JS thuần, để giảng viên hoặc trợ giảng nào cũng sửa được.
 
+## Thoát level giữa chừng
+
+Khi người chơi bấm Back (hoặc "← Chọn level" trên header) lúc đang ở giữa level, `common.js` bấm hộ nút `#btn-menu` ("Chọn level khác") của game. Vì vậy handler của `#btn-menu` phải dọn mọi thứ riêng của game đang chạy ngầm: `setTimeout` tự viết, `requestAnimationFrame`, cờ kiểu `S.active`. `G.Timer` và `G.wait` được dọn tự động nên không cần làm gì thêm.
+
 ## Tiện ích dùng chung (`assets/js/common.js`)
 
 | API | Dùng để |
 | --- | --- |
 | `G.$`, `G.$$`, `G.el(tag, attrs, children)` | Truy vấn và tạo DOM |
-| `G.showScreen("start" \| "play" \| "end")` | Chuyển màn hình (`[data-screen]`) |
+| `G.showScreen("start" \| "play" \| "end")` | Chuyển màn hình (`[data-screen]`). Rời "start" thì nút Back của trình duyệt và nút "← Chọn level" trên header sẽ quay về danh sách level (xem bên dưới) |
 | `G.renderLevels(container, LEVELS, onPick)` | Vẽ danh sách level kèm kỷ lục |
-| `G.Timer(seconds, onTick, onEnd)` + `G.renderTimerBar(bar, ratio)` | Đếm ngược |
+| `G.Timer(seconds, onTick, onEnd)` + `G.renderTimerBar(bar, ratio)` | Đếm ngược (tự dừng khi người chơi thoát level) |
+| `G.wait(ms)` | `await` chờ; nếu người chơi thoát level trong lúc chờ thì đoạn code sau không chạy nữa |
 | `G.progress.record(gameId, levelIdx, score, totalLevels)` | Lưu kỷ lục, trả về `{ best, isNew }` |
 | `G.toast(msg, type)`, `G.confetti()`, `G.shake(node)` | Hiệu ứng phản hồi |
 | `G.sound.play("good" \| "bad" \| "pop" \| "tick" \| "win")` | Âm thanh ngắn (có nút tắt trên header) |

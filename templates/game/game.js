@@ -62,6 +62,7 @@
 
   $("#btn-next").addEventListener("click", nextRound);
   $("#btn-again").addEventListener("click", () => startLevel(S.lv));
+  // Cũng được gọi khi người chơi bấm Back giữa level: dọn setTimeout/animation riêng của game tại đây
   $("#btn-menu").addEventListener("click", () => { G.renderLevels($("#levels"), LEVELS, startLevel); G.showScreen("start"); });
 
   G.renderLevels($("#levels"), LEVELS, startLevel);

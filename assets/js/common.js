@@ -137,9 +137,50 @@
   G.showScreen = (name) => {
     G.$$("[data-screen]").forEach((s) => { s.hidden = s.dataset.screen !== name; });
     window.scrollTo({ top: 0 });
+    levelHistory(name);
   };
+
+  /* ---------- Nút Back: đang trong level thì quay về danh sách level ----------
+     Vào một level (mọi màn hình khác "start") sẽ thêm một mục vào lịch sử trình
+     duyệt, nên nút Back / vuốt Back đưa về màn hình chọn level thay vì rời game.
+     Rời level thì dừng mọi G.Timer và bỏ các G.wait đang chờ của level cũ. */
+  let epoch = 0, skipPop = false;
+  const timers = new Set();
+  const inLevelState = () => !!(history.state && history.state.itgLevel);
+  function levelHistory(name) {
+    if (!G.gameId) return;
+    if (name !== "start") {
+      if (!inLevelState()) history.pushState({ itgLevel: true }, "");
+    } else {
+      epoch++;
+      timers.forEach((t) => t.stop());
+      // skipPop = true nghĩa là đã có một lần back đang chờ: không back thêm lần nữa
+      if (inLevelState() && !skipPop) { skipPop = true; history.back(); }
+    }
+    updateBackLink();
+  }
+  /** Về màn hình chọn level, dùng nút "Chọn level khác" của game (nó dọn trạng thái riêng). */
+  G.backToLevels = () => {
+    const menu = G.$("#btn-menu");
+    if (menu) menu.click(); else G.showScreen("start");
+  };
+  window.addEventListener("popstate", () => {
+    if (skipPop) { skipPop = false; return; }
+    const start = G.$("[data-screen=start]");
+    if (G.gameId && start && start.hidden) G.backToLevels();
+  });
+  // Tải lại trang giữa level: bỏ dấu của lần trước để Back vẫn đúng
+  if (inLevelState()) history.replaceState(null, "");
+
+  function updateBackLink() {
+    const a = G.$(".site-header .back");
+    const start = G.$("[data-screen=start]");
+    if (!a || !start) return;
+    a.textContent = start.hidden ? G.L("← Chọn level", "← Levels") : G.L("← Tất cả game", "← All games");
+  }
   G.shake = (node) => { node.classList.remove("shake"); void node.offsetWidth; node.classList.add("shake"); };
-  G.wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  /** Chờ ms mili giây; nếu người chơi rời level trong lúc chờ thì không bao giờ chạy tiếp. */
+  G.wait = (ms) => { const e = epoch; return new Promise((r) => setTimeout(() => { if (e === epoch) r(); }, ms)); };
 
   /* ---------- Toast & confetti ---------- */
   let toastWrap;
@@ -250,9 +291,10 @@
         if (this.left <= 0) { this.stop(); this.onEnd && this.onEnd(); }
       }, 100);
       this.onTick && this.onTick(this.left, this.left / this.total);
+      timers.add(this);
       return this;
     }
-    stop() { if (this.id) clearInterval(this.id); this.id = null; }
+    stop() { if (this.id) clearInterval(this.id); this.id = null; timers.delete(this); }
   };
   /** Cập nhật thanh thời gian .timer-bar */
   G.renderTimerBar = (bar, ratio) => {
@@ -313,7 +355,13 @@
       onclick: () => help.showModal(),
     }) : null;
     slot.append(G.el("div", { class: "container" }, [
-      G.el("a", { class: "back", href: G.root + "index.html#games", text: G.L("← Tất cả game", "← All games") }),
+      G.el("a", {
+        class: "back", href: G.root + "index.html#games", text: G.L("← Tất cả game", "← All games"),
+        onclick: (e) => {
+          const start = G.$("[data-screen=start]");
+          if (start && start.hidden) { e.preventDefault(); G.backToLevels(); }
+        },
+      }),
       G.el("div", { class: "title", html: `${title}${sub ? `<small>${sub}</small>` : ""}` }),
       G.langButton(), soundBtn, helpBtn,
     ]));
@@ -334,6 +382,7 @@
   window.G = G;
   window.L = G.L;
   G.applyStaticI18n();
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountHeader);
-  else mountHeader();
+  const boot = () => { mountHeader(); updateBackLink(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();
