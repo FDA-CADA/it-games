@@ -33,8 +33,9 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 | |  | [📡 Find the Flipped Bit](topics/data-representation/operations/find-flipped-bit/README.md) | Parity, phát hiện và sửa lỗi |
 | |  | [🏭 Bit Conveyor](topics/data-representation/operations/bit-conveyor/README.md) | Logical, circular, arithmetic shift |
 | |  | [🚨 Overflow Detective](topics/data-representation/operations/overflow-detective/README.md) | Cộng/trừ bù 2 và cờ overflow |
+| [Computer Organization & Architecture](topics/computer-organization-and-architecture/README.md) (Tuần 3) | Ôn tập chương | [🔐 Mật Thất Von Neumann](topics/computer-organization-and-architecture/review/von-neumann-escape/README.md) | Escape room: địa chỉ, cache, machine cycle, mã máy, pipeline |
 
-Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Khi thêm chủ đề mới, game ở dạng ý tưởng được khai báo trong [`assets/js/catalog.js`](assets/js/catalog.js) với `status: "planned"` và hiện là "Sắp có" trên trang chủ.
+Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Chủ đề Computer Organization & Architecture mở đầu bằng escape room Mật Thất Von Neumann. Khi thêm chủ đề mới, game ở dạng ý tưởng được khai báo trong [`assets/js/catalog.js`](assets/js/catalog.js) với `status: "planned"` và hiện là "Sắp có" trên trang chủ.
 
 ## Cấu trúc thư mục
 

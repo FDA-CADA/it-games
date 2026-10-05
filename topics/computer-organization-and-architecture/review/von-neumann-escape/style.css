@@ -1,0 +1,130 @@
+/* Mật Thất Von Neumann — bố cục escape room: dải cửa phía trên, thẻ phòng bên trái,
+   bàn thí nghiệm bên phải. Màu dùng token trong base.css để tự hỗ trợ sáng/tối. */
+.container.wide { max-width: 1200px; }
+.small { font-size: 0.88rem; }
+.intro .door-list { padding-left: 1.4em; margin: 0 0 1em; }
+.intro .door-list li { margin-bottom: 4px; }
+.intro .door-list li::marker { color: var(--accent); font-family: var(--mono); font-weight: 700; }
+.hud .stat b.pen { color: var(--bad); }
+.foot { margin-top: 14px; }
+
+/* ---------- Dải cửa ---------- */
+.doors { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+.door {
+  appearance: none; position: relative; min-width: 0; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--muted); font: inherit;
+}
+.door .n { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.door .t { font-size: 0.88rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 26px; }
+.door .slot {
+  position: absolute; top: 8px; right: 9px; width: 24px; height: 24px; display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: 6px; font: 700 0.85rem var(--mono); color: var(--muted);
+}
+.door:hover:not(:disabled) { border-color: var(--accent); }
+.door.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.door.current .slot { border-color: var(--accent); color: var(--accent); }
+.door.solved .slot { background: var(--good); border-color: var(--good); color: var(--on-accent); }
+.door:disabled { cursor: not-allowed; opacity: 0.5; }
+.door:disabled .t { color: var(--muted); }
+@media (max-width: 620px) {
+  .doors .t { display: none; }
+  .doors .door { padding: 8px 4px; align-items: center; gap: 6px; }
+  .doors .door .n { font-size: 0.66rem; letter-spacing: 0.02em; white-space: nowrap; }
+  .doors .door .slot { position: static; }
+}
+
+/* ---------- Hai cột: phòng + bàn thí nghiệm ---------- */
+.vn-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .vn-grid { grid-template-columns: 1fr; } }
+.vn-grid > .card { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.vn-grid h2 { margin: 4px 0 0; }
+.eyebrow { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.sub-h { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.story { margin: 0; max-width: 65ch; }
+.task { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.task li::marker { color: var(--accent); font-family: var(--mono); }
+pre.code { margin: 0; border-left: 3px solid var(--accent); padding: 6px 0 6px 14px; font: 500 0.95rem/1.75 var(--mono); overflow-x: auto; }
+pre.code .c { color: var(--muted); }
+pre.code .a { color: var(--accent); }
+
+/* ---------- Ổ khóa ---------- */
+form.lock { display: flex; flex-direction: column; gap: 14px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 16px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.fields.wide { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field label { font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+.vn-grid input[type=text], .vn-grid select, .vn-grid textarea {
+  width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); color: var(--text); font: 500 0.95rem var(--mono);
+}
+.vn-grid select { font-family: var(--font); font-size: 0.92rem; }
+.vn-grid textarea { resize: vertical; line-height: 1.6; font-size: 0.88rem; }
+.vn-grid input:focus, .vn-grid select:focus, .vn-grid textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.bad-in { border-color: var(--bad) !important; box-shadow: 0 0 0 2px var(--bad-soft); }
+.good-in { border-color: var(--good) !important; box-shadow: 0 0 0 2px var(--good-soft); }
+.msg { margin: 0; min-height: 1.4em; font-size: 0.92rem; font-weight: 600; }
+.msg.bad { color: var(--bad); }
+.msg.ok { color: var(--good); }
+.hints { display: flex; flex-direction: column; gap: 8px; }
+.hints:empty { display: none; }
+.hint { border-left: 3px solid var(--warn); padding: 4px 0 4px 12px; font-size: 0.92rem; }
+.hint b { display: block; color: var(--warn); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.debrief { border: 1px solid var(--good); background: var(--good-soft); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.debrief p { margin: 0; }
+.debrief .eyebrow { color: var(--good); }
+
+/* ---------- Chip, bảng ---------- */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chip { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.ok { border-color: var(--good); color: var(--good); }
+.chip.warn { border-color: var(--bad); color: var(--bad); }
+.tw { overflow-x: auto; max-width: 100%; }
+table.t { border-collapse: collapse; width: 100%; font: 400 0.85rem/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+table.t th { font: 700 0.7rem var(--font); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+table.t td { padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td.hit { color: var(--good); font-weight: 700; }
+td.miss { color: var(--bad); font-weight: 700; }
+.decoded { font: 500 0.95rem/1.5 var(--mono); background: var(--surface-2); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 12px; min-height: 2.6em; overflow-wrap: anywhere; }
+
+/* ---------- Mô phỏng Simple Computer ---------- */
+.io { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.io .col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.cpu { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.reg { background: var(--surface-2); border-radius: 8px; padding: 8px 10px; }
+.reg .k { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.reg .v { font: 700 1.25rem/1.3 var(--mono); font-variant-numeric: tabular-nums; }
+.reg .d { font-size: 0.78rem; color: var(--muted); }
+.regs { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+@media (max-width: 520px) { .regs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.r { background: var(--surface-2); border: 1px solid transparent; border-radius: 6px; padding: 4px 6px; font: 500 0.8rem/1.35 var(--mono); font-variant-numeric: tabular-nums; min-width: 0; }
+.r span { display: block; font-size: 0.66rem; font-weight: 700; color: var(--muted); }
+.r.flash, .mrow.flash { border-color: var(--warn); background: var(--warn-soft); }
+.mem { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 520px) { .mem { grid-template-columns: 1fr; } }
+.mcol { display: flex; flex-direction: column; gap: 2px; max-height: 260px; overflow: auto; min-width: 0; }
+.mrow { display: flex; gap: 10px; padding: 1px 8px; border: 1px solid transparent; border-radius: 6px; font: 500 0.82rem/1.5 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mrow .ad, .mrow .dc { color: var(--muted); }
+.mrow .dc { overflow: hidden; text-overflow: ellipsis; }
+.mrow.pc { border-color: var(--good); }
+.mrow.pc .ad::before { content: "▶ "; color: var(--good); }
+.err { color: var(--bad); font-size: 0.92rem; margin: 0; }
+details.isa summary { cursor: pointer; font-weight: 700; font-size: 0.85rem; color: var(--muted); }
+details.isa[open] summary { margin-bottom: 8px; }
+
+/* ---------- Pipeline ---------- */
+table.pipe { border-collapse: separate; border-spacing: 3px; font: 700 0.78rem/1 var(--mono); }
+table.pipe th { font-size: 0.66rem; color: var(--muted); padding: 2px 4px; text-align: center; }
+table.pipe td { width: 30px; height: 28px; text-align: center; border-radius: 4px; }
+table.pipe td.lab { width: auto; text-align: right; padding-right: 8px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+table.pipe td.st { background: var(--accent-soft); color: var(--accent); }
+table.pipe td.st.j { background: var(--warn-soft); color: var(--warn); box-shadow: inset 0 0 0 1px var(--warn); }
+table.pipe td.gh { background: repeating-linear-gradient(135deg, var(--bad-soft) 0 4px, transparent 4px 8px); box-shadow: inset 0 0 0 1px var(--bad); color: var(--bad); }
+
+/* ---------- Két thoát hiểm ---------- */
+.vault-code { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 8px 0 18px; }
+.vault-code span { font: 800 2.4rem/1 var(--mono); background: var(--good); color: var(--on-accent); padding: 12px 14px; border-radius: 10px; min-width: 1.4em; }
+.vault-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; text-align: left; margin-bottom: 14px; }
+.vault-stats .reg .v.pen { color: var(--bad); }

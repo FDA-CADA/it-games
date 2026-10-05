@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mật Thất Von Neumann</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="von-neumann-escape">
+  <header data-shell></header>
+
+  <main class="container wide game-main">
+    <!-- Màn hình 1: giới thiệu -->
+    <section data-screen="start" class="card intro">
+      <h1>🔐 <span data-en="Von Neumann Escape Room">Mật Thất Von Neumann</span></h1>
+      <p data-lang="vi">Bạn bị nhốt bên trong một chiếc máy tính. <b>Năm cánh cửa</b>, mỗi cửa giữ một chữ cái của mật mã thoát hiểm. Mỗi phòng có một <b>bàn thí nghiệm</b> riêng: máy đổi lũy thừa 2, mô phỏng cache, mô phỏng Simple Computer và dây chuyền lệnh.</p>
+      <p data-lang="en">You are trapped inside a computer. <b>Five doors</b>, each guarding one letter of the escape code. Every room has its own <b>workbench</b>: a power-of-two converter, a cache simulator, a Simple Computer simulator and an instruction pipeline.</p>
+      <ol class="door-list">
+        <li><b data-en="Address Gate">Cổng địa chỉ</b> <span class="muted" data-en="· address bits and memory size">· số bit địa chỉ và dung lượng bộ nhớ</span></li>
+        <li><b data-en="Memory Store">Kho bộ nhớ</b> <span class="muted" data-en="· subsystems and cache hits">· các subsystem và cache hit</span></li>
+        <li><b data-en="Control Room">Phòng điều khiển</b> <span class="muted" data-en="· trace fetch → decode → execute">· trace fetch → decode → execute</span></li>
+        <li><b data-en="Programming Forge">Lò lập trình</b> <span class="muted" data-en="· write a machine-code program">· tự viết chương trình mã máy</span></li>
+        <li><b data-en="Assembly Line">Dây chuyền</b> <span class="muted" data-en="· pipelining and Flynn's taxonomy">· pipelining và phân loại Flynn</span></li>
+      </ol>
+      <p class="muted" data-en="The clock starts at your first action. Each hint adds 60 seconds. Ranking is by total time.">Đồng hồ chạy từ lần thao tác đầu tiên. Mỗi gợi ý cộng 60 giây. Xếp hạng theo tổng thời gian.</p>
+      <div class="row">
+        <button class="btn lg" id="btn-start" data-en="Enter the machine →">Vào trong máy →</button>
+        <button class="btn ghost lg" id="btn-resume" hidden data-en="Continue">Chơi tiếp</button>
+      </div>
+    </section>
+
+    <!-- Màn hình 2: chơi -->
+    <section data-screen="play" hidden>
+      <div class="hud" aria-live="polite">
+        <span class="stat"><span data-en="Time">Thời gian</span><b id="hud-clock">00:00</b></span>
+        <span class="stat"><span data-en="Hint penalty">Phạt gợi ý</span><b id="hud-pen" class="pen">+0:00</b></span>
+        <span class="stat"><span data-en="Unlocked">Mở khóa</span><b id="hud-done">0/5</b></span>
+      </div>
+      <nav class="doors" id="doors" aria-label="Các phòng" data-en-aria="Rooms"></nav>
+      <div class="vn-grid">
+        <section class="card room" id="room"></section>
+        <section class="card bench" id="bench"></section>
+      </div>
+      <p class="muted small foot" data-en="Hex boxes accept <code>42</code>, <code>0042</code> or <code>0x42</code>. The instruction set is a cut-down version of the Simple Computer in Forouzan, chapter 5.">Ô hex nhận cả dạng <code>42</code>, <code>0042</code> hoặc <code>0x42</code>. Bộ lệnh trong game là phiên bản rút gọn của Simple Computer trong Forouzan, chương 5.</p>
+    </section>
+
+    <!-- Màn hình 3: két thoát hiểm -->
+    <section data-screen="end" class="card center" hidden>
+      <h2 data-en="You escaped!">Bạn đã thoát ra!</h2>
+      <p class="muted" data-en="The five letters form the code, which is also the first step of every machine cycle.">Năm chữ cái ghép lại thành mật mã, cũng là bước đầu tiên của mọi machine cycle.</p>
+      <div class="vault-code" id="vault-code"></div>
+      <div class="vault-stats" id="vault-stats"></div>
+      <div class="end-score" id="end-score">0</div>
+      <p class="muted" id="end-detail"></p>
+      <p class="small muted" data-en="Take a screenshot of this screen to hand in. Ranking is by the Total column.">Chụp màn hình này để nộp cho giảng viên. Thứ hạng tính theo cột Tổng.</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="btn-again" data-en="Play again from the start">Chơi lại từ đầu</button>
+        <button class="btn ghost" id="btn-menu" data-en="Back to the intro">Về màn hình đầu</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px" id="next-game"></div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
+      <li>Mở lần lượt 5 cửa. Cửa sau chỉ mở khi đã giải cửa trước. Mỗi cửa mở ra cho một chữ cái của mật mã.</li>
+      <li>Điền đáp án vào ổ khóa rồi bấm <b>Thử mở khóa</b> (<kbd>Enter</kbd>). Ô sai được viền đỏ. Cửa 4 không có ô điền: bạn viết chương trình và ổ khóa tự chạy kiểm thử.</li>
+      <li><b>Bàn thí nghiệm</b> bên phải dùng để nháp và kiểm tra. Nó không tự đưa ra đáp án.</li>
+      <li>Mỗi gợi ý cộng 60 giây vào tổng thời gian. Điểm mỗi cửa: 100, trừ 25 cho mỗi gợi ý và 10 cho mỗi lần thử sai (tối thiểu 20).</li>
+      <li>Bấm Back giữa chừng thì đồng hồ dừng, bấm <b>Chơi tiếp</b> để quay lại đúng chỗ cũ.</li>
+    </ul>
+    <ul data-lang="en">
+      <li>Open the 5 doors in order. A door opens only after the previous one is solved. Each door gives you one letter of the code.</li>
+      <li>Fill in the lock and press <b>Try the lock</b> (<kbd>Enter</kbd>). Wrong boxes turn red. Door 4 has no boxes: you write a program and the lock runs the tests.</li>
+      <li>The <b>workbench</b> on the right is for scratch work and checking. It does not hand you the answer.</li>
+      <li>Each hint adds 60 seconds to your total time. Door score: 100, minus 25 per hint and 10 per wrong attempt (at least 20).</li>
+      <li>Press Back mid-game and the clock pauses; press <b>Continue</b> to pick up where you left off.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
