@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phòng Lab Hệ Điều Hành</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="os-lab">
+  <header data-shell></header>
+
+  <main class="container wide game-main">
+    <!-- Màn hình 1: giới thiệu -->
+    <section data-screen="start" class="card intro">
+      <h1>🖥️ <span data-en="Operating System Lab">Phòng Lab Hệ Điều Hành</span></h1>
+      <p data-lang="vi">Tám mô phỏng đi kèm bài giảng, xếp theo thứ tự trong script. Bấm từng bước để thấy hệ điều hành làm việc bên dưới các ứng dụng. Chọn một bàn thí nghiệm để vào thẳng, hoặc vào từ đầu.</p>
+      <p data-lang="en">Eight simulations that follow the lecture, in script order. Step through each one to see the operating system at work beneath your applications. Pick a bench to jump straight in, or start from the first.</p>
+      <ul class="sim-list" id="sim-list"></ul>
+      <div class="row">
+        <button class="btn lg" id="btn-start" data-en="Enter the lab →">Vào phòng lab →</button>
+      </div>
+    </section>
+
+    <!-- Màn hình 2: phòng lab -->
+    <section data-screen="play" class="oslab" hidden>
+      <button id="btn-menu" hidden aria-hidden="true" tabindex="-1" data-en="Back to the intro">Về màn hình đầu</button>
+      <div class="tabbar"><nav class="tabs" role="tablist" id="tabs" data-en-aria="Simulations" aria-label="Các mô phỏng">
+        <button role="tab" data-tab="layers" data-en="Software layers">Các lớp phần mềm</button>
+        <button role="tab" data-tab="memory" data-en="Memory &amp; paging">Bộ nhớ &amp; paging</button>
+        <button role="tab" data-tab="process" data-en="Process scheduling">Lập lịch tiến trình</button>
+        <button role="tab" data-tab="deadlock" data-en="Deadlock">Deadlock</button>
+        <button role="tab" data-tab="dining" data-en="Dining philosophers">Bữa tối triết gia</button>
+        <button role="tab" data-tab="aistack" data-en="AI stack">AI stack</button>
+        <button role="tab" data-tab="terminal" data-en="Linux terminal">Terminal Linux</button>
+        <button role="tab" data-tab="choose" data-en="Choose an OS">Chọn hệ điều hành</button>
+      </nav></div>
+
+      <!-- 1. LAYERS -->
+      <section class="panel" id="layers" role="tabpanel">
+        <div class="panel-head"><h2 data-en="A request travels through the layers">Một yêu cầu đi qua các lớp</h2><span class="ref" data-en="Slides 5–6, 11–12">Slide 5–6, 11–12</span>
+          <p data-lang="vi">Ứng dụng không bao giờ chạm thẳng vào phần cứng. Chọn một kịch bản rồi bấm từng bước để thấy yêu cầu đi xuống qua hệ điều hành và kết quả đi ngược lên.</p>
+          <p data-lang="en">An application never touches the hardware directly. Pick a scenario and step through it to watch the request go down through the OS and the result come back up.</p></div>
+        <div class="bench">
+          <div class="col"><div class="card">
+            <h3 data-en="Scenario">Kịch bản</h3>
+            <div class="seg" id="scen">
+              <button class="chip" data-s="save" aria-pressed="true" data-en="Ctrl+S in Word">Ctrl+S trong Word</button>
+              <button class="chip" data-s="print" aria-pressed="false" data-en="Click Print">Bấm In</button>
+              <button class="chip" data-s="video" aria-pressed="false" data-en="Watch a YouTube video">Xem video YouTube</button>
+            </div>
+            <ol class="steps" id="layerSteps"></ol>
+            <div class="row">
+              <button class="lbtn primary" id="layerNext" data-en="Next step">Bước tiếp</button>
+              <button class="lbtn" id="layerAuto" aria-pressed="false" data-en="Auto-run">Tự chạy</button>
+              <button class="lbtn ghost" id="layerReset" data-en="Reset">Làm lại</button>
+            </div>
+          </div></div>
+          <div class="col"><div class="layerstack" id="stack">
+            <div class="layer" data-l="user"><div class="lhead"><span class="lname">User</span><span class="lsub" data-en="The person using the computer">Người dùng</span></div><p class="lmsg"></p></div>
+            <div class="wire"></div>
+            <div class="layer" data-l="app"><div class="lhead"><span class="lname">Application software</span><span class="lsub">Word, Chrome, Zalo, PyTorch</span></div><p class="lmsg"></p></div>
+            <div class="wire"></div>
+            <div class="layer" data-l="os"><div class="lhead"><span class="lname">Operating system</span><span class="lsub" data-en="Windows, Linux, macOS and their drivers">Windows, Linux, macOS cùng các driver</span></div><p class="lmsg"></p></div>
+            <div class="wire"></div>
+            <div class="layer" data-l="hw"><div class="lhead"><span class="lname">Hardware</span><span class="lsub" data-en="CPU, RAM, SSD, GPU, printer, network card">CPU, RAM, SSD, GPU, máy in, card mạng</span></div><p class="lmsg"></p></div>
+          </div></div>
+        </div>
+        <div class="card mt">
+          <div class="row" style="justify-content:space-between"><h3 data-en="Quick sort: system or application?">Phân loại nhanh: System hay Application?</h3><div class="row"><span class="note" id="clsScore"></span><button class="lbtn sm ghost" id="clsReset" data-en="Reset">Làm lại</button></div></div>
+          <div class="cls" id="cls"></div>
+        </div>
+      </section>
+
+      <!-- 2. MEMORY -->
+      <section class="panel" id="memory" role="tabpanel" hidden>
+        <div class="panel-head"><h2>Memory manager</h2><span class="ref" data-en="Slides 7–8 · Forouzan 7.3">Slide 7–8 · Forouzan 7.3</span>
+          <p data-lang="vi">RAM có 12 frame, hai frame đầu dành cho hệ điều hành. Thử nạp các chương trình theo ba cách quản lý bộ nhớ và xem RAM, ổ đĩa và page table thay đổi ra sao.</p>
+          <p data-lang="en">RAM has 12 frames and the first two belong to the OS. Load programs under three memory-management schemes and watch RAM, the disk and the page tables change.</p></div>
+        <div class="bench">
+          <div class="col">
+            <div class="card">
+              <h3 data-en="Memory management scheme">Cách quản lý bộ nhớ</h3>
+              <div class="seg" id="memMode">
+                <button class="chip" data-m="mono" aria-pressed="false">Monoprogramming</button>
+                <button class="chip" data-m="paging" aria-pressed="true">Paging</button>
+                <button class="chip" data-m="demand" aria-pressed="false">Demand paging</button>
+              </div>
+              <p class="note" id="memNote"></p>
+            </div>
+            <div class="card"><div class="row" style="justify-content:space-between"><h3 data-en="Programs">Chương trình</h3><button class="lbtn sm ghost" id="memReset" data-en="Clear RAM">Xoá RAM</button></div><div id="progs"></div></div>
+          </div>
+          <div class="col"><div class="card">
+            <div class="stats" id="memStats"></div>
+            <p class="banner info mlog" id="memLog" aria-live="polite"></p>
+            <h4>RAM</h4><div class="ram" id="ram"></div>
+            <h4 data-en="Disk">Ổ đĩa</h4><div class="disk" id="disk"></div>
+            <h4>Page table</h4><div class="ptables" id="ptables"></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 3. PROCESS -->
+      <section class="panel" id="process" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="Process manager and scheduler">Process manager và scheduler</h2><span class="ref">Forouzan 7.3 · State diagram</span>
+          <p data-lang="vi">Năm process cùng xin CPU, nhưng RAM chỉ chứa tối đa 3 process một lúc và CPU chỉ có 1 lõi. Mỗi nhịp, scheduler quyết định ai được chạy. Một số process cần I/O giữa chừng và phải sang Waiting 2 nhịp.</p>
+          <p data-lang="en">Five processes want the CPU, but RAM holds at most 3 at a time and the CPU has a single core. Every tick, the scheduler decides who runs. Some processes need I/O midway and must wait 2 ticks in Waiting.</p></div>
+        <div class="card">
+          <div class="row">
+            <label class="inline" for="policy"><span data-en="Policy">Chính sách</span>
+              <select id="policy"><option value="rr" data-en="Round robin (time slots)">Round robin (chia time slot)</option><option value="fifo" data-en="FIFO (first come, first served)">FIFO (đến trước chạy trước)</option><option value="sjf">Shortest job first</option></select></label>
+            <label class="inline" for="quantum"><span data-en="Time slot">Time slot</span>
+              <select id="quantum"><option value="1" data-en="1 tick">1 nhịp</option><option value="2" selected data-en="2 ticks">2 nhịp</option><option value="3" data-en="3 ticks">3 nhịp</option></select></label>
+            <span style="flex:1"></span>
+            <button class="lbtn primary" id="procStep" data-en="Next step">Bước tiếp</button>
+            <button class="lbtn" id="procAuto" aria-pressed="false" data-en="Auto-run">Tự chạy</button>
+            <button class="lbtn ghost" id="procReset" data-en="Reset">Làm lại</button>
+          </div>
+          <div class="stats" id="procStats"></div>
+          <div class="scroll"><div class="sd" id="sd">
+            <div class="st" style="--sc:var(--hold);grid-column:1;grid-row:1/3"><h5>Hold <small>job queue</small></h5><div class="q" id="q-hold"></div></div>
+            <div class="arrow" style="grid-column:2;grid-row:1/3">→</div>
+            <div class="st" style="--sc:var(--ready);grid-column:3;grid-row:1"><h5>Ready <small>ready queue</small></h5><div class="q" id="q-ready"></div></div>
+            <div class="arrow" style="grid-column:4;grid-row:1" title="Scheduler chọn / hết time slot" data-en-title="Scheduler picks / time slot ends">⇄</div>
+            <div class="st" style="--sc:var(--run);grid-column:5;grid-row:1"><h5>Running <small>CPU</small></h5><div class="q" id="q-run"></div></div>
+            <div class="arrow" style="grid-column:6;grid-row:1">→</div>
+            <div class="st" style="--sc:var(--term);grid-column:7;grid-row:1/3"><h5>Terminated</h5><div class="q" id="q-term"></div></div>
+            <div class="vlab" style="grid-row:2"><span data-en="↑ I/O done">↑ I/O xong</span><span data-en="needs I/O ↓">cần I/O ↓</span></div>
+            <div class="st" style="--sc:var(--wait);grid-column:3/6;grid-row:3;min-height:70px"><h5>Waiting <small>I/O queue</small></h5><div class="q" id="q-wait"></div></div>
+          </div></div>
+        </div>
+        <div class="bench mt">
+          <div class="col"><div class="card"><h3 data-en="Scheduler log">Nhật ký scheduler</h3><div class="evlog" id="evlog" aria-live="polite"></div></div></div>
+          <div class="col"><div class="card">
+            <h3 data-en="Who ran on the CPU, and when">CPU đã chạy ai, nhịp nào</h3>
+            <div class="scroll"><div class="gantt" id="gantt"></div><div class="gaxis" id="gaxis"></div></div>
+            <div class="legend" id="plegend"></div>
+            <p class="note" data-lang="vi">Đổi chính sách rồi chạy lại để so sánh: round robin cho mọi process một chút CPU, FIFO để process dài chiếm CPU lâu, SJF cho process ngắn xong trước.</p>
+            <p class="note" data-lang="en">Change the policy and run again to compare: round robin gives every process a bit of CPU, FIFO lets a long process hog it, SJF finishes the short ones first.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 4. DEADLOCK -->
+      <section class="panel" id="deadlock" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="Deadlock: two processes waiting on each other">Deadlock: hai process chờ nhau</h2><span class="ref" data-en="Forouzan 7.3 · Figure 7.16">Forouzan 7.3 · Hình 7.16</span>
+          <p data-lang="vi">Process A và B đều cần cả File1 và File2. Chạy kịch bản không phòng tránh để thấy deadlock, rồi chọn một cách phá một trong bốn điều kiện.</p>
+          <p data-lang="en">Processes A and B both need File1 and File2. Run the no-prevention scenario to see a deadlock, then pick a way to break one of the four conditions.</p></div>
+        <div class="bench even">
+          <div class="col"><div class="card">
+            <h3 data-en="How the OS handles it">Cách OS xử lý</h3>
+            <div class="seg" id="dlStrat">
+              <button class="chip" data-k="none" aria-pressed="true" data-en="No prevention">Không phòng tránh</button>
+              <button class="chip" data-k="preempt" aria-pressed="false" data-en="Allow preemption">Cho phép thu hồi</button>
+              <button class="chip" data-k="all" aria-pressed="false" data-en="Request everything at once">Xin đủ một lần</button>
+              <button class="chip" data-k="order" aria-pressed="false" data-en="Request in order">Xin theo thứ tự</button>
+            </div>
+            <p class="dmsg" id="dlMsg" aria-live="polite"></p>
+            <div class="row"><button class="lbtn primary" id="dlNext" data-en="Next step">Bước tiếp</button><button class="lbtn ghost" id="dlReset" data-en="Reset">Làm lại</button><span class="note" id="dlCount"></span></div>
+            <h4 data-en="The four necessary conditions for deadlock">Bốn điều kiện cần của deadlock</h4>
+            <ul class="cond" id="conds"></ul>
+          </div></div>
+          <div class="col"><div class="card">
+            <div id="dlBanner"></div>
+            <svg class="graph" id="dlGraph" viewBox="0 0 360 230" role="img" aria-label="Đồ thị cấp phát tài nguyên" data-en-aria="Resource allocation graph"></svg>
+            <div class="legend"><span data-en="━━ granted (assigned)">━━ được cấp (assigned)</span><span style="color:var(--danger)" data-en="╍╍ waiting (requested)">╍╍ đang xin (requested)</span></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 5. DINING -->
+      <section class="panel" id="dining" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="The dining philosophers">Bữa tối của các triết gia</h2><span class="ref" data-en="Dijkstra · Forouzan Figure 7.19">Dijkstra · Forouzan Hình 7.19</span>
+          <p data-lang="vi">Năm triết gia, năm chiếc đũa. Ai ăn cũng cần hai đũa hai bên; ăn 2 nhịp, nghĩ 1 nhịp rồi lại đói. Mỗi chính sách lấy đũa dẫn tới một kết cục khác nhau.</p>
+          <p data-lang="en">Five philosophers, five chopsticks. Eating takes the two chopsticks beside you; eat for 2 ticks, think for 1, then get hungry again. Each pick-up policy ends differently.</p></div>
+        <div class="bench">
+          <div class="col"><div class="card">
+            <h3 data-en="Chopstick policy">Chính sách lấy đũa</h3>
+            <div class="seg" id="phPol">
+              <button class="chip" data-p="left" aria-pressed="true" data-en="Grab the left one first">Cầm đũa trái trước</button>
+              <button class="chip" data-p="seat" aria-pressed="false" data-en="Both at once, priority by seat number">Đủ 2 đũa, ưu tiên theo số ghế</button>
+              <button class="chip" data-p="fair" aria-pressed="false" data-en="Both at once, priority to whoever waited longest">Đủ 2 đũa, ưu tiên ai đợi lâu</button>
+            </div>
+            <p class="note" id="phNote"></p>
+            <div class="row"><button class="lbtn primary" id="phStep" data-en="Next step">Bước tiếp</button><button class="lbtn" id="phAuto" aria-pressed="false" data-en="Auto-run">Tự chạy</button><button class="lbtn ghost" id="phReset" data-en="Reset">Làm lại</button></div>
+            <div id="phBanner" aria-live="polite"></div>
+            <table class="ph"><thead><tr><th data-en="Philosopher">Triết gia</th><th data-en="State">Trạng thái</th><th style="text-align:right" data-en="Meals">Đã ăn</th><th style="text-align:right" data-en="Waiting">Đang đợi</th></tr></thead><tbody id="phTable"></tbody></table>
+          </div></div>
+          <div class="col"><div class="card">
+            <div class="stats" id="phStats"></div>
+            <svg class="graph" id="phSvg" viewBox="0 0 340 340" role="img" aria-label="Bàn ăn của năm triết gia" data-en-aria="The table of five philosophers"></svg>
+            <div class="legend"><span><span class="pbadge b-think" data-en="Thinking">Đang nghĩ</span></span><span><span class="pbadge b-hungry" data-en="Hungry, waiting">Đói, chờ đũa</span></span><span><span class="pbadge b-eat" data-en="Eating">Đang ăn</span></span><span><span class="pbadge b-starve" data-en="Starving">Chết đói</span></span></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 6. AI STACK -->
+      <section class="panel" id="aistack" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="AI stack: miss one layer and it all collapses">AI stack: thiếu một lớp là sụp</h2><span class="ref" data-en="Slides 9, 13">Slide 9, 13</span>
+          <p data-lang="vi">Để PyTorch huấn luyện mô hình trên GPU, cả chồng phần mềm phải đủ và khớp phiên bản. Bật tắt từng lớp rồi chạy <code>python train.py</code> để xem lỗi xuất hiện ở đâu.</p>
+          <p data-lang="en">For PyTorch to train a model on a GPU, the whole software stack must be present and version-compatible. Toggle each layer, then run <code>python train.py</code> to see where it breaks.</p></div>
+        <div class="bench even">
+          <div class="col"><div class="card">
+            <div class="row" style="justify-content:space-between"><h3 data-en="The layers, top to bottom">Các lớp, từ trên xuống</h3></div>
+            <div class="row"><span class="note" data-en="Sample setups:">Tình huống mẫu:</span>
+              <button class="chip" data-pre="ok" data-en="Everything installed">Đủ hết</button>
+              <button class="chip" data-pre="nodrv" data-en="Forgot the driver">Quên cài driver</button>
+              <button class="chip" data-pre="mis" data-en="CUDA version mismatch">Lệch phiên bản CUDA</button>
+              <button class="chip" data-pre="notorch" data-en="torch not installed">Chưa cài torch</button>
+              <button class="chip" data-pre="nogpu" data-en="Laptop with no GPU">Laptop không có GPU</button>
+            </div>
+            <div class="ailayers" id="ailayers"></div>
+            <button class="lbtn primary" id="aiRun" data-en="Run python train.py">Chạy python train.py</button>
+          </div></div>
+          <div class="col"><div class="card">
+            <div id="aiVerdict"></div>
+            <div class="term" id="aiOut" aria-live="polite"></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 7. TERMINAL -->
+      <section class="panel" id="terminal" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="Ask the operating system from a terminal">Hỏi hệ điều hành bằng terminal</h2><span class="ref" data-en="Script part 8 · Demo">Script phần 8 · Demo</span>
+          <p data-lang="vi">Terminal giả lập một máy Ubuntu giống Google Colab. Mỗi lệnh đang hỏi một khối của OS; dòng chú thích màu xanh cho biết khối nào. Thử <code>chmod 000 bai_tap.txt</code> rồi <code>cat bai_tap.txt</code>.</p>
+          <p data-lang="en">This terminal imitates an Ubuntu machine like Google Colab. Each command queries one block of the OS; the blue note tells you which. Try <code>chmod 000 bai_tap.txt</code> then <code>cat bai_tap.txt</code>.</p></div>
+        <div class="card">
+          <div class="cmds" id="cmds"></div>
+          <label class="inline" for="gpuOn"><input type="checkbox" id="gpuOn"> <span data-en="Enable the GPU runtime (like Colab: Runtime → Change runtime type)">Bật GPU runtime (như Colab: Runtime → Change runtime type)</span></label>
+          <div class="term" id="term" tabindex="-1"><div id="tout"></div><div class="tline"><span class="p">sinhvien@neu-lab:~$</span><input id="tin" autocomplete="off" spellcheck="false" aria-label="Nhập lệnh" data-en-aria="Type a command"></div></div>
+        </div>
+      </section>
+
+      <!-- 8. CHOOSE OS -->
+      <section class="panel" id="choose" role="tabpanel" hidden>
+        <div class="panel-head"><h2 data-en="Which operating system fits best?">Hệ điều hành nào hợp nhất?</h2><span class="ref" data-en="Slides 24–30">Slide 24–30</span>
+          <p data-lang="vi">Không có OS tốt nhất, chỉ có OS phù hợp với công việc. Chọn đáp án cho từng tình huống rồi đọc giải thích.</p>
+          <p data-lang="en">There is no best OS, only the one that fits the job. Pick an answer for each situation, then read the explanation.</p></div>
+        <div class="row" style="margin-bottom:12px"><span class="note" id="chScore"></span><button class="lbtn sm ghost" id="chReset" data-en="Reset">Làm lại</button></div>
+        <div class="scen" id="scenarios"></div>
+        <div class="card mt">
+          <h3 data-en="Strengths and weaknesses at a glance">Tóm tắt điểm mạnh và điểm yếu</h3>
+          <div class="scroll"><table class="cmp">
+            <thead><tr><th>OS</th><th data-en="Strengths">Điểm mạnh</th><th data-en="Weaknesses">Điểm yếu</th><th data-en="Good for">Hợp với</th></tr></thead>
+            <tbody>
+              <tr><td>Windows</td>
+                <td data-en="Compatible with commercial software and games, easy to use, lots of drivers">Tương thích phần mềm thương mại và game, dễ dùng, nhiều driver</td>
+                <td data-en="Main target of malware (WannaCry 2017), licence costs money">Mục tiêu chính của malware (WannaCry 2017), bản quyền tốn phí</td>
+                <td data-en="Office work, business, gaming">Văn phòng, doanh nghiệp, game</td></tr>
+              <tr><td>Linux</td>
+                <td data-en="Free, open source, stable, secure, best AI and CUDA tooling">Miễn phí, mã nguồn mở, ổn định, bảo mật, công cụ AI và CUDA tốt nhất</td>
+                <td data-en="Steeper learning curve, less commercial software">Khó học hơn, ít phần mềm thương mại</td>
+                <td data-en="Servers, cloud, AI, programming">Server, cloud, AI, lập trình</td></tr>
+              <tr><td>macOS</td>
+                <td data-en="Safe, friendly, strong creative software, Unix underneath">An toàn, thân thiện, mạnh về phần mềm sáng tạo, nền Unix</td>
+                <td data-en="Expensive hardware, runs only on Apple machines">Phần cứng đắt, chỉ chạy trên máy Apple</td>
+                <td data-en="Design, music, building iOS apps">Thiết kế, âm nhạc, làm app iOS</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2 data-en="How to use the lab">Cách dùng phòng lab</h2>
+    <ul data-lang="vi">
+      <li>Mỗi tab là một bàn thí nghiệm. Bấm <b>Bước tiếp</b> để đi từng bước hoặc <b>Tự chạy</b> để xem liền mạch.</li>
+      <li>Đổi tham số (chính sách, cách quản lý bộ nhớ…) rồi chạy lại để so sánh kết quả.</li>
+      <li>Các phần Phân loại, Chọn hệ điều hành và Terminal cho phản hồi ngay sau mỗi lựa chọn.</li>
+      <li>Một tab được tính là đã khám phá khi bạn thao tác ở đó lần đầu. Tiến độ hiện ở trang chủ.</li>
+    </ul>
+    <ul data-lang="en">
+      <li>Each tab is a bench. Press <b>Next step</b> to go one step at a time or <b>Auto-run</b> to watch it play through.</li>
+      <li>Change a parameter (policy, memory scheme…) and run again to compare outcomes.</li>
+      <li>The classification, Choose an OS and Terminal parts give feedback right after each choice.</li>
+      <li>A tab counts as explored the first time you interact with it. Progress shows on the home page.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
+  </dialog>
+
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

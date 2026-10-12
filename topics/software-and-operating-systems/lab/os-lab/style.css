@@ -1,0 +1,197 @@
+/* Phòng Lab Hệ Điều Hành — tám mô phỏng trong một game. Mọi luật CSS nằm dưới .oslab
+   để không đụng vào .btn, .card, .badge… của base.css. Màu bắc cầu từ token của base.css. */
+.container.wide { max-width: 1180px; }
+.oslab {
+  --ink: var(--text); --line: var(--border); --sunk: var(--surface-2);
+  --danger: var(--bad); --danger-soft: var(--bad-soft); --ok: var(--good); --ok-soft: var(--good-soft);
+  --c1: #2f6bc9; --c2: #c2462f; --c3: #2c8653; --c4: #8650bd; --c5: #b98400;
+  --hold: #8650bd; --ready: #2f6bc9; --run: #2a7448; --wait: #b06a00; --term: #7a8690;
+  --tbg: #14202a; --tfg: #d3e1ea; --tdim: #7e96a5; --tacc: #7ccde4; --terr: #ff8a7a; --twarn: #f3c25b; --tok: #8fd9a8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .oslab {
+    --c1: #6b9eeb; --c2: #e7765f; --c3: #5fbe85; --c4: #b38ae6; --c5: #e2b544;
+    --hold: #b38ae6; --ready: #6b9eeb; --run: #5fbe85; --wait: #e9a23e; --term: #8c98a2; --tbg: #0a1116;
+  }
+}
+.intro .sim-list { list-style: none; padding: 0; margin: 0 0 1em; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.intro .sim-list button {
+  width: 100%; text-align: left; font: inherit; color: var(--text); cursor: pointer; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: flex; flex-direction: column; gap: 2px;
+}
+.intro .sim-list button:hover { border-color: var(--accent); }
+.intro .sim-list b { font-size: 0.95rem; }
+.intro .sim-list small { color: var(--muted); }
+
+.oslab h4 { margin: 0; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.oslab p { margin: 0; }
+.oslab .note { color: var(--muted); font-size: 0.9rem; }
+.oslab .mono { font-family: var(--mono); }
+
+/* ---------- Thanh tab ---------- */
+.oslab .tabbar { position: sticky; top: 56px; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 -16px 18px; padding: 0 16px; }
+.oslab .tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin; padding-block: 8px; }
+.oslab .tabs button { flex: none; border: 1px solid transparent; background: none; padding: 7px 12px; border-radius: 999px; cursor: pointer; font: inherit; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.oslab .tabs button:hover { color: var(--ink); background: var(--sunk); }
+.oslab .tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+
+.oslab .panel-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; margin-bottom: 16px; }
+.oslab .panel-head h2 { margin: 0; }
+.oslab .panel-head p { color: var(--muted); flex-basis: 100%; max-width: 70ch; }
+.oslab .ref { font-size: 0.75rem; font-family: var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; }
+
+/* ---------- Bố cục ---------- */
+.oslab .bench { display: grid; gap: 16px; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; }
+.oslab .bench.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 860px) { .oslab .bench, .oslab .bench.even { grid-template-columns: minmax(0, 1fr); } }
+.oslab .col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.oslab .card { display: flex; flex-direction: column; gap: 12px; padding: 16px; min-width: 0; }
+.oslab .mt { margin-top: 16px; }
+
+.oslab .lbtn { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 8px; cursor: pointer; font: inherit; font-weight: 500; color: var(--text); }
+.oslab .lbtn:hover:not(:disabled) { border-color: var(--ink); }
+.oslab .lbtn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.oslab .lbtn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.oslab .lbtn:disabled { opacity: 0.45; cursor: not-allowed; }
+.oslab .lbtn.ghost { background: none; border-color: transparent; color: var(--muted); }
+.oslab .lbtn.sm { padding: 4px 10px; font-size: 0.85rem; }
+.oslab .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.oslab .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; cursor: pointer; font: inherit; font-size: 0.9rem; color: var(--text); }
+.oslab .chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+.oslab select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.oslab label.inline { display: flex; gap: 6px; align-items: center; font-size: 0.9rem; color: var(--muted); }
+
+.oslab .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.oslab .stat { background: var(--sunk); border-radius: 8px; padding: 8px 10px; }
+.oslab .stat b { display: block; font-family: var(--mono); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.oslab .stat span { font-size: 0.75rem; color: var(--muted); }
+.oslab .banner { border-radius: 8px; padding: 10px 12px; font-weight: 500; }
+.oslab .banner.bad { background: var(--danger-soft); color: var(--danger); }
+.oslab .banner.good { background: var(--ok-soft); color: var(--ok); }
+.oslab .banner.warn { background: var(--warn-soft); color: var(--warn); }
+.oslab .banner.info { background: var(--accent-soft); color: var(--ink); }
+
+/* ---------- Các lớp ---------- */
+.oslab .layerstack { display: flex; flex-direction: column; gap: 8px; }
+.oslab .layer { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--surface); transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; }
+.oslab .layer .lhead { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.oslab .layer .lname { font-weight: 800; font-size: 1.1rem; }
+.oslab .layer .lsub { color: var(--muted); font-size: 0.82rem; }
+.oslab .layer .lmsg { margin-top: 6px; min-height: 1.5em; font-size: 0.9rem; }
+.oslab .layer .lmsg:empty::before { content: "\00a0"; }
+.oslab .layer.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface)); }
+.oslab .dir { display: inline-block; font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-right: 8px; }
+.oslab .wire { height: 10px; margin: -4px auto; width: 2px; background: var(--line); }
+.oslab ol.steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; counter-reset: s; }
+.oslab ol.steps li { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 8px; align-items: baseline; font-size: 0.9rem; color: var(--muted); opacity: 0.55; counter-increment: s; }
+.oslab ol.steps li::before { content: counter(s); font-family: var(--mono); font-size: 0.75rem; width: 1.4em; text-align: right; }
+.oslab ol.steps li.done { opacity: 1; }
+.oslab ol.steps li.cur { opacity: 1; color: var(--ink); font-weight: 500; }
+.oslab .tag { font-family: var(--mono); font-size: 0.7rem; padding: 1px 6px; border-radius: 5px; background: var(--sunk); white-space: nowrap; }
+.oslab .cls { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px; }
+.oslab .clsitem { border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.oslab .clsitem .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.oslab .clsitem .fb { font-size: 0.85rem; }
+.oslab .clsitem.right { border-color: var(--ok); } .oslab .clsitem.right .fb { color: var(--ok); }
+.oslab .clsitem.wrong { border-color: var(--danger); } .oslab .clsitem.wrong .fb { color: var(--danger); }
+
+/* ---------- Bộ nhớ ---------- */
+.oslab .ram { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 480px) { .oslab .ram { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.oslab .frame { border: 1px dashed var(--line); border-radius: 7px; min-height: 58px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--mono); font-size: 0.75rem; color: var(--muted); transition: background 0.25s; }
+.oslab .frame.used { border-style: solid; border-color: transparent; background: var(--pc); color: #fff; }
+.oslab .frame.os { border-style: solid; background: var(--sunk); color: var(--muted); }
+.oslab .frame b { font-size: 0.95rem; }
+.oslab .frame.flash { animation: oslab-flash 0.6s; }
+@keyframes oslab-flash { 0% { box-shadow: 0 0 0 4px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.oslab .disk { display: flex; flex-wrap: wrap; gap: 5px; min-height: 34px; background: var(--sunk); border-radius: 8px; padding: 8px; }
+.oslab .pg { font-family: var(--mono); font-size: 0.75rem; padding: 2px 7px; border-radius: 5px; background: var(--surface); border: 1px solid var(--pc); color: var(--ink); }
+.oslab .pg.idle { opacity: 0.5; }
+.oslab .prog { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; padding-block: 8px; border-top: 1px solid var(--line); }
+.oslab .prog:first-child { border-top: 0; padding-top: 0; }
+.oslab .swatch { width: 14px; height: 14px; border-radius: 4px; background: var(--pc); }
+.oslab .prog .acts { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+.oslab .ptables { display: flex; flex-wrap: wrap; gap: 10px; }
+.oslab table.pt { border-collapse: collapse; font-family: var(--mono); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.oslab table.pt caption { text-align: left; font-weight: 600; padding-bottom: 4px; color: var(--ink); }
+.oslab table.pt td, .oslab table.pt th { border: 1px solid var(--line); padding: 2px 8px; text-align: center; }
+.oslab table.pt th { background: var(--sunk); font-weight: 600; color: var(--muted); }
+.oslab .mlog { min-height: 3em; }
+
+/* ---------- Trạng thái process ---------- */
+.oslab .scroll { overflow-x: auto; }
+.oslab .sd { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr 34px 1fr; grid-template-rows: auto auto auto; gap: 6px 0; min-width: 640px; align-items: stretch; }
+.oslab .st { border: 2px solid var(--sc); border-radius: 10px; padding: 8px; background: var(--surface); min-height: 96px; display: flex; flex-direction: column; gap: 6px; }
+.oslab .st h5 { margin: 0; font-size: 0.95rem; color: var(--sc); display: flex; justify-content: space-between; gap: 6px; }
+.oslab .st h5 small { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); font-weight: 400; align-self: center; }
+.oslab .st .q { display: flex; flex-wrap: wrap; gap: 4px; }
+.oslab .arrow { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 1.1rem; }
+.oslab .vlab { grid-column: 3/6; display: flex; justify-content: space-around; font-size: 0.75rem; color: var(--muted); font-family: var(--mono); }
+.oslab .pchip { display: inline-flex; gap: 5px; align-items: center; border-radius: 6px; padding: 2px 7px; background: var(--pc); color: #fff; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+.oslab .pchip small { font-family: var(--mono); font-weight: 400; opacity: 0.9; }
+.oslab .gantt { display: flex; gap: 2px; min-height: 34px; align-items: stretch; }
+.oslab .gcell { flex: none; width: 26px; border-radius: 4px; background: var(--pc, var(--sunk)); color: #fff; font-family: var(--mono); font-size: 0.62rem; display: flex; align-items: center; justify-content: center; }
+.oslab .gcell.idle { background: var(--sunk); color: var(--muted); }
+.oslab .gaxis { display: flex; gap: 2px; font-family: var(--mono); font-size: 0.62rem; color: var(--muted); }
+.oslab .gaxis span { width: 26px; flex: none; text-align: center; }
+.oslab .evlog { font-size: 0.82rem; max-height: 220px; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+.oslab .evlog > div { display: grid; grid-template-columns: 3.2em minmax(0, 1fr); gap: 6px; }
+.oslab .evlog .t { font-family: var(--mono); color: var(--muted); }
+.oslab .legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 0.82rem; color: var(--muted); }
+
+/* ---------- Deadlock ---------- */
+.oslab svg text { font-family: var(--font); }
+.oslab .graph { width: 100%; height: auto; max-width: 520px; display: block; margin: 0 auto; }
+.oslab .cond { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.oslab .cond li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; font-size: 0.9rem; padding: 6px 8px; border-radius: 7px; background: var(--sunk); }
+.oslab .cond li .mk { font-family: var(--mono); font-weight: 600; text-align: center; }
+.oslab .cond li.on { background: var(--danger-soft); color: var(--danger); }
+.oslab .cond li.broken { background: var(--ok-soft); color: var(--ok); }
+.oslab .cond li.broken span.t { text-decoration: line-through; }
+.oslab .cond small { display: block; color: var(--muted); font-size: 0.75rem; }
+.oslab .dmsg { min-height: 3.2em; }
+
+/* ---------- Bữa tối triết gia ---------- */
+.oslab table.ph { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.oslab table.ph th, .oslab table.ph td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.oslab table.ph th { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+.oslab table.ph td.num { font-family: var(--mono); text-align: right; }
+.oslab .pbadge { display: inline-block; font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; font-weight: 600; }
+.oslab .b-think { background: var(--sunk); color: var(--muted); }
+.oslab .b-hungry { background: var(--warn-soft); color: var(--warn); }
+.oslab .b-eat { background: var(--ok-soft); color: var(--ok); }
+.oslab .b-starve { background: var(--danger-soft); color: var(--danger); }
+
+/* ---------- AI stack + terminal ---------- */
+.oslab .ailayer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.oslab .ailayer .k { font-size: 0.75rem; color: var(--muted); }
+.oslab .ailayer b { font-weight: 600; }
+.oslab .ailayer.bad { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+.oslab .ailayer.warnl { border-color: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
+.oslab .ailayers { display: flex; flex-direction: column; gap: 6px; }
+.oslab .tog { display: flex; gap: 2px; background: var(--sunk); border-radius: 8px; padding: 2px; }
+.oslab .tog button { border: 0; background: none; padding: 3px 9px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; color: var(--muted); }
+.oslab .tog button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.oslab .tog button[aria-pressed="true"].no { color: var(--danger); }
+.oslab .tog button[aria-pressed="true"].mis { color: var(--warn); }
+.oslab .term { background: var(--tbg); color: var(--tfg); border-radius: var(--radius-sm); font-family: var(--mono); font-size: 0.82rem; line-height: 1.5; padding: 14px; min-height: 320px; max-height: 520px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+.oslab .term .p { color: var(--tacc); } .oslab .term .d { color: var(--tdim); } .oslab .term .e { color: var(--terr); } .oslab .term .w { color: var(--twarn); } .oslab .term .o { color: var(--tok); }
+.oslab .term .ann { display: block; margin: 4px 0 10px; padding: 4px 8px; border-left: 3px solid var(--tacc); color: var(--tacc); font-family: var(--font); font-size: 0.82rem; white-space: normal; }
+.oslab .tline { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
+.oslab .tline input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--tfg); font: inherit; outline: none; caret-color: var(--tacc); }
+.oslab .cmds { display: flex; flex-wrap: wrap; gap: 6px; }
+.oslab .cmds button { font-family: var(--mono); font-size: 0.75rem; }
+
+/* ---------- Chọn hệ điều hành ---------- */
+.oslab .scen { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+.oslab .sc { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.oslab .sc p.q { font-weight: 500; }
+.oslab .sc .fb { font-size: 0.9rem; }
+.oslab .sc.right { border-color: var(--ok); } .oslab .sc.right .fb b { color: var(--ok); }
+.oslab .sc.wrong { border-color: var(--warn); } .oslab .sc.wrong .fb b { color: var(--warn); }
+.oslab table.cmp { border-collapse: collapse; width: 100%; font-size: 0.9rem; min-width: 520px; }
+.oslab table.cmp th, .oslab table.cmp td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+.oslab table.cmp th { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.oslab table.cmp td:first-child { font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .oslab * { transition: none !important; animation: none !important; } }
