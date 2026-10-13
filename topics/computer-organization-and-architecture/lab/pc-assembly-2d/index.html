@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xưởng Lắp Ráp PC (bản 2D)</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script src="../../../../assets/js/lang.js"></script>
+  <link rel="stylesheet" href="../../../../assets/css/base.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-root="../../../../" data-game="pc-assembly-2d">
+  <header data-shell></header>
+
+  <main class="container wide game-main">
+    <!-- Màn hình 1: giới thiệu -->
+    <section data-screen="start" class="card intro">
+      <h1>🛠️ <span data-en="PC Assembly Workshop">Xưởng Lắp Ráp PC</span></h1>
+      <p data-lang="vi">Lắp một chiếc máy tính để bàn từ <b>16 linh kiện</b>: kéo từ thảm chống tĩnh điện vào thùng máy, đúng thứ tự, nối màn hình, bàn phím, chuột, rồi bật nguồn để thấy chữ Hello IT và luồng gió làm mát. Linh kiện nào cũng có vị trí và điều kiện lắp riêng.</p>
+      <p data-lang="en">Build a desktop PC from <b>16 parts</b>: drag them from the antistatic mat into the case, in the right order, connect the monitor, keyboard and mouse, then power on to see Hello IT and the cooling airflow. Every part has its own slot and its own prerequisites.</p>
+      <ul class="mode-list">
+        <li><b data-en="Learn">Học</b> <span class="muted" data-en="· the next slot is highlighted, with a tip for every step">· có khung gợi ý vị trí và mẹo cho từng bước</span></li>
+        <li><b data-en="Test">Kiểm tra</b> <span class="muted" data-en="· no hints, timed, 4 points off per mistake">· không gợi ý, tính giờ, mỗi lần sai trừ 4 điểm</span></li>
+        <li><b data-en="Explore">Khám phá</b> <span class="muted" data-en="· a running PC: tap any part to read its specs">· máy đang chạy, chạm vào linh kiện để xem thông số</span></li>
+      </ul>
+      <p class="muted" data-en="Needs an internet connection to load PixiJS and WebGL support in the browser.">Cần kết nối mạng để tải PixiJS và trình duyệt hỗ trợ WebGL.</p>
+      <div class="row">
+        <button class="btn lg" id="btn-start" data-en="Enter the workshop →">Vào xưởng →</button>
+      </div>
+    </section>
+
+    <!-- Màn hình 2: xưởng -->
+    <section data-screen="play" class="pcasm" id="pcasm" hidden>
+      <button id="btn-menu" hidden aria-hidden="true" tabindex="-1" data-en="Back to the intro">Về màn hình đầu</button>
+      <div class="pc-bar">
+        <div class="seg" role="group" data-en-aria="Mode" aria-label="Chế độ">
+          <button type="button" data-mode="learn" aria-pressed="true" data-en="Learn">Học</button>
+          <button type="button" data-mode="test" aria-pressed="false" data-en="Test">Kiểm tra</button>
+          <button type="button" data-mode="explore" aria-pressed="false" data-en="Explore">Khám phá</button>
+        </div>
+        <div class="progress"><div class="bar"><i id="barFill"></i></div><span id="progTxt">0/16</span></div>
+        <button type="button" class="pbtn" id="resetBtn" data-en="Rebuild">Lắp lại</button>
+      </div>
+      <div class="pc-main">
+        <section class="bench" data-en-aria="PC case" aria-label="Thùng máy">
+          <div class="stage" id="stage"></div>
+          <div id="donePanel" class="done-panel" hidden></div>
+        </section>
+        <div class="side">
+          <div class="pcard" id="guide" aria-live="polite"></div>
+          <div id="status" role="status"></div>
+          <section class="mat" data-en-aria="Parts" aria-label="Linh kiện">
+            <div class="mat-head"><h3 data-en="Antistatic mat">Thảm chống tĩnh điện</h3><span id="matHint"></span></div>
+            <div class="tray" id="tray"></div>
+          </section>
+          <p class="legend" data-lang="vi">Bàn phím: chọn linh kiện trên thảm, nhấn Tab để vào thùng máy, dùng phím mũi tên để chọn vị trí, nhấn Enter để lắp. Một số bước được giản lược, ví dụ cáp dữ liệu SATA và cáp nguồn phụ của card đồ họa.</p>
+          <p class="legend" data-lang="en">Keyboard: pick a part on the mat, press Tab to move into the case, use the arrow keys to choose a slot and Enter to install. Some steps are simplified, such as the SATA data cable and the graphics card's auxiliary power cable.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="help">
+    <h2 data-en="How to play">Cách chơi</h2>
+    <ul data-lang="vi">
+      <li>Kéo linh kiện từ thảm vào thùng máy, hoặc chạm để chọn rồi chạm vị trí lắp. Bàn phím: Tab vào thùng máy, mũi tên chọn vị trí, Enter để lắp.</li>
+      <li>Phải <b>đeo vòng chống tĩnh điện</b> trước, và mỗi linh kiện có điều kiện riêng (ví dụ tấm chắn I/O trước bo mạch chủ, tản nhiệt sau CPU).</li>
+      <li><b>Học:</b> sai 3 lần liên tiếp thì máy lắp giúp bước đó. <b>Kiểm tra:</b> không gợi ý, mỗi lần sai trừ 4 điểm. <b>Khám phá:</b> xem thông số từng linh kiện.</li>
+      <li>Cắm màn hình vào card đồ họa, bàn phím và chuột vào cổng USB trên tấm I/O. Lắp xong thì bấm <b>Bật nguồn</b> để nghe tiếng bíp, thấy màn hình hiện Hello IT và xem luồng gió: xanh là khí mát vào, cam là khí nóng ra.</li>
+    </ul>
+    <ul data-lang="en">
+      <li>Drag parts from the mat into the case, or tap to select and then tap the slot. Keyboard: Tab into the case, arrows to choose a slot, Enter to install.</li>
+      <li>Put on the <b>antistatic strap</b> first, and every part has its own prerequisites (for example the I/O shield before the motherboard, the cooler after the CPU).</li>
+      <li><b>Learn:</b> after 3 wrong tries in a row the workshop installs that step for you. <b>Test:</b> no hints, 4 points off per mistake. <b>Explore:</b> read each part's specs.</li>
+      <li>Plug the monitor into the graphics card and the keyboard and mouse into the USB ports on the I/O shield. When the build is done press <b>Power on</b> to hear the beep, see Hello IT on the monitor and watch the airflow: blue is cool air coming in, orange is hot air going out.</li>
+    </ul>
+    <button class="btn" data-close data-en="Got it">Đã hiểu</button>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.4.2/dist/pixi.min.js"></script>
+  <script src="../../../../assets/js/catalog.js"></script>
+  <script src="../../../../assets/js/common.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

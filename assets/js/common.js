@@ -192,7 +192,7 @@
   };
   G.confetti = (count = 60) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const colors = ["#4f46e5", "#f59e0b", "#10b981", "#ef4444", "#0ea5e9", "#a855f7"];
+    const colors = ["#0b56b8", "#f59e0b", "#10b981", "#ef4444", "#0ea5e9", "#a855f7"];
     for (let i = 0; i < count; i++) {
       const c = G.el("div", { class: "confetti" });
       c.style.left = Math.random() * 100 + "vw";

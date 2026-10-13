@@ -34,9 +34,10 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 | |  | [🏭 Bit Conveyor](topics/data-representation/operations/bit-conveyor/README.md) | Logical, circular, arithmetic shift |
 | |  | [🚨 Overflow Detective](topics/data-representation/operations/overflow-detective/README.md) | Cộng/trừ bù 2 và cờ overflow |
 | [Computer Organization & Architecture](topics/computer-organization-and-architecture/README.md) (Tuần 3) | Ôn tập chương | [🔐 Mật Thất Von Neumann](topics/computer-organization-and-architecture/review/von-neumann-escape/README.md) | Escape room: địa chỉ, cache, machine cycle, mã máy, pipeline |
+| | Phòng lab | [🛠️ Xưởng Lắp Ráp PC 3D](topics/computer-organization-and-architecture/lab/pc-assembly/README.md) | Xoay 3D, lắp 16 linh kiện đúng thứ tự, nối màn hình/bàn phím/chuột, bật nguồn |
 | [Computer Software & Operating Systems](topics/software-and-operating-systems/README.md) (Chủ đề 3) | Phòng lab | [🖥️ Phòng Lab Hệ Điều Hành](topics/software-and-operating-systems/lab/os-lab/README.md) | 8 mô phỏng: các lớp, paging, scheduler, deadlock, triết gia, AI stack, terminal, chọn OS |
 
-Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Chủ đề Computer Organization & Architecture mở đầu bằng escape room Mật Thất Von Neumann. Chủ đề Computer Software & Operating Systems có Phòng Lab Hệ Điều Hành với 8 mô phỏng. Khi thêm chủ đề mới, game ở dạng ý tưởng được khai báo trong [`assets/js/catalog.js`](assets/js/catalog.js) với `status: "planned"` và hiện là "Sắp có" trên trang chủ.
+Chủ đề Data Representation đã có đủ 21 game cho cả 3 phần. Chủ đề Computer Organization & Architecture có escape room Mật Thất Von Neumann và Xưởng Lắp Ráp PC 3D. Chủ đề Computer Software & Operating Systems có Phòng Lab Hệ Điều Hành với 8 mô phỏng. Khi thêm chủ đề mới, game ở dạng ý tưởng được khai báo trong [`assets/js/catalog.js`](assets/js/catalog.js) với `status: "planned"` và hiện là "Sắp có" trên trang chủ.
 
 ## Cấu trúc thư mục
 
