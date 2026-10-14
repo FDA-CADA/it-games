@@ -8,6 +8,8 @@ Bộ web game tương tác giúp sinh viên khối ngành **Khoa học dữ li�
 
 > **English:** Interactive web games for an *Introduction to Information Technology* course (Data Science & AI students). Each 5–10 minute game targets one common misconception, from number systems and IEEE 754 floats to bitwise operations. Plain HTML/CSS/JS, no build step, hosted on GitHub Pages. Every game is available in Vietnamese and English (append `?lang=en` to any URL). Maintainer docs are in Vietnamese.
 
+🔐 **Chế độ online (tuỳ chọn):** đăng nhập (email/Google/Microsoft) qua Supabase tự host để lưu tiến độ theo tài khoản; offline vẫn lưu trên trình duyệt. Xem [docs/deploy-supabase.md](docs/deploy-supabase.md). Để trống `assets/js/config.js` thì site chạy như cũ.
+
 ## Danh sách game
 
 | Chủ đề | Phần | Game | Luyện kỹ năng |

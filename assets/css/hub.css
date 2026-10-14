@@ -166,3 +166,16 @@ dialog.confirm .row { justify-content: flex-end; margin-top: 18px; }
   .search kbd { display: none; }
   .chips.scroll { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 0 16px 4px; scrollbar-width: thin; }
 }
+
+/* Đăng nhập đồng bộ (sync.js) */
+.sync-btn { width: auto; padding: 0 12px; font-size: 0.85rem; white-space: nowrap; }
+.auth-form { display: grid; gap: 10px; margin-top: 12px; }
+.auth-form input { font: inherit; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); }
+.auth-form input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.auth-form .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.auth-msg { min-height: 1.2em; margin: 0; }
+.mode-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+.mode-opt { display: grid; gap: 4px; text-align: left; font: inherit; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); cursor: pointer; }
+.mode-opt.on { border-color: var(--accent); outline: 2px solid var(--accent); }
+.mode-opt small { color: var(--muted, inherit); }
+.oauth-btn { width: 100%; margin-bottom: 8px; }

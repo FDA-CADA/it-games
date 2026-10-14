@@ -1,0 +1,66 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kiểm tra bản dịch
+        run: python3 tools/i18n_lint.py
+
+      - name: Đóng gói site
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          AUTH_PROVIDERS: ${{ vars.AUTH_PROVIDERS }}   # ví dụ: "google","azure" (để trống nếu không dùng OAuth)
+          EMAIL_LOGIN: ${{ vars.EMAIL_LOGIN }}         # true | false (mặc định true)
+        run: |
+          mkdir _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' \
+            --exclude 'deploy' --exclude 'docs' --exclude 'tools' --exclude 'templates' ./ _site/
+          # Ghi config.js từ biến của repo; không đặt SUPABASE_URL thì giữ bản trống (chỉ offline)
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            cat > _site/assets/js/config.js <<JS
+          window.ITG_CONFIG = {
+            supabaseUrl: "$SUPABASE_URL",
+            supabaseAnonKey: "$SUPABASE_ANON_KEY",
+            emailLogin: ${EMAIL_LOGIN:-true},
+            providers: [${AUTH_PROVIDERS}],
+          };
+          JS
+          fi
+          node --check _site/assets/js/config.js
+
+      - name: Cấu hình SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Đồng bộ lên VPS
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p ${SSH_PORT:-22} -o StrictHostKeyChecking=yes" \
+            _site/ "$SSH_USER@$SSH_HOST:${DEPLOY_PATH:-/srv/it-games}/"

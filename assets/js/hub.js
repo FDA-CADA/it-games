@@ -348,8 +348,8 @@
   function askReset() {
     const n = READY.filter((x) => stateOf(x) !== "new").length;
     $("#confirm-text").textContent = n
-      ? L(`Điểm và kỷ lục của ${n} game trên trình duyệt này sẽ bị xoá vĩnh viễn. Bạn sẽ bắt đầu lại từ đầu.`,
-          `Scores and best records for ${n} ${n === 1 ? "game" : "games"} in this browser will be permanently deleted. You will start from scratch.`)
+      ? L(`Điểm và kỷ lục của ${n} game ${G.online ? "trên tài khoản của bạn" : "trên trình duyệt này"} sẽ bị xoá vĩnh viễn. Bạn sẽ bắt đầu lại từ đầu.`,
+          `Scores and best records for ${n} ${n === 1 ? "game" : "games"} ${G.online ? "on your account" : "in this browser"} will be permanently deleted. You will start from scratch.`)
       : L("Danh sách game đã mở gần đây sẽ bị xoá.", "Your recently opened games list will be cleared.");
     $("#confirm-reset").showModal();
   }
@@ -419,6 +419,12 @@
   G.$$(".course-name").forEach((n) => { n.textContent = G.tr(cat.course); });
   $("#welcome-lang").append(G.langButton());
   $("#lib-lang").append(G.langButton());
+  // Nút đăng nhập chỉ hiện khi cấu hình Supabase (sync.js nạp bất đồng bộ)
+  document.addEventListener("itg:sync-ready", () => {
+    $("#welcome-lang").prepend(G.syncButton());
+    $("#lib-lang").prepend(G.syncButton());
+  });
+  document.addEventListener("itg:synced", route);
   spawnBits();
   route();
 })();

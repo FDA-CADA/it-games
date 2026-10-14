@@ -237,9 +237,15 @@
     },
   };
 
-  /* ---------- Tiến độ (lưu trên trình duyệt của từng người chơi) ---------- */
+  /* ---------- Tiến độ ----------
+     Hai chế độ, KHÔNG bao giờ trộn dữ liệu với nhau:
+       offline (mặc định): lưu trên trình duyệt, khoá itgames:progress:*
+       online  (đã đăng nhập, chọn trong sync.js): theo tài khoản; localStorage chỉ là bản sao
+               của server (khoá itgames:cloud:progress:*), sync.js tải về khi mở trang. */
+  G.online = store.get("itgames:mode", "offline") === "online" && !!store.get("itgames:session", null);
+  const PFX = () => (G.online ? "itgames:cloud:progress:" : "itgames:progress:");
   G.progress = {
-    get(gameId) { return store.get("itgames:progress:" + gameId, { levels: {} }); },
+    get(gameId) { return store.get(PFX() + gameId, { levels: {} }); },
     /** Ghi điểm của một level; trả về { best, isNew }. */
     record(gameId, levelIdx, score, totalLevels) {
       const p = this.get(gameId);
@@ -247,7 +253,8 @@
       const isNew = prev == null || score > prev;
       if (isNew) p.levels[levelIdx] = score;
       if (totalLevels) p.total = totalLevels;
-      store.set("itgames:progress:" + gameId, p);
+      store.set(PFX() + gameId, p);
+      if (isNew && G.online && G.sync) G.sync.push(gameId);
       return { best: Math.max(score, prev ?? score), isNew };
     },
     best(gameId, levelIdx) { return this.get(gameId).levels[levelIdx]; },
@@ -257,15 +264,17 @@
       const done = Object.keys(p.levels).length, total = p.total || 0;
       return { done, total, state: !done ? "new" : total && done >= total ? "done" : "started" };
     },
-    /** Xoá tiến độ của mọi game (giữ ngôn ngữ, âm thanh). Trả về số game bị xoá. */
+    /** Xoá tiến độ của chế độ hiện tại (offline: trình duyệt; online: tài khoản). Trả về số game bị xoá. */
     resetAll() {
       let n = 0;
+      const pfx = PFX();
       try {
         for (const k of Object.keys(localStorage)) {
-          if (k.startsWith("itgames:progress:")) n++;
-          if (k.startsWith("itgames:progress:") || k === "itgames:recent" || k === "itgames:hub" || k === "itgames:showPlanned") localStorage.removeItem(k);
+          if (k.startsWith(pfx)) { n++; localStorage.removeItem(k); }
         }
+        for (const k of ["itgames:recent", "itgames:hub", "itgames:showPlanned"]) localStorage.removeItem(k);
       } catch { /* bỏ qua */ }
+      if (G.online && G.sync) G.sync.clearRemote();
       return n;
     },
   };
@@ -381,6 +390,15 @@
 
   window.G = G;
   window.L = G.L;
+  // Đồng bộ Supabase (tuỳ chọn): nạp config.js + sync.js cạnh common.js, không cần sửa từng trang game
+  (function loadSync() {
+    const base = document.currentScript && document.currentScript.src.replace(/[^/]*$/, "");
+    if (!base) return;
+    const s1 = document.createElement("script");
+    s1.src = base + "config.js";
+    s1.onload = () => { const s2 = document.createElement("script"); s2.src = base + "sync.js"; document.head.append(s2); };
+    document.head.append(s1);
+  })();
   G.applyStaticI18n();
   const boot = () => { mountHeader(); updateBackLink(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
